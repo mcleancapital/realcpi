@@ -3,29 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Financial Data | Example</title>
+  <title>Real CPI</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header>
-    <h1>Financial Data</h1>
-    <nav>
-      <a href="#sp500">S&P 500</a>
-      <a href="#pe-ratio">PE Ratio</a>
-    </nav>
+    <h1>Real CPI</h1>
   </header>
   <main>
-    <section id="sp500">
-      <h2>S&P 500</h2>
-      <canvas id="sp500Chart"></canvas>
-    </section>
-    <section id="pe-ratio">
-      <h2>PE Ratio</h2>
-      <canvas id="peRatioChart"></canvas>
-    </section>
+    <div class="graph-container">
+      <canvas id="graph1"></canvas>
+      <canvas id="graph2"></canvas>
+      <canvas id="graph3"></canvas>
+    </div>
   </main>
   <footer>
-    <p>&copy; 2024 Financial Data Example</p>
+    <p>&copy; 2024 Real CPI</p>
   </footer>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
