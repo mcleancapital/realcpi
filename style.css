@@ -23,16 +23,15 @@ footer {
 /* Graph Container Styles */
 .graph-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Three columns for the graphs */
-  gap: 1rem; /* Space between the graphs */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid layout */
+  gap: 1rem; /* Space between graphs */
   padding: 1rem;
-  justify-items: center; /* Center graphs in their columns */
 }
 
 canvas {
-  width: 100%; /* Allow graphs to scale */
-  max-width: 300px; /* Set a maximum size for graphs */
-  height: auto; /* Maintain aspect ratio */
-  border: 1px solid #ccc; /* Optional border around the graphs */
+  width: 100%; /* Ensure the canvas scales with its container */
+  max-width: 300px; /* Set a maximum width for each graph */
+  height: 200px; /* Set a fixed height for compact layout */
+  border: 1px solid #ccc; /* Optional border for visibility */
   background: #fff;
 }
