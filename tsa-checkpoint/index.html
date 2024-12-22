@@ -1,107 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>TSA Checkpoint Passenger Volume</title>
-    <style>
-        canvas {
-            display: block;
-            margin: 0 auto;
-            max-width: 100%;
-        }
-    </style>
-    <!-- Import Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Import XLSX for Excel file parsing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* Add your existing styles here */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+#can-container {
+    width: 890px;
+    margin: 0 auto;
+}
+canvas {
+    display: block;
+    margin: 0 auto;
+}
+</style>
+<title>TSA Passenger Volumes - Real CPI</title>
+<meta name="viewport" content="initial-scale=1">
 </head>
 <body>
-    <div>
-        <h1>TSA Checkpoint Passenger Volume</h1>
+
+<div id="globalheader">
+    <div id="gh-content">
+        <h1>US Airport Passenger Volume</h1>
     </div>
-    <div>
-        <canvas id="chartCanvas"></canvas>
+</div>
+
+<div id="container">
+    <div id="can-container">
+        <canvas id="chartCanvas" width="890" height="384"></canvas>
+        <p id="loadingMessage">Loading data...</p>
     </div>
+</div>
 
-    <script>
-        async function fetchExcelFile() {
-            try {
-                // Fetch Excel file from GitHub
-                const response = await fetch(
-                    'https://raw.githubusercontent.com/mcleancapital/realcpi/main/data/tsa_passenger_data.xlsx'
-                );
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // URL to your Excel file hosted on GitHub
+    const excelUrl = "https://raw.githubusercontent.com/mcleancapital/realcpi/main/data/tsa_passenger_data.xlsx";
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+    // Function to fetch and process the Excel file
+    async function fetchAndProcessExcel() {
+        try {
+            const response = await fetch(excelUrl);
+            const arrayBuffer = await response.arrayBuffer();
+            const workbook = XLSX.read(arrayBuffer, { type: "array" });
 
-                const arrayBuffer = await response.arrayBuffer();
+            // Assuming the data is in the "Data" tab
+            const sheetName = "Data";
+            const sheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-                // Parse Excel file
-                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            // Extract dates and values
+            const dates = jsonData.slice(1).map(row => row[0]); // Column A
+            const values = jsonData.slice(1).map(row => row[1]); // Column B
 
-                const dates = [];
-                const values = [];
-                for (let i = 1; i < data.length; i++) {
-                    if (data[i][0] && data[i][1]) {
-                        dates.push(data[i][0]); // Column A (Date)
-                        values.push(data[i][1]); // Column B (Passenger Volume)
-                    }
-                }
+            // Update the `pi` variable
+            let pi = [dates, values, null, null, "%", 0, []];
+            console.log("Updated pi:", pi);
 
-                return { dates, values };
-            } catch (error) {
-                console.error('Error fetching or parsing Excel file:', error);
-                return { dates: [], values: [] };
-            }
+            // Remove loading message
+            document.getElementById("loadingMessage").style.display = "none";
+
+            // Call your chart rendering logic here
+            renderChart(dates, values);
+        } catch (error) {
+            console.error("Error fetching or processing Excel file:", error);
+            document.getElementById("loadingMessage").textContent = "Failed to load data.";
         }
+    }
 
-        async function drawChart() {
-            const { dates, values } = await fetchExcelFile();
-
-            if (dates.length === 0 || values.length === 0) {
-                console.error('No data available for the chart.');
-                return;
-            }
-
-            const ctx = document.getElementById('chartCanvas').getContext('2d');
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [{
-                        label: 'Passenger Volume',
-                        data: values,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 2,
-                        fill: false,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        x: {
-                            type: 'category',
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Passenger Volume'
-                            }
+    // Function to render the chart
+    function renderChart(dates, values) {
+        const ctx = document.getElementById("chartCanvas").getContext("2d");
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: "TSA Passenger Volumes",
+                    data: values,
+                    borderColor: "blue",
+                    borderWidth: 2,
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Date",
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Passenger Volume",
                         }
                     }
                 }
-            });
-        }
+            }
+        });
+    }
 
-        drawChart();
-    </script>
+    // Fetch the Excel data and update `pi` on page load
+    document.addEventListener("DOMContentLoaded", fetchAndProcessExcel);
+</script>
+
 </body>
 </html>
