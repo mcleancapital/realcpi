@@ -1,97 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Dynamic Chart with GitHub Data</title>
+    <title>TSA Checkpoint Passenger Volume</title>
     <style>
-        /* Include your existing CSS styles here */
         canvas {
             display: block;
             margin: 0 auto;
             max-width: 100%;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Import Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Import XLSX for Excel file parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-    <div id="globalheader">
-        <div id="gh-content">
-            <div id="globalnav">
-                <!-- Existing header and navigation -->
-            </div>
-        </div>
+    <div>
+        <h1>TSA Checkpoint Passenger Volume</h1>
     </div>
-    <div id="box">
-        <div id="head">
-            <h1><a href="/s-p-500-sales-growth">US Airport Passenger Volume</a></h1>
-        </div>
-        <div id="container">
-            <div id="content">
-                <div id="chart-container">
-                    <canvas id="chartCanvas" width="890" height="384"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="footer">
-        <!-- Existing footer content -->
+    <div>
+        <canvas id="chartCanvas"></canvas>
     </div>
 
     <script>
         async function fetchExcelFile() {
-            const response = await fetch(
-                'https://github.com/mcleancapital/realcpi/tree/main/data/tsa_passenger_data.xlsx'
-            );
-            const arrayBuffer = await response.arrayBuffer();
+            try {
+                // Fetch Excel file from GitHub
+                const response = await fetch(
+                    'https://raw.githubusercontent.com/mcleancapital/realcpi/main/data/tsa_passenger_data.xlsx'
+                );
 
-            const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-            const dates = [];
-            const values = [];
-            for (let i = 1; i < data.length; i++) { // Skip header row
-                if (data[i][0] && data[i][1]) {
-                    dates.push(data[i][0]); // Column A (Dates)
-                    values.push(data[i][1]); // Column B (Values)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            }
 
-            return { dates, values };
+                const arrayBuffer = await response.arrayBuffer();
+
+                // Parse Excel file
+                const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                const dates = [];
+                const values = [];
+                for (let i = 1; i < data.length; i++) {
+                    if (data[i][0] && data[i][1]) {
+                        dates.push(data[i][0]); // Column A (Date)
+                        values.push(data[i][1]); // Column B (Passenger Volume)
+                    }
+                }
+
+                return { dates, values };
+            } catch (error) {
+                console.error('Error fetching or parsing Excel file:', error);
+                return { dates: [], values: [] };
+            }
         }
 
         async function drawChart() {
             const { dates, values } = await fetchExcelFile();
 
-            const chartData = {
-                labels: dates,
-                datasets: [{
-                    label: 'Passenger Volume',
-                    data: values,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: false
-                }]
-            };
+            if (dates.length === 0 || values.length === 0) {
+                console.error('No data available for the chart.');
+                return;
+            }
 
             const ctx = document.getElementById('chartCanvas').getContext('2d');
+
             new Chart(ctx, {
                 type: 'line',
-                data: chartData,
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Passenger Volume',
+                        data: values,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false,
+                    }]
+                },
                 options: {
                     responsive: true,
                     scales: {
                         x: {
-                            type: 'time',
-                            time: {
-                                unit: 'day',
-                                tooltipFormat: 'YYYY-MM-DD'
-                            },
-                            title: { display: true, text: 'Date' }
+                            type: 'category',
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
                         },
                         y: {
-                            title: { display: true, text: 'Passenger Count' }
+                            title: {
+                                display: true,
+                                text: 'Passenger Volume'
+                            }
                         }
                     }
                 }
