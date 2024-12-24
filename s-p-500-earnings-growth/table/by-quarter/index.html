@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+
+@font-face{
+font-family:concourse_ot_3_book;
+font-style:normal;
+font-weight:400;
+font-stretch:normal;
+font-display:swap;
+src:url("/static/fonts/concourse_ot_3_book.woff2") format("woff2")}
+
+@font-face{
+font-family:concourse_ot_3_book;
+font-style:italic;
+font-weight:400;font-stretch:normal;
+font-display:swap;
+src:url("/static/fonts/concourse_ot_3_book_italic.woff2") format("woff2")}
+
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font:inherit;font-size:100%;vertical-align:baseline}html{line-height:1}ol,ul{list-style:none}table{border-collapse:collapse;border-spacing:0}caption,td,th{text-align:left;font-weight:400;vertical-align:middle}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:"";content:none}a img{border:none}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}:root{--layout_width:780px;--link_color:#307EB6;--hr_color:#e0e0ee}html{font-size:100%;line-height:1.5em}
+
+body{
+	background-color:#fff;
+	color:#111;
+	font-family:"Garamond", serif;
+	text-rendering:optimizeLegibility;
+	-webkit-font-smoothing:antialiased}
+
+#box{min-width:890px;margin:0 auto;position:relative}#box,#container,#content{height:auto}h1{font-size:2em;line-height:1.5em;margin-top:24px;margin-botom:24px;color:#222}h1 a,h1 a:focus,h1 a:hover,h1 a:visited{color:#222;text-decoration:none}h1 a:hover{text-decoration:none;color:var(--link_color)}a{color:var(--link_color);text-decoration:none}a:focus,a:hover{text-decoration:underline}#head{width:var(--layout_width);margin:0 auto;margin-bottom:1.5em}#container{position:relative}#container #ads{width:var(--layout_width);margin:0 auto;margin-bottom:1.5em}.responsive_horizontal{height:90px}img{display:block}.current,b{font-weight:700}p{margin-bottom:1.5em}#footer{width:780px;margin:0 auto;margin-top:23px;border-top:1px solid var(--hr_color);padding-top:23px;font-size:.75em;margin-bottom:2em;color:#666;text-align:center;position:relative}#footer #footer-nav{text-align:center;list-style-type:none;padding:0;margin:0;display:flex;justify-content:center}#footer #footer-nav li{margin:0 8px;display:inline-block;vertical-align:middle}.clear{clear:both}table{font-variant-numeric:tabular-nums}ul{list-style:circle}form.donate{display:inline}input.donate{position:absolute;margin-top:-1px}div.donate-space{width:92px;float:right}ul.see-also{margin-top:1.5em}h3{font-weight:700}
+
+#globalheader{width:100%;background:#3366FF;display:block}
+#gh-content{width:100%;max-width:980px;min-width:var(--layout_width);margin:0 auto}
+#globalnav{display:block;margin:0 8px;position:relative;font-size:.75em;line-height:1em}
+#gnavlist:after{content:'';width:100%;display:inline-block;font-size:0;line-height:0}
+#gnavlist:before{content:'';width:100%;display:inline-block}
+#gnavlist{width:auto;text-justify:distribute-all-lines;text-align:justify}
+#gnavlist .current{opacity:.5;font-weight:400}
+#gnavlist .current a:hover{opacity:1}
+#gnavlist li{display:inline-block;position:relative}
+#gnavlist li a{color:#fff;transition:opacity .2s cubic-bezier(.645, .045, .355, 1)}
+#gnavlist li a:hover{text-decoration:none;opacity:.66;transition:opacity .2s cubic-bezier(.645, .045, .355, 1)}
+#globalnav div.logo{display:inline}#globalnav div.logo a{font-size:16px;line-height:1.5em}
+#globalnav div.logo a:hover{text-decoration:none}
+#mobile{display:none}ul.nav li{display:inline-block;position:relative;padding:0 2px 0 8px}ul.nav li:first-child{padding-left:0}ul.nav li:first-child:after{content:none}ul.nav li:after{content:'';background:#e0e0ee;height:16px;left:1px;margin-top:-8px;position:absolute;top:50%;width:1px}#subnav{margin-top:1.5em;margin-bottom:1.5em}#subnav .share{float:right;background:url("/static/icon_linkedin.png") 8px 2px no-repeat;background-size:20px auto;padding:0 0 0 34px;vertical-align:baseline}@media only screen and (max-device-width:779px){:root{--standard_margin:8px;--nav_padding:16px}html{width:100%}#box{min-width:initial;margin:0 var(--standard_margin);position:relative}h1{font-size:20px;font-weight:700;border:0}#head{width:100%}#container #ads{width:100%}#footer{width:100%;font-size:16px;margin-bottom:16px}#footer #footer-nav{display:initial;justify-content:initial}#footer #footer-nav li{display:block;vertical-align:middle;border-bottom:1px solid;border-color:var(--hr_color);padding:var(--nav_padding) 0}#footer #footer-nav .donate-space{display:none}#footer #footer-nav input.donate{position:initial;margin:initial}#globalheader{opacity:1!important}#gh-content{max-width:initial;min-width:initial;position:relative}#globalnav{margin:0 auto!important;width:100%!important;height:44px}#globalnav a{color:#fff}#gnavlist{display:none}#mobile{display:block}#mobile .menu{display:block;position:absolute;top:14px;right:var(--standard_margin);height:100%;font-size:16px}#mobile div.logo{display:block;position:relative;text-align:center;font-size:16px;top:5px;letter-spacing:2px}.see-also h3{padding-bottom:10px;text-transform:uppercase}.see-also li:last-child a{border-bottom:1px solid;border-color:var(--hr_color)}.see-also a{display:block;padding:10px 0;border-top:1px solid;border-color:var(--hr_color)}.see-also .sa-col{float:none;width:auto}.see-also .sa-col:first-child li:last-child a{border-bottom:0}}#table{width:var(--layout_width);margin:0 auto}#tablenav{margin-bottom:1.5em}#tablenav div:first-child{float:left;margin-right:8px}#_table #table-ads,#_table #table-responsive-ads{margin-top:1.5em;margin-bottom:1.5em}#_table #table-responsive-ads .adsbygoogle{display:inline-block;width:336px;height:280px}@media only screen and (max-device-width:335px){#_table #table-responsive-ads .adsbygoogle{display:inline-block;width:300px;height:250px}}#_table .tcol{float:left;width:50%}#_table .rcol{float:right;width:50%}#_table table#datatable{border-collapse:separate;border:1px solid #d7d7d7;margin-bottom:23px;box-shadow:0 1px 3px rgba(0,0,0,.45)}#_table table#datatable th{text-align:center;font-weight:700}#datatable abbr{text-decoration:none}#datatable th,#datatable tr.even{background-color:#f4f4f4}#datatable tr{line-height:3}#_table table#datatable th,#datatable td{border-right:1px solid #fff;border-left:1px solid #eaeaea;padding:0 12px}#datatable td{text-align:right}#datatable caption{text-align:right}#datatable2 th{padding-bottom:1.5em;text-align:right}#datatable2 td{text-align:right}#datatable2 td:last-child{padding-left:calc(2*1.5em)}@media only screen and (max-device-width:779px){#table{width:100%}#_table{width:100%}#_table #table-ads,#_table #table-responsive-ads{text-align:center}#_table .tcol{margin-right:0!important;float:none!important}#_table .rcol,#_table .tcol{width:100%}#datatable{width:99%}#datatable th .title{display:none}#datatable th{text-align:center!important}#datatable td{text-align:center!important}#datatable caption{padding-right:3em}}
+
+</style>
+<title>S&P 500 Earnings Growth by Quarter - Real CPI</title>
+<meta name="viewport" content="initial-scale=1" />
+<meta property="og:site_name" content="Real CPI" />
+
+
+<meta name="description" content="S&P 500 Earnings Growth table by quarter, historic, and current data." />
+<link rel="canonical"
+href="https://www.realcpi.org/s-p-500-earnings-growth/table/by-year">
+<link rel="alternate" type="application/rss+xml"
+title="S&P 500 Earnings Growth by Quarter"
+href="/s-p-500-earnings-growth/atom" />
+
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-97F7RYQNKC"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-97F7RYQNKC');
+</script>
+<div id="globalheader">
+<div id="gh-content">
+<div id="globalnav">
+<ul id="gnavlist" role="navigation">
+
+<li>
+<div class="logo">
+<a href="/">Real CPI</a>
+</div>
+</li>
+<li class="current"><a href="/s-p-500-earnings-growth">S&P 500 Earnings Growth Rate</a></li>
+<li><a href="/s-p-500-normalized-earnings-growth">S&P 500 Normalized Earnings Growth Rate</a></li>
+<li>
+<a href="/s-p-500-sales-growth">S&P 500 Sales Growth</a>
+</li>
+<li>
+<a href="/s-p-500-net-margins">S&P 500 Net Margins</a>
+</li>
+<li><a href="/list">List View</a></li>
+
+</ul>
+<div id="mobile">
+<div class="logo" style="text-align:left !important;">
+<a id="logo" href="/">
+    <img src="/static/images/logo.jpg" alt="Real CPI Logo" height="30" />
+</a>
+</div>
+
+<div class="menu">
+<a href="/list">List View</a>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+<div id="box">
+<div id="head">
+
+<h1>S&P 500 Earnings Growth Rate by Quarter</h1>
+
+
+</div>
+<div id="container">
+
+<div id="ads">
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3345310399251053"
+crossorigin="anonymous"></script>
+<!-- responsive_horizontal -->
+<ins class="adsbygoogle responsive_horizontal"
+style="display:block; max-height: 90px"
+data-ad-client="ca-pub-3345310399251053"
+data-ad-slot="8838367443"
+
+</ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<div id="content">
+
+<div id="table">
+
+<div id="subnav">
+<ul role="navigation" class="nav">
+<li><a href="/s-p-500-earnings-growth"
+
+>Chart</a></li>
+<li><a href="/s-p-500-earnings-growth/table/by-year"
+
+class="current"
+
+>Table</a></li>
+
+
+<a id="linkedin-link" href="https://www.linkedin.com/sharing/share-offsite/?url=https://www.realcpi.org/us-gdp-growth-rate" target="_blank" rel="noopener noreferrer">
+    <li class="share">
+        Share
+    </li>
+</a>
+
+</ul>
+</div>
+
+<div id="tablenav">
+<div><b>Show:</b></div>
+<ul class="nav">
+<li>
+<a href="/s-p-500-earnings-growth/table/by-year"
+
+
+
+>By Year</a>
+</li>
+<li>
+<a href="/s-p-500-earnings-growth/table/by-quarter"
+
+class="current"
+
+>By Quarter</a>
+</li>
+
+</ul>
+</div>
+
+<div>
+<div id="_table">
+
+<div class="tcol">
+
+<table id="datatable">
+
+<tr>
+<th>Date</th>
+<th>Value</th>
+</tr>
+<tr class="odd"><td>Jun 2024</td><td>&#x2002;8.24%</td></tr>
+<tr class="even"><td>Mar 2024</td><td>&#x2002;9.26%</td></tr>
+<tr class="odd"><td>Dec 2023</td><td>&#x2002;11.39%</td></tr>
+<tr class="even"><td>Sep 2023</td><td>&#x2002;-1.51%</td></tr>
+<tr class="odd"><td>Jun 2023</td><td>&#x2002;-5.85%</td></tr>
+<tr class="even"><td>Mar 2023</td><td>&#x2002;-11.49%</td></tr>
+<tr class="odd"><td>Dec 2022</td><td>&#x2002;-12.70%</td></tr>
+<tr class="even"><td>Sep 2022</td><td>&#x2002;6.68%</td></tr>
+<tr class="odd"><td>Jun 2022</td><td>&#x2002;21.10%</td></tr>
+<tr class="even"><td>Mar 2022</td><td>&#x2002;54.38%</td></tr>
+<tr class="odd"><td>Dec 2021</td><td>&#x2002;110.21%</td></tr>
+<tr class="even"><td>Sep 2021</td><td>&#x2002;78.55%</td></tr>
+<tr class="odd"><td>Jun 2021</td><td>&#x2002;59.99%</td></tr>
+<tr class="even"><td>Mar 2021</td><td>&#x2002;10.20%</td></tr>
+<tr class="odd"><td>Dec 2020</td><td>&#x2002;-32.51%</td></tr>
+<tr class="even"><td>Sep 2020</td><td>&#x2002;-26.09%</td></tr>
+<tr class="odd"><td>Jun 2020</td><td>&#x2002;-26.64%</td></tr>
+<tr class="even"><td>Mar 2020</td><td>&#x2002;-13.44%</td></tr>
+<tr class="odd"><td>Dec 2019</td><td>&#x2002;5.35%</td></tr>
+<tr class="even"><td>Sep 2019</td><td>&#x2002;1.92%</td></tr>
+<tr class="odd"><td>Jun 2019</td><td>&#x2002;10.44%</td></tr>
+<tr class="even"><td>Mar 2019</td><td>&#x2002;16.42%</td></tr>
+<tr class="odd"><td>Dec 2018</td><td>&#x2002;20.49%</td></tr>
+<tr class="even"><td>Sep 2018</td><td>&#x2002;21.77%</td></tr>
+<tr class="odd"><td>Jun 2018</td><td>&#x2002;17.75%</td></tr>
+<tr class="even"><td>Mar 2018</td><td>&#x2002;15.11%</td></tr>
+<tr class="odd"><td>Dec 2017</td><td>&#x2002;16.21%</td></tr>
+<tr class="even"><td>Sep 2017</td><td>&#x2002;20.19%</td></tr>
+<tr class="odd"><td>Jun 2017</td><td>&#x2002;19.67%</td></tr>
+<tr class="even"><td>Mar 2017</td><td>&#x2002;16.02%</td></tr>
+<tr class="odd"><td>Dec 2016</td><td>&#x2002;9.27%</td></tr>
+<tr class="even"><td>Sep 2016</td><td>&#x2002;-1.73%</td></tr>
+<tr class="odd"><td>Jun 2016</td><td>&#x2002;-8.42%</td></tr>
+<tr class="even"><td>Mar 2016</td><td>&#x2002;-12.91%</td></tr>
+<tr class="odd"><td>Dec 2015</td><td>&#x2002;-15.42%</td></tr>
+<tr class="even"><td>Sep 2015</td><td>&#x2002;-14.44%</td></tr>
+<tr class="odd"><td>Jun 2015</td><td>&#x2002;-7.96%</td></tr>
+<tr class="even"><td>Mar 2015</td><td>&#x2002;-1.59%</td></tr>
+<tr class="odd"><td>Dec 2014</td><td>&#x2002;2.11%</td></tr>
+<tr class="even"><td>Sep 2014</td><td>&#x2002;12.28%</td></tr>
+<tr class="odd"><td>Jun 2014</td><td>&#x2002;13.38%</td></tr>
+<tr class="even"><td>Mar 2014</td><td>&#x2002;14.99%</td></tr>
+<tr class="odd"><td>Dec 2013</td><td>&#x2002;15.82%</td></tr>
+<tr class="even"><td>Sep 2013</td><td>&#x2002;9.10%</td></tr>
+<tr class="odd"><td>Jun 2013</td><td>&#x2002;3.45%</td></tr>
+<tr class="even"><td>Mar 2013</td><td>&#x2002;-0.95%</td></tr>
+<tr class="odd"><td>Dec 2012</td><td>&#x2002;-0.51%</td></tr>
+<tr class="even"><td>Sep 2012</td><td>&#x2002;-0.55%</td></tr>
+<tr class="odd"><td>Jun 2012</td><td>&#x2002;4.83%</td></tr>
+<tr class="even"><td>Mar 2012</td><td>&#x2002;8.89%</td></tr>
+<tr class="odd"><td>Dec 2011</td><td>&#x2002;12.41%</td></tr>
+<tr class="even"><td>Sep 2011</td><td>&#x2002;21.04%</td></tr>
+<tr class="odd"><td>Jun 2011</td><td>&#x2002;24.99%</td></tr>
+<tr class="even"><td>Mar 2011</td><td>&#x2002;33.45%</td></tr>
+<tr class="odd"><td>Dec 2010</td><td>&#x2002;51.76%</td></tr>
+<tr class="even"><td>Sep 2010</td><td>&#x2002;473.05%</td></tr>
+<tr class="odd"><td>Jun 2010</td><td>&#x2002;793.48%</td></tr>
+<tr class="even"><td>Mar 2010</td><td>&#x2002;788.19%</td></tr>
+<tr class="odd"><td>Dec 2009</td><td>&#x2002;242.54%</td></tr>
+<tr class="even"><td>Sep 2009</td><td>&#x2002;-72.71%</td></tr>
+<tr class="odd"><td>Jun 2009</td><td>&#x2002;-85.38%</td></tr>
+<tr class="even"><td>Mar 2009</td><td>&#x2002;-88.64%</td></tr>
+<tr class="odd"><td>Dec 2008</td><td>&#x2002;-77.52%</td></tr>
+<tr class="even"><td>Sep 2008</td><td>&#x2002;-41.54%</td></tr>
+<tr class="odd"><td>Jun 2008</td><td>&#x2002;-39.51%</td></tr>
+<tr class="even"><td>Mar 2008</td><td>&#x2002;-27.37%</td></tr>
+<tr class="odd"><td>Dec 2007</td><td>&#x2002;-18.81%</td></tr>
+<tr class="even"><td>Sep 2007</td><td>&#x2002;0.04%</td></tr>
+<tr class="odd"><td>Jun 2007</td><td>&#x2002;14.00%</td></tr>
+<tr class="even"><td>Mar 2007</td><td>&#x2002;14.42%</td></tr>
+<tr class="odd"><td>Dec 2006</td><td>&#x2002;16.73%</td></tr>
+<tr class="even"><td>Sep 2006</td><td>&#x2002;18.20%</td></tr>
+<tr class="odd"><td>Jun 2006</td><td>&#x2002;17.75%</td></tr>
+<tr class="even"><td>Mar 2006</td><td>&#x2002;20.67%</td></tr>
+<tr class="odd"><td>Dec 2005</td><td>&#x2002;19.27%</td></tr>
+<tr class="even"><td>Sep 2005</td><td>&#x2002;15.06%</td></tr>
+<tr class="odd"><td>Jun 2005</td><td>&#x2002;12.66%</td></tr>
+<tr class="even"><td>Mar 2005</td><td>&#x2002;15.81%</td></tr>
+<tr class="odd"><td>Dec 2004</td><td>&#x2002;20.13%</td></tr>
+<tr class="even"><td>Sep 2004</td><td>&#x2002;49.74%</td></tr>
+<tr class="odd"><td>Jun 2004</td><td>&#x2002;62.52%</td></tr>
+<tr class="even"><td>Mar 2004</td><td>&#x2002;71.50%</td></tr>
+<tr class="odd"><td>Dec 2003</td><td>&#x2002;76.66%</td></tr>
+<tr class="even"><td>Sep 2003</td><td>&#x2002;28.43%</td></tr>
+<tr class="odd"><td>Jun 2003</td><td>&#x2002;29.21%</td></tr>
+<tr class="even"><td>Mar 2003</td><td>&#x2002;22.75%</td></tr>
+<tr class="odd"><td>Dec 2002</td><td>&#x2002;11.75%</td></tr>
+<tr class="even"><td>Sep 2002</td><td>&#x2002;6.11%</td></tr>
+<tr class="odd"><td>Jun 2002</td><td>&#x2002;-27.32%</td></tr>
+<tr class="even"><td>Mar 2002</td><td>&#x2002;-45.64%</td></tr>
+<tr class="odd"><td>Dec 2001</td><td>&#x2002;-50.62%</td></tr>
+<tr class="even"><td>Sep 2001</td><td>&#x2002;-47.28%</td></tr>
+<tr class="odd"><td>Jun 2001</td><td>&#x2002;-29.14%</td></tr>
+<tr class="even"><td>Mar 2001</td><td>&#x2002;-10.81%</td></tr>
+<tr class="odd"><td>Dec 2000</td><td>&#x2002;3.80%</td></tr>
+<tr class="even"><td>Sep 2000</td><td>&#x2002;22.16%</td></tr>
+<tr class="odd"><td>Jun 2000</td><td>&#x2002;26.57%</td></tr>
+<tr class="even"><td>Mar 2000</td><td>&#x2002;32.75%</td></tr>
+<tr class="odd"><td>Dec 1999</td><td>&#x2002;27.74%</td></tr>
+<tr class="even"><td>Sep 1999</td><td>&#x2002;15.41%</td></tr>
+<tr class="odd"><td>Jun 1999</td><td>&#x2002;5.26%</td></tr>
+<tr class="even"><td>Mar 1999</td><td>&#x2002;-2.93%</td></tr>
+<tr class="odd"><td>Dec 1998</td><td>&#x2002;-5.06%</td></tr>
+<tr class="even"><td>Sep 1998</td><td>&#x2002;-6.27%</td></tr>
+<tr class="odd"><td>Jun 1998</td><td>&#x2002;-3.90%</td></tr>
+<tr class="even"><td>Mar 1998</td><td>&#x2002;-1.74%</td></tr>
+<tr class="odd"><td>Dec 1997</td><td>&#x2002;2.56%</td></tr>
+<tr class="even"><td>Sep 1997</td><td>&#x2002;12.89%</td></tr>
+<tr class="odd"><td>Jun 1997</td><td>&#x2002;16.16%</td></tr>
+<tr class="even"><td>Mar 1997</td><td>&#x2002;18.21%</td></tr>
+<tr class="odd"><td>Dec 1996</td><td>&#x2002;14.05%</td></tr>
+<tr class="even"><td>Sep 1996</td><td>&#x2002;2.33%</td></tr>
+<tr class="odd"><td>Jun 1996</td><td>&#x2002;1.39%</td></tr>
+<tr class="even"><td>Mar 1996</td><td>&#x2002;4.58%</td></tr>
+<tr class="odd"><td>Dec 1995</td><td>&#x2002;10.98%</td></tr>
+<tr class="even"><td>Sep 1995</td><td>&#x2002;28.72%</td></tr>
+<tr class="odd"><td>Jun 1995</td><td>&#x2002;36.63%</td></tr>
+<tr class="even"><td>Mar 1995</td><td>&#x2002;43.33%</td></tr>
+<tr class="odd"><td>Dec 1994</td><td>&#x2002;39.79%</td></tr>
+<tr class="even"><td>Sep 1994</td><td>&#x2002;33.90%</td></tr>
+<tr class="odd"><td>Jun 1994</td><td>&#x2002;30.37%</td></tr>
+<tr class="even"><td>Mar 1994</td><td>&#x2002;14.47%</td></tr>
+<tr class="odd"><td>Dec 1993</td><td>&#x2002;14.67%</td></tr>
+<tr class="even"><td>Sep 1993</td><td>&#x2002;13.14%</td></tr>
+<tr class="odd"><td>Jun 1993</td><td>&#x2002;13.37%</td></tr>
+<tr class="even"><td>Mar 1993</td><td>&#x2002;22.54%</td></tr>
+<tr class="odd"><td>Dec 1992</td><td>&#x2002;19.54%</td></tr>
+<tr class="even"><td>Sep 1992</td><td>&#x2002;1.23%</td></tr>
+<tr class="odd"><td>Jun 1992</td><td>&#x2002;-12.16%</td></tr>
+<tr class="even"><td>Mar 1992</td><td>&#x2002;-22.68%</td></tr>
+<tr class="odd"><td>Dec 1991</td><td>&#x2002;-25.16%</td></tr>
+<tr class="even"><td>Sep 1991</td><td>&#x2002;-18.03%</td></tr>
+<tr class="odd"><td>Jun 1991</td><td>&#x2002;-8.70%</td></tr>
+<tr class="even"><td>Mar 1991</td><td>&#x2002;-3.37%</td></tr>
+<tr class="odd"><td>Dec 1990</td><td>&#x2002;-6.69%</td></tr>
+<tr class="even"><td>Sep 1990</td><td>&#x2002;-8.23%</td></tr>
+<tr class="odd"><td>Jun 1990</td><td>&#x2002;-15.70%</td></tr>
+<tr class="even"><td>Mar 1990</td><td>&#x2002;-13.18%</td></tr>
+<tr class="odd"><td>Dec 1989</td><td>&#x2002;-3.71%</td></tr>
+</table>
+</div>
+<div class="rcol">
+
+<div id="description">
+<p>S&P 500 earnings growth rate per year.
+<p>Source: 
+<a href="https://www.spglobal.com/spdji/en/indices/equity/sp-500/">
+Standard &amp; Poor&rsquo;s
+</a>
+
+</div>
+
+<div id="table-ads">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3345310399251053"
+crossorigin="anonymous"></script>
+<!-- table3by2 -->
+<ins class="adsbygoogle"
+style="display:inline-block;width:300px;height:250px"
+data-ad-client="ca-pub-3345310399251053"
+data-ad-slot="6272748004"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+<ul class="see-also">
+<h3>See also</h3>
+
+<li><a href="/s-p-500-pe-ratio">S&P 500 P/E Ratio</a>
+<li><a href="/s-p-500-normalized-pe-ratio">S&P 500 Normalized P/E Ratio</a>
+<li><a href="/s-p-500-sales-growth">S&P 500 Sales Growth</a>
+<li><a href="/s-p-500-earnings-growth">S&P 500 Earnings Growth</a>
+<li><a href="/s-p-500-dividend-yield">S&P 500 Dividend Yield</a>
+<li><a href="/s-p-500-net-margins">S&P 500 Net Margins</a>
+
+</ul>
+
+</div>
+</div> 
+<div class=clear></div>
+</div> 
+</div> 
+
+<div id="footer">
+Data is provided for informational purposes only, not for advice.
+<br><br>
+<div id="footer-nav">
+<ul>
+<li>Copyright &copy; 2024</li>
+<li><a href="mailto:contact@realcpi.org">contact@realcpi.org</a></li>
+<li>
+<div class="donate-space">&nbsp;</div>
+<form class="donate" action="https://www.paypal.com/cgi-bin/webscr"
+method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="PSR8NM4A7TTXN">
+<input class="donate" type="image"
+src="/static/btn_donate_LG.png" border="0" name="submit">
+</form>
+</li>
+</ul>
+</div>
+</div>
+<div class="clear"></div>
+
+<div id="ads">
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3345310399251053"
+crossorigin="anonymous"></script>
+<!-- footer responsive -->
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-3345310399251053"
+data-ad-slot="1867465105"
+data-ad-format="auto"
+data-full-width-responsive="true"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+
+</div>
+</div>
+</div> 
+<script>
+"use strict";
+window.onerror=function(a,b,c){(new Image).src=["/jse?v=1&m=",encodeURIComponent(a),"&f=",encodeURIComponent(b),"&n=",encodeURIComponent(c)].join("");return!1};
+
+</script>
+
+
+</html>
