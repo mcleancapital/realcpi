@@ -20,4 +20,4 @@ jobs:
         run: pip install openpyxl beautifulsoup4 requests
 
       - name: Run the script
-        run: python path/to/your/script.py
+        run: python scripts/update_sp500_price.py
