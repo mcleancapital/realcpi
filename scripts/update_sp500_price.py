@@ -4,41 +4,49 @@ from openpyxl import load_workbook
 from datetime import datetime
 import subprocess
 
-# File path to the Excel file in the repository
+# File path to your Excel file in the repository
 excel_file = './data/sp-500-prices.xlsx'
 
 def fetch_and_update_price():
     try:
-        # URL of the S&P 500 page
-        url = "https://www.spglobal.com/spdji/en/indices/equity/sp-500/#overview"
-        
-        # Add a User-Agent header to the request
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        }
-        response = requests.get(url, headers=headers)
+        # Yahoo Finance URL for S&P 500 (^GSPC) historical data
+        url = "https://ca.finance.yahoo.com/quote/%5EGSPC/history"
+        response = requests.get(url)
         response.raise_for_status()
 
         # Parse the webpage content
         soup = BeautifulSoup(response.content, 'html.parser')
 
-        # Locate the S&P 500 price (update the selector based on actual HTML structure)
-        price_element = soup.select_one('.index-level ')  # Replace with the actual selector
-        if not price_element:
-            print("Price element not found on the page.")
+        # Locate the historical price table
+        table = soup.find('table', {'data-test': 'historical-prices'})
+        if not table:
+            print("Historical prices table not found.")
             return
 
-        # Extract and process the price
-        price = float(price_element.text.replace(',', '').strip())
-        print(f"Fetched S&P 500 Price: {price}")
+        # Get the first row of the table (latest data)
+        rows = table.find_all('tr')
+        if len(rows) < 2:
+            print("No data rows found in the table.")
+            return
+
+        # Extract date and closing price from the latest row
+        latest_row = rows[1].find_all('td')
+        if len(latest_row) < 6:
+            print("Unexpected row format in the table.")
+            return
+
+        # Parse date and price
+        date_str = latest_row[0].text.strip()
+        closing_price = float(latest_row[4].text.replace(',', '').strip())
+        current_date = datetime.strptime(date_str, '%b %d, %Y').strftime('%Y-%m-%d')
+        print(f"Fetched S&P 500 Closing Price: {closing_price} on {current_date}")
 
         # Open the Excel file and append the data
         workbook = load_workbook(excel_file)
         sheet = workbook['Data']
 
         # Append the new data with the current date and price
-        current_date = datetime.now().strftime('%Y-%m-%d')
-        sheet.append([current_date, price])
+        sheet.append([current_date, closing_price])
 
         # Save the updated Excel file
         workbook.save(excel_file)
