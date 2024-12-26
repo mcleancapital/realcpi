@@ -9,9 +9,12 @@ excel_file = './data/sp-500-prices.xlsx'
 
 def fetch_and_update_price():
     try:
-        # Yahoo Finance URL for S&P 500 (^GSPC) historical data
-        url = "https://ca.finance.yahoo.com/quote/%5EGSPC/history"
-        response = requests.get(url)
+        # Correct Yahoo Finance URL for S&P 500 (^GSPC) historical data
+        url = "https://finance.yahoo.com/quote/%5EGSPC/history"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+        response = requests.get(url, headers=headers)
         response.raise_for_status()
 
         # Parse the webpage content
