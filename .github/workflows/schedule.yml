@@ -3,6 +3,7 @@ name: Update S&P 500 Price
 on:
   schedule:
     - cron: "0 22 * * *"  # Runs daily at 5 PM Montreal time (adjust for UTC)
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   update_price:
