@@ -3,7 +3,7 @@ name: Update S&P 500 Price
 on:
   schedule:
     - cron: "0 22 * * *" # Runs every day at 5 PM Montreal time (10 PM UTC)
-    workflow_dispatch: # Allows manual triggering of the workflow
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   update-price:
@@ -42,7 +42,7 @@ jobs:
         git commit -m "Update S&P 500 price for $(date +'%Y-%m-%d')"
         git push
       env:
-        TOKEN: ${{ secrets.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 }}
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     # Debugging Step: Display Excel file contents (Optional)
     - name: Display Excel file contents
