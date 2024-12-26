@@ -1,0 +1,23 @@
+name: Update S&P 500 Price
+
+on:
+  schedule:
+    - cron: "0 22 * * *"  # Runs daily at 5 PM Montreal time (adjust for UTC)
+
+jobs:
+  update_price:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: pip install openpyxl beautifulsoup4 requests
+
+      - name: Run the script
+        run: python path/to/your/script.py
