@@ -23,7 +23,7 @@ def fetch_and_update_price():
         soup = BeautifulSoup(response.content, 'html.parser')
 
         # Locate the S&P 500 price (update the selector based on actual HTML structure)
-        price_element = soup.select_one('.price-class-selector')  # Replace with the actual selector
+        price_element = soup.select_one('.index-level ')  # Replace with the actual selector
         if not price_element:
             print("Price element not found on the page.")
             return
