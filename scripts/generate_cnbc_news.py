@@ -57,7 +57,7 @@ html_content = """
 """
 
 # Loop through the articles and add them to the HTML
-for entry in feed.entries[:10]:  # Fetch the latest 10 articles
+for entry in feed.entries[:15]:  # Fetch the latest 15 articles
     html_content += f"""
         <li>
             <h3>
