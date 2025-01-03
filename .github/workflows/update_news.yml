@@ -26,7 +26,7 @@ jobs:
 
       # Step 4: Run the Python script
       - name: Run Python script
-        run: python generate_cnbc_news.py
+        run: python scripts/generate_cnbc_news.py
 
       # Step 5: Commit and push changes
       - name: Commit and push changes
