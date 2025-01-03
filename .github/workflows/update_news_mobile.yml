@@ -1,4 +1,4 @@
-name: Update CNBC News
+name: Update CNBC News Mobile
 
 on:
   schedule:
