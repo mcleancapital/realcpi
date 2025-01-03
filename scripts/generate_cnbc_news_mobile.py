@@ -149,7 +149,7 @@ Copyright © 2024
 """
 
 # Save the HTML file
-output_file = "news.html"
+output_file = "news_mobile.html"
 with open(output_file, "w", encoding="utf-8") as file:
     file.write(html_content)
 
