@@ -5,10 +5,10 @@ def update_sp500_html(html_file, excel_file, output_file):
     try:
         print("Step 1: Reading Excel file...")
         # Read the Excel file
-        df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value"], header=0)
+        df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value", "% Change vs Last Year"], header=0)
 
-        # Drop rows where 'Date' or 'Value' is missing
-        df = df.dropna(subset=["Date", "Value"])
+        # Drop rows where 'Date', 'Value', or '% Change vs Last Year' is missing
+        df = df.dropna(subset=["Date", "Value", "% Change vs Last Year"])
 
         # Convert 'Date' to datetime
         df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
@@ -32,13 +32,15 @@ def update_sp500_html(html_file, excel_file, output_file):
         # Combine the formatted array with the required suffix
         formatted_data = f"[[{formatted_dates}], [{formatted_values}], null, null, '%', 0, []]"
 
-        # Get the most recent date and value
+        # Get the most recent date, value, and "% Change vs Last Year"
         most_recent_date = df.iloc[-1]["Date"]
         most_recent_value = df.iloc[-1]["Value"]
+        most_recent_change = df.iloc[-1]["% Change vs Last Year"]
 
-        # Format the date into "4:00 PM EST, Fri Dec 13" format
+        # Format the date, value, and change
         formatted_date = most_recent_date.strftime("4:00 PM EST, %a %b %d")
-        formatted_value = f"{most_recent_value:,.2f}"
+        formatted_value = f"{most_recent_value:,.2f}%"
+        formatted_change = f"(+{most_recent_change:,.2f}% vs last year)"
 
         print("Step 2: Reading HTML file...")
         # Read the HTML content
@@ -77,9 +79,14 @@ def update_sp500_html(html_file, excel_file, output_file):
         # Update the value <div> within this section
         value_start = section_content.find("<div>", section_content.find("<h3>")) + 5
         value_end = section_content.find("</div>", value_start)
+
+        # Combine the updated value and change
+        updated_value = f"{formatted_value} {formatted_change}"
+
+        # Update the section with the new value
         updated_section = (
             section_content[:value_start] +
-            formatted_value +
+            updated_value +
             section_content[value_end:]
         )
 
