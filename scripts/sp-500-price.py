@@ -21,7 +21,7 @@ def fetch_recent_sp500_data():
         return None, None
 
 def update_excel(file_path, recent_date, recent_price):
-    """Update the Excel file in the 'Data' tab and apply formulas to column C."""
+    """Update the Excel file in the 'Data' tab and directly calculate values for column C."""
     try:
         # Check if file exists
         if not os.path.exists(file_path):
@@ -57,33 +57,26 @@ def update_excel(file_path, recent_date, recent_price):
             ws.cell(row=2, column=2, value=recent_price)
             print(f"Updated the second row with date {recent_date} and price {recent_price}.")
 
-        # Update formulas in column C
+        # Directly calculate and update column C values
         max_row = ws.max_row
         for row in range(2, max_row + 1):
             reference_row = row + 12  # Reference row is 12 rows below
-            if reference_row <= max_row:  # Only add formula if reference row exists
-                formula = f"=(B{row}/B{reference_row}-1)*100"
-                ws.cell(row=row, column=3, value=formula)
+            if reference_row <= max_row:  # Only calculate if reference row exists
+                current_value = ws.cell(row=row, column=2).value  # Get value from column B of the current row
+                reference_value = ws.cell(row=reference_row, column=2).value  # Get value from column B of the reference row
+
+                if current_value is not None and reference_value is not None and reference_value != 0:
+                    calculated_value = ((current_value / reference_value) - 1) * 100  # Perform calculation
+                    ws.cell(row=row, column=3, value=calculated_value)  # Set the calculated value
+                else:
+                    ws.cell(row=row, column=3, value=None)  # Clear cell if calculation cannot be performed
             else:
-                ws.cell(row=row, column=3, value=None)  # Clear cell if formula cannot be applied
-        print(f"Updated formulas in column C for rows 2 to {max_row}.")
+                ws.cell(row=row, column=3, value=None)  # Clear cell if reference row does not exist
+        print(f"Updated values in column C for rows 2 to {max_row}.")
 
-        # Save formulas before reloading with values
+        # Save the workbook
         wb.save(file_path)
-
-        # Reload workbook with evaluated values and replace formulas with values
-        print("Copying and pasting values in column C...")
-        wb_with_values = load_workbook(file_path, data_only=True)  # Load workbook with evaluated values
-        ws_with_values = wb_with_values["Data"]
-
-        for row in range(2, max_row + 1):
-            cell_value = ws_with_values.cell(row=row, column=3).value  # Get the evaluated value
-            ws.cell(row=row, column=3, value=cell_value)  # Replace formula with its value
-
-        print("Successfully copied and pasted values in column C.")
-
-        # Save the workbook with values
-        wb.save(file_path)
+        print(f"Workbook saved successfully at {file_path}.")
     except Exception as e:
         print(f"Error updating Excel file: {e}")
 
