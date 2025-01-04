@@ -2,7 +2,7 @@ name: Excel - S&P 500 Price
 
 on:
   schedule:
-    - cron: "0 11 * * *"  # Runs daily at 11:00 AM UTC (6:00 AM ET during Standard Time)
+    - cron: "50 10 * * *"  # Runs daily at 10:50 AM UTC (5:50 AM ET during Standard Time)
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
