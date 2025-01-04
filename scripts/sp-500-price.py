@@ -68,17 +68,21 @@ def update_excel(file_path, recent_date, recent_price):
                 ws.cell(row=row, column=3, value=None)  # Clear cell if formula cannot be applied
         print(f"Updated formulas in column C for rows 2 to {max_row}.")
 
-        # Copy and paste values from column C
+        # Save formulas before reloading with values
+        wb.save(file_path)
+
+        # Reload workbook with evaluated values and replace formulas with values
         print("Copying and pasting values in column C...")
         wb_with_values = load_workbook(file_path, data_only=True)  # Load workbook with evaluated values
         ws_with_values = wb_with_values["Data"]
 
         for row in range(2, max_row + 1):
-            cell_value = ws_with_values.cell(row=row, column=3).value
+            cell_value = ws_with_values.cell(row=row, column=3).value  # Get the evaluated value
             ws.cell(row=row, column=3, value=cell_value)  # Replace formula with its value
+
         print("Successfully copied and pasted values in column C.")
 
-        # Save the workbook
+        # Save the workbook with values
         wb.save(file_path)
     except Exception as e:
         print(f"Error updating Excel file: {e}")
