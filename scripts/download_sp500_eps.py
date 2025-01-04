@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 
 EXCEL_URL = "https://www.spglobal.com/spdji/en/documents/additional-material/sp-500-eps-est.xlsx"
-SAVE_DIR = "../data"  # Relative to the /scripts directory
+SAVE_DIR = "./data"  # Relative to the /scripts directory
 
 def download_excel():
     today = datetime.now().strftime("%Y-%m-%d")
