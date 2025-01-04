@@ -6,6 +6,12 @@ from datetime import datetime
 EXCEL_URL = "https://www.spglobal.com/spdji/en/documents/additional-material/sp-500-eps-est.xlsx"
 SAVE_DIR = "./data"  # Path to the data directory
 
+# Replace with your cookies
+COOKIES = {
+    "session": "your-session-cookie",
+    "other_cookie_name": "other-cookie-value",
+}
+
 def download_excel():
     today = datetime.now().strftime("%Y-%m-%d")
     filename = f"sp500_eps_{today}.xlsx"
@@ -20,7 +26,7 @@ def download_excel():
         if not os.path.exists(SAVE_DIR):
             raise FileNotFoundError(f"Directory not found: {SAVE_DIR}")
 
-        response = requests.get(EXCEL_URL, headers=headers)
+        response = requests.get(EXCEL_URL, headers=headers, cookies=COOKIES)
         response.raise_for_status()
 
         with open(filepath, "wb") as file:
