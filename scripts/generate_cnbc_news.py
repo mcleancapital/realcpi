@@ -1,5 +1,6 @@
 import feedparser
-from datetime import datetime
+from bs4 import BeautifulSoup
+import requests
 
 # CNBC Business News RSS Feed URL
 RSS_FEED_URL = "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10001147"
@@ -38,7 +39,7 @@ html_content = """
             list-style: none;
         }
         li {
-            margin-bottom: 15px;
+            margin-bottom: 30px;
         }
         p {
             margin: 0;
@@ -48,6 +49,12 @@ html_content = """
             font-size: 16px;
             font-weight: normal;
         }
+        img {
+            max-width: 250px; /* Set a maximum width for images */
+            height: auto; /* Maintain aspect ratio */
+            display: block;
+            margin-bottom: 10px; /* Add spacing below the image */
+        }
     </style>
 </head>
 <body>
@@ -56,12 +63,33 @@ html_content = """
         <ul>
 """
 
+# Function to fetch the image URL from the article page
+def fetch_image_url(article_url):
+    try:
+        response = requests.get(article_url)
+        soup = BeautifulSoup(response.content, "html.parser")
+        # Look for the Open Graph meta tag with property="og:image"
+        meta_image = soup.find("meta", property="og:image")
+        if meta_image:
+            return meta_image["content"]
+    except Exception as e:
+        print(f"Error fetching image for {article_url}: {e}")
+    return None
+
 # Loop through the articles and add them to the HTML
 for entry in feed.entries[:15]:  # Fetch the latest 15 articles
+    # Get the article URL
+    article_url = entry.link
+
+    # Fetch the image URL
+    image_url = fetch_image_url(article_url)
+
+    # Add the article to the HTML, including the image if available
     html_content += f"""
         <li>
+            {"<img src='" + image_url + "' alt='Article Image'>" if image_url else ""}
             <h3>
-                <a href="{entry.link}" target="_blank" rel="noopener noreferrer"><b>{entry.title}</b></a>
+                <a href="{article_url}" target="_blank" rel="noopener noreferrer"><b>{entry.title}</b></a>
                 <p><i>Source:</i> CNBC</p>
             </h3>
             <p>{entry.summary}</p>
