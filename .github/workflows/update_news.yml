@@ -2,7 +2,7 @@ name: Update CNBC News
 
 on:
   schedule:
-    - cron: "*/120 * * * *" # Run every 120 minutes
+    - cron: "*/240 * * * *" # Run every 240 minutes
   workflow_dispatch:        # Allow manual triggering
 
 permissions:
