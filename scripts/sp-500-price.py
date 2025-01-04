@@ -60,10 +60,12 @@ def update_excel(file_path, recent_date, recent_price):
         # Update formulas in column C
         max_row = ws.max_row
         for row in range(2, max_row + 1):
-            current_row = row
-            reference_row = current_row + 12  # Adjust the offset if necessary
-            formula = f"=(B{current_row}/B{reference_row}-1)*100"
-            ws.cell(row=current_row, column=3, value=formula)
+            reference_row = row + 12  # Reference row is 12 rows below
+            if reference_row <= max_row:  # Only add formula if reference row exists
+                formula = f"=(B{row}/B{reference_row}-1)*100"
+                ws.cell(row=row, column=3, value=formula)
+            else:
+                ws.cell(row=row, column=3, value=None)  # Clear cell if formula cannot be applied
         print(f"Updated formulas in column C for rows 2 to {max_row}.")
 
         # Save the workbook
