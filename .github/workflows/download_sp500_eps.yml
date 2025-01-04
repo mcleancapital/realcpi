@@ -4,6 +4,7 @@ on:
   schedule:
     # Run on the 4th day of every month at 00:00 UTC
     - cron: "0 0 4 * *"
+  workflow_dispatch:  # Allows manual triggering if needed
 
 jobs:
   download_job:
