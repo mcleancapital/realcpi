@@ -23,4 +23,4 @@ jobs:
       run: pip install requests
 
     - name: Run the script
-      run: python download_sp500_eps.py
+      run: python scripts/download_sp500_eps.py
