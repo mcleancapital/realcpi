@@ -30,7 +30,7 @@ def update_sp500_html(html_file, excel_file, output_file):
         formatted_values = ", ".join(map(str, value_array))
 
         # Combine the formatted array with the required suffix
-        formatted_data = f"[[{formatted_dates}], [{formatted_values}], null, null, '%', 0, []]"
+        formatted_data = f"[[{formatted_dates}], [{formatted_values}], null, null, '', 1, []]"
 
         # Get the most recent date, value, and "% Change vs Last Year"
         most_recent_date = df.iloc[-1]["Date"]
@@ -39,8 +39,8 @@ def update_sp500_html(html_file, excel_file, output_file):
 
         # Format the date, value, and change
         formatted_date = most_recent_date.strftime("4:00 PM EST, %a %b %d")
-        formatted_value = f"{most_recent_value:,}%"
-        formatted_change = f"(+{most_recent_change:,.2f}% vs last year)"
+        formatted_value = f"{most_recent_value:,}"
+        formatted_change = f"(+{most_recent_change:,.1f}% vs last year)"
 
         print("Step 2: Reading HTML file...")
         # Read the HTML content
