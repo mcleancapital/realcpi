@@ -2,7 +2,7 @@ name: Index.html - Update PMI
 
 on:
   schedule:
-    - cron: "00 12 * * *"  # Run daily at 12:00 AM UTC (7:00 AM ET)
+    - cron: "30 11 7,22 * *"  # Run at 11:30 AM UTC on the 7th and 22nd of every month
   workflow_dispatch:        # Allow manual triggering
 
 permissions:
