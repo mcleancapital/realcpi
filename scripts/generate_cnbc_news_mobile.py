@@ -66,7 +66,7 @@ html_content = """
                 top: 0;
                 left: 0;
                 width: 100%;
-                background-color: #f4f4f4;
+                background-color: #ffffff;
                 border-bottom: 1px solid #ccc;
                 z-index: 1000;
                 padding: 10px 0;
