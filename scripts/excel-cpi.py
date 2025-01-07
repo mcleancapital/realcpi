@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 # File path to the Excel file
-EXCEL_FILE_PATH = r"C:\Users\ianmc\McLean Capital Dropbox\Ian McLean\_Website + data + articles\___Real CPI website\_Data\cpi.xlsx"
+EXCEL_FILE_PATH = './data/cpi.xlsx'
 
 # URL and headers
 URL = "https://ycharts.com/indicators/us_consumer_price_index_yoy"
