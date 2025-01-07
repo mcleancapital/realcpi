@@ -1,10 +1,10 @@
 import os
 import pandas as pd
 from openpyxl import load_workbook
-from openpyxl.utils.cell import get_column_letter
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+import xlwings as xw  # Added for formula evaluation
 
 # File path to the Excel file
 EXCEL_FILE_PATH = './data/energy.xlsx'
@@ -82,7 +82,23 @@ def update_excel(file_path, recent_date, recent_value):
 
         # Save the workbook
         wb.save(file_path)
-        print(f"Excel file updated successfully: {file_path}")
+
+        # Use xlwings to evaluate formulas
+        print("Evaluating formulas in Excel...")
+        app = xw.App(visible=False)  # Launch Excel
+        wb_xlw = app.books.open(file_path)
+        sheet = wb_xlw.sheets[sheet_name]
+
+        # Replace formulas with values in column C
+        for row in range(2, ws.max_row + 1):
+            value = sheet.range(f"C{row}").value  # Get calculated value
+            sheet.range(f"C{row}").value = value  # Replace formula with value
+
+        wb_xlw.save(file_path)
+        wb_xlw.close()
+        app.quit()
+        print(f"Formulas in column C have been replaced with their evaluated values.")
+
     except Exception as e:
         print(f"Error updating Excel file: {e}")
 
