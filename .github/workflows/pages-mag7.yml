@@ -2,7 +2,7 @@ name: Pages - MAG7
 
 on:
   schedule:
-    cron: "0 2 * * *"  # runs everyday at 2:00 AM UTC, corresponds to 9:00 PM ET during Standard Time
+    - cron: "0 2 * * *"  # runs everyday at 2:00 AM UTC, corresponds to 9:00 PM ET during Standard Time
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
