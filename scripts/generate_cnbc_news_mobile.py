@@ -186,7 +186,7 @@ print(f"{output_file} has been updated with the latest news from CNBC.")
 
 # Save the second file with a timestamp in the "news-archive" folder
 timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-output_file_archive = f"news-archive/news_{timestamp}.html"
+output_file_archive = f"../news-archive/news_{timestamp}.html"
 with open(output_file_archive, "w", encoding="utf-8") as file:
     file.write(html_content)
 
