@@ -11,7 +11,7 @@ wb = openpyxl.load_workbook(excel_file)
 sheet = wb.active
 
 # Fetch returns and the last update date
-returns = [sheet[f"D{row}"].value for row in range(2, 13)]
+returns = [sheet[f"D{row}"].value for row in range(2, 14)]
 raw_date = sheet["E2"].value
 
 # Parse the date properly
@@ -57,9 +57,7 @@ html_content = html_content.replace("35.7%", returns[7])   # Technology
 html_content = html_content.replace("38.9%", returns[8])   # Communications
 html_content = html_content.replace("19.6%", returns[9])   # Utilities
 html_content = html_content.replace("1.7%", returns[10])  # Real Estate
-
-# Replace the total return
-html_content = html_content.replace("23.7%", total_average_str)
+html_content = html_content.replace("23.7%", returns[11])  # Total S&P 500
 
 # Save the updated HTML locally
 with open(output_html, "w", encoding="utf-8") as file:
