@@ -3,7 +3,7 @@ from datetime import datetime
 from yfinance import Ticker
 
 # Define the stock symbols and the Excel file path
-stock_symbols = ["^GSPE", "^SP500-15", "^SP500-20", "^SP500-25", "^SP500-30", "^SP500-35", "^SP500-40", "^SP500-45", "^SP500-50", "^SP500-55", "^SP500-60"]
+stock_symbols = ["^GSPE", "^SP500-15", "^SP500-20", "^SP500-25", "^SP500-30", "^SP500-35", "^SP500-40", "^SP500-45", "^SP500-50", "^SP500-55", "^SP500-60", "^GSPC"]
 
 excel_file_path = './data/sectors.xlsx'
 
