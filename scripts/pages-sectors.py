@@ -43,7 +43,7 @@ with open(html_template, "r", encoding="utf-8") as file:
     html_content = file.read()
 
 # Replace the last update date
-html_content = html_content.replace("Jan 7, 2025", last_update_date)
+html_content = html_content.replace("Dec 31, 2024", last_update_date)
 
 # Replace the returns (with corrected order for Amazon and Meta)
 html_content = html_content.replace("2.3%", returns[0])  # Energy
