@@ -46,20 +46,20 @@ with open(html_template, "r", encoding="utf-8") as file:
 html_content = html_content.replace("Jan 7, 2025", last_update_date)
 
 # Replace the returns (with corrected order for Amazon and Meta)
-html_content = html_content.replace("-4.3%", returns[0])  # Energy
-html_content = html_content.replace("1.9%", returns[1])   # Materials
-html_content = html_content.replace("-0.1%", returns[2])  # Industrials
-html_content = html_content.replace("1.4%", returns[3])   # Cons. Discr.
-html_content = html_content.replace("0.4%", returns[5])   # Cons. Staples
-html_content = html_content.replace("3.3%", returns[4])   # Health Care
-html_content = html_content.replace("-5.4%", returns[6])  # Financials
-html_content = html_content.replace("0.1%", returns[7])   # Technology
-html_content = html_content.replace("0.3%", returns[8])   # Communications
-html_content = html_content.replace("0.5%", returns[9])   # Utilities
-html_content = html_content.replace("0.6%", returns[10])  # Real Estate
+html_content = html_content.replace("2.3%", returns[0])  # Energy
+html_content = html_content.replace("-1.8%", returns[1])   # Materials
+html_content = html_content.replace("15.6%", returns[2])  # Industrials
+html_content = html_content.replace("29.1%", returns[3])   # Cons. Discr.
+html_content = html_content.replace("12.0%", returns[5])   # Cons. Staples
+html_content = html_content.replace("0.9%", returns[4])   # Health Care
+html_content = html_content.replace("28.4%", returns[6])  # Financials
+html_content = html_content.replace("35.7%", returns[7])   # Technology
+html_content = html_content.replace("38.9%", returns[8])   # Communications
+html_content = html_content.replace("19.6%", returns[9])   # Utilities
+html_content = html_content.replace("1.7%", returns[10])  # Real Estate
 
 # Replace the total return
-html_content = html_content.replace("10.0%", total_average_str)
+html_content = html_content.replace("23.7%", total_average_str)
 
 # Save the updated HTML locally
 with open(output_html, "w", encoding="utf-8") as file:
