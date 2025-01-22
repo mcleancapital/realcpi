@@ -50,16 +50,15 @@ html_content = """
             font-size: 16px;
             font-weight: normal;
         }
-	img {
-            max-width: 250px; /* Set a maximum width for images */
-            height: auto; /* Maintain aspect ratio */
+        img {
+            max-width: 250px;
+            height: auto;
             display: block;
-            margin-bottom: 10px; /* Add spacing below the image */
+            margin-bottom: 10px;
         }
 
-	@media (max-width: 729px) {
-                        
-    	.mobile-menu {
+        @media (max-width: 729px) {
+            .mobile-menu {
                 display: flex;
                 justify-content: space-around;
                 position: fixed;
@@ -84,33 +83,29 @@ html_content = """
                 background-color: #e0e0e0;
             }
             body {
-                margin-top: 50px; /* Prevent content overlap with the fixed menu */
+                margin-top: 50px;
             }
-	}
+        }
 
-footer{
-	padding:var(--std_padding);
-	box-shadow:rgb(0 0 0 / 8%) 0 -1px 0;
-	text-align:center;
-	color:#717171;font-size:.75em}
+        footer {
+            padding: var(--std_padding);
+            box-shadow: rgb(0 0 0 / 8%) 0 -1px 0;
+            text-align: center;
+            color: #717171;
+            font-size: .75em;
+        }
 
-@media(min-width:730px){
-
-.mobile-menu {
-        display: none;
-    }
-
-footer{
-	display: none;
-    }
-}
-
+        @media(min-width:730px) {
+            .mobile-menu {
+                display: none;
+            }
+            footer {
+                display: none;
+            }
+        }
     </style>
 </head>
-
-
 <body>
-
 <div class="mobile-menu">
     <img src="/static/images/logo.jpg" alt="Real CPI Logo" height="30" />
     <a href="https://www.realcpi.org"><button id="data-button">Data</button></a>
@@ -143,6 +138,9 @@ for entry in feed.entries[:30]:  # Fetch the latest 30 articles
     # Fetch the image URL
     image_url = fetch_image_url(article_url)
 
+    # Use the `get` method to safely access the `summary` attribute with a default value
+    summary = entry.get('summary', 'No summary available.')
+
     # Add the article to the HTML, including the image if available
     html_content += f"""
         <li>
@@ -151,7 +149,7 @@ for entry in feed.entries[:30]:  # Fetch the latest 30 articles
                 <a href="{article_url}" target="_blank" rel="noopener noreferrer"><b>{entry.title}</b></a>
                 <p><i>Source:</i> CNBC</p>
             </h3>
-            <p>{entry.summary}</p>
+            <p>{summary}</p>
         </li>
     """
 
