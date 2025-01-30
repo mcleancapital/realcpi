@@ -16,8 +16,24 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
 }
 
+def convert_quarter_to_date(quarter_str):
+    """Convert 'Q1 2024' format to the last month of the quarter ('2024-03-31' for Q1)."""
+    quarter_map = {
+        "Q1": "03-31",  # March
+        "Q2": "06-30",  # June
+        "Q3": "09-30",  # September
+        "Q4": "12-31"   # December
+    }
+    
+    parts = quarter_str.split()
+    if len(parts) != 2 or parts[0] not in quarter_map or not parts[1].isdigit():
+        raise ValueError(f"Unexpected quarter format: {quarter_str}")
+
+    quarter, year = parts[0], parts[1]
+    return f"{year}-{quarter_map[quarter]}"
+
 def fetch_recent_cpi_data(url):
-    """Fetch the most recent CPI data from the YCharts page."""
+    """Fetch the most recent GDP growth rate from the YCharts page."""
     try:
         response = requests.get(url, headers=HEADERS)
         if response.status_code != 200:
@@ -31,20 +47,19 @@ def fetch_recent_cpi_data(url):
         cpi_text = cpi_element.get_text(strip=True)
         parts = cpi_text.split(maxsplit=2)
         if len(parts) < 2:
-            raise Exception("Unexpected format for CPI data.")
+            raise Exception("Unexpected format for GDP Growth data.")
 
-        recent_value = float(parts[0].replace('%', ''))  # Extract CPI value
-        recent_date_str = parts[2].replace("for ", "")  # Clean up the date
-        recent_date = datetime.strptime(recent_date_str, "%b %Y").strftime("%Y-%m-%d")  # Convert to YYYY-MM-DD format
+        recent_value = float(parts[0].replace('%', ''))  # Extract GDP Growth Rate
+        recent_date = convert_quarter_to_date(parts[2].replace("for ", ""))  # Convert to 'YYYY-MM-DD'
 
-        print(f"Fetched CPI data - Value: {recent_value}, Date: {recent_date}")
+        print(f"Fetched GDP Growth data - Value: {recent_value}, Date: {recent_date}")
         return recent_date, recent_value
     except Exception as e:
-        print(f"Error fetching CPI data: {e}")
+        print(f"Error fetching GDP Growth data: {e}")
         return None, None
 
 def update_excel(file_path, recent_date, recent_value):
-    """Update the Excel file with the most recent CPI data."""
+    """Update the Excel file with the most recent GDP Growth data."""
     try:
         # Check if the file exists
         if not os.path.exists(file_path):
@@ -71,12 +86,12 @@ def update_excel(file_path, recent_date, recent_value):
 
         # Insert a new row
         ws.insert_rows(2)
-        ws.cell(row=2, column=1, value=recent_date)  # Date
+        ws.cell(row=2, column=1, value=recent_date)  # Date (YYYY-MM-DD)
         ws.cell(row=2, column=2, value=recent_value)  # US Real GDP Growth Rate
 
         # Update formulas in column C for all rows
         for row in range(2, ws.max_row + 1):
-            ws.cell(row=row, column=3, value=f"=(B{row}/B{row+12}-1)*100")
+            ws.cell(row=row, column=3, value=f"=(B{row}/B{row+4}-1)*100")  # Adjusting formula for quarterly data
 
         print(f"Added new data - Date: {recent_date}, Value: {recent_value}, Updated formulas in column C.")
 
@@ -87,7 +102,7 @@ def update_excel(file_path, recent_date, recent_value):
         print(f"Error updating Excel file: {e}")
 
 if __name__ == "__main__":
-    # Fetch the most recent CPI data
+    # Fetch the most recent GDP Growth data
     recent_date, recent_value = fetch_recent_cpi_data(URL)
 
     # Update the Excel file if data is successfully fetched
