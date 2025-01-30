@@ -5,8 +5,8 @@ import re
 
 # Paths for the files
 excel_file = './data/us-real-gdp-growth-rate.xlsx'
-html_template = './us-real-gdp-growth-rate/index.html'
-output_html = './us-real-gdp-growth-rate/index.html'
+html_template = './us-gdp-real-growth-rate/index.html'
+output_html = './us-gdp-real-growth-rate/index.html'
 
 # Read Excel data
 data = pd.read_excel(excel_file, sheet_name="Data", engine="openpyxl")
