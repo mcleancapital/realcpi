@@ -2,7 +2,7 @@ name: Pages - Nonfarm Payrolls
 
 on:
   schedule:
-    - cron: "10 5 16 * *"  # Run on the 16th day of every month at 05:10 AM UTC
+    - cron: "10 5 10 * *"  # Run on the 10th day of every month at 05:10 AM UTC
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
