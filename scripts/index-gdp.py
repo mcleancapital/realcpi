@@ -63,7 +63,7 @@ def update_sp500_html(html_file, excel_file, output_file):
             return
 
         # Step 4: Locate the specific section for Home Prices 
-        print("Step 4: Updating the specific section for Real GDP Growth...")
+        print("Step 4: Updating the specific section for GDP Growth...")
         sp500_marker = '<a class=box href="/us-gdp-growth-rate">'
         marker_start = html_content.find(sp500_marker)
         if marker_start == -1:
