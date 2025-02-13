@@ -33,7 +33,7 @@ def fetch_recent_cpi_data(url):
         if len(parts) < 2:
             raise Exception("Unexpected format for CPI data.")
 
-        recent_value = float(parts[0])  # Extract TSI value
+        recent_value = float(parts[0].replace("%", ""))  # Extract TSI value
         recent_date_str = parts[2].replace("for ", "")  # Clean up the date
         recent_date = datetime.strptime(recent_date_str, "%b %Y").strftime("%Y-%m-%d")  # Convert to YYYY-MM-DD format
 
