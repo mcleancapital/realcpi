@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import datetime
+from openpyxl import load_workbook
 
 # Constants
 EXCEL_FILE_PATH = "./data/sp-500-pe.xlsx"
@@ -46,9 +47,9 @@ def fetch_latest_sp500_pe(url):
         return None, None
 
 def update_excel(file_path, latest_date, latest_value):
-    """Update Excel file with new data while handling monthly updates and formula updates."""
+    """Update Excel file with new data while handling monthly updates and inserting formulas correctly."""
     try:
-        # Load existing data or create a new DataFrame
+        # Load existing workbook or create a new one
         if os.path.exists(file_path):
             df = pd.read_excel(file_path)
         else:
@@ -72,17 +73,24 @@ def update_excel(file_path, latest_date, latest_value):
 
             print(f"Added new data: {latest_date}, Value: {latest_value}")
 
-        # Update formulas for column 3 (% Change vs Last Year)
-        for i in range(len(df)):
-            if i + 12 < len(df):  # Ensure there's data from 12 months ago
-                df.at[i, "% Change vs Last Year"] = f"=((B{i+2}/B{i+14})-1)*100)"
-            else:
-                df.at[i, "% Change vs Last Year"] = None  # No data to compare
-
-        # Save to Excel
+        # Save the updated DataFrame to Excel without formulas
         df.to_excel(file_path, index=False)
 
-        print(f"Excel file updated successfully: {file_path}")
+        # Reopen Excel file using openpyxl to insert formulas
+        wb = load_workbook(file_path)
+        ws = wb.active  # Get first sheet
+
+        # Insert formulas in Column C
+        for i in range(2, ws.max_row + 1):  # Start from row 2 (skip headers)
+            if i + 12 <= ws.max_row:  # Ensure 12 months exist
+                ws[f"C{i}"] = f"=((B{i}/B{i+12})-1)*100"
+            else:
+                ws[f"C{i}"] = None  # No formula if not enough data
+
+        # Save the Excel file with formulas
+        wb.save(file_path)
+        print(f"Excel file updated successfully with formulas: {file_path}")
+
     except Exception as e:
         print(f"Error updating Excel file: {e}")
 
