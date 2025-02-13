@@ -7,6 +7,7 @@ from openpyxl import load_workbook
 
 # Constants
 EXCEL_FILE_PATH = "./data/sp-500-pe.xlsx"
+SHEET_NAME = "Data"  # Ensure the sheet is always named "Data"
 URL = "https://www.multpl.com/s-p-500-pe-ratio/table/by-month"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
@@ -47,11 +48,11 @@ def fetch_latest_sp500_pe(url):
         return None, None
 
 def update_excel(file_path, latest_date, latest_value):
-    """Update Excel file with new data while handling monthly updates and inserting formulas correctly."""
+    """Update Excel file with new data while ensuring formulas and sheet name are correct."""
     try:
         # Load existing workbook or create a new one
         if os.path.exists(file_path):
-            df = pd.read_excel(file_path)
+            df = pd.read_excel(file_path, sheet_name=SHEET_NAME)
         else:
             df = pd.DataFrame(columns=["Date", "Value", "% Change vs Last Year"])
 
@@ -73,12 +74,17 @@ def update_excel(file_path, latest_date, latest_value):
 
             print(f"Added new data: {latest_date}, Value: {latest_value}")
 
-        # Save the updated DataFrame to Excel without formulas
-        df.to_excel(file_path, index=False)
+        # Save the updated DataFrame to Excel
+        with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
+            df.to_excel(writer, sheet_name=SHEET_NAME, index=False)
 
         # Reopen Excel file using openpyxl to insert formulas
         wb = load_workbook(file_path)
-        ws = wb.active  # Get first sheet
+        if SHEET_NAME not in wb.sheetnames:
+            ws = wb.active
+            ws.title = SHEET_NAME
+        else:
+            ws = wb[SHEET_NAME]
 
         # Insert formulas in Column C
         for i in range(2, ws.max_row + 1):  # Start from row 2 (skip headers)
@@ -89,7 +95,7 @@ def update_excel(file_path, latest_date, latest_value):
 
         # Save the Excel file with formulas
         wb.save(file_path)
-        print(f"Excel file updated successfully with formulas: {file_path}")
+        print(f"Excel file updated successfully with formulas in sheet '{SHEET_NAME}': {file_path}")
 
     except Exception as e:
         print(f"Error updating Excel file: {e}")
