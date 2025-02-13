@@ -30,7 +30,7 @@ def fetch_latest_sp500_pe(url):
             raise Exception("Unexpected data format.")
 
         latest_date = latest_data[0].text.strip()
-        latest_value = float(latest_data[1].text.strip())
+        latest_value = float(latest_data[1].text.strip().replace("†", "").replace("\n", ""))
 
         # Convert date to YYYY-MM-DD format
         latest_date = datetime.strptime(latest_date, "%b %d, %Y").strftime("%Y-%m-%d")
