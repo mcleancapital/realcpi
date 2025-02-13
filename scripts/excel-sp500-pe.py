@@ -29,8 +29,12 @@ def fetch_latest_sp500_pe(url):
         if len(latest_data) < 2:
             raise Exception("Unexpected data format.")
 
+        # Extract and clean the date
         latest_date = latest_data[0].text.strip()
-        latest_value = float(latest_data[1].text.strip().replace("†", "").replace("\n", ""))
+        latest_value_str = latest_data[1].text.strip().replace("†", "").replace("\n", "").strip()
+
+        # Convert the value to a float
+        latest_value = float(latest_value_str)
 
         # Convert date to YYYY-MM-DD format
         latest_date = datetime.strptime(latest_date, "%b %d, %Y").strftime("%Y-%m-%d")
@@ -42,7 +46,7 @@ def fetch_latest_sp500_pe(url):
         return None, None
 
 def update_excel(file_path, latest_date, latest_value):
-    """Update Excel file with new data while handling monthly updates."""
+    """Update Excel file with new data while handling monthly updates and formula updates."""
     try:
         # Load existing data or create a new DataFrame
         if os.path.exists(file_path):
@@ -50,27 +54,34 @@ def update_excel(file_path, latest_date, latest_value):
         else:
             df = pd.DataFrame(columns=["Date", "Value", "% Change vs Last Year"])
 
-        # Convert 'Date' column to datetime
-        df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+        # Convert 'Date' column to datetime and normalize (removes time part)
+        df["Date"] = pd.to_datetime(df["Date"], errors='coerce').dt.normalize()
 
-        # Check if latest_date already exists in the file
-        if not df.empty and df.iloc[0]["Date"].strftime("%Y-%m-%d") == latest_date:
+        # Convert `latest_date` to datetime and normalize it
+        latest_date_dt = pd.to_datetime(latest_date).normalize()
+
+        # Check if the latest date is already present
+        if not df.empty and df.iloc[0]["Date"] == latest_date_dt:
             print("Latest date already exists. Updating value instead of inserting new row.")
             df.at[0, "Value"] = latest_value
         else:
-            # Calculate % Change vs Last Year
-            last_year_date = (datetime.strptime(latest_date, "%Y-%m-%d").replace(year=datetime.strptime(latest_date, "%Y-%m-%d").year - 1)).strftime("%Y-%m-%d")
-            last_year_value = df[df["Date"] == last_year_date]["Value"].values
-            percent_change = ((latest_value - last_year_value[0]) / last_year_value[0]) * 100 if len(last_year_value) > 0 else None
-
             # Insert new row at the top
-            new_row = pd.DataFrame([[latest_date, latest_value, percent_change]], columns=["Date", "Value", "% Change vs Last Year"])
+            new_row = pd.DataFrame([[latest_date_dt, latest_value, None]], 
+                                   columns=["Date", "Value", "% Change vs Last Year"])
             df = pd.concat([new_row, df], ignore_index=True)
 
-            print(f"Added new data: {latest_date}, Value: {latest_value}, % Change vs Last Year: {percent_change}")
+            print(f"Added new data: {latest_date}, Value: {latest_value}")
+
+        # Update formulas for column 3 (% Change vs Last Year)
+        for i in range(len(df)):
+            if i + 12 < len(df):  # Ensure there's data from 12 months ago
+                df.at[i, "% Change vs Last Year"] = f"=((B{i+2}/B{i+14})-1)*100)"
+            else:
+                df.at[i, "% Change vs Last Year"] = None  # No data to compare
 
         # Save to Excel
         df.to_excel(file_path, index=False)
+
         print(f"Excel file updated successfully: {file_path}")
     except Exception as e:
         print(f"Error updating Excel file: {e}")
