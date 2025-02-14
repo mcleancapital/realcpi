@@ -26,12 +26,17 @@
     </style>
 </head>
 <body>
+
+    <header>
+        <img src="https://www.realcpi.org/logo.png" alt="Real CPI Logo" style="max-width: 200px;">
+        <h1>S&P 500 Investment Calculator</h1>
+    </header>
+    
     <div class="container">
-        <h2>S&P 500 Investment Calculator</h2>
         <label for="investment">Amount Invested ($):</label>
         <input type="number" id="investment" placeholder="Enter amount">
         
-        <label for="year">Starting Year:</label>
+        <label for="year">Starting Year (January 1):</label>
         <select id="year"></select>
         
         <button onclick="calculateInvestment()">Calculate</button>
@@ -122,7 +127,7 @@
                     finalAmount *= (1 + returns[year]);
                 }
             }
-            document.getElementById("result").textContent = `Final Value: $${finalAmount.toFixed(2)}`;
+            document.getElementById("result").textContent = `Final Value (December 31, 2024): $${finalAmount.toFixed(2)}`;
         }
     </script>
 </body>
