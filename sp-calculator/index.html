@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3345310399251053"
+     crossorigin="anonymous"></script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-97F7RYQNKC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-97F7RYQNKC');
+</script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S&P 500 Investment Calculator</title>
@@ -28,7 +41,9 @@
 <body>
 
     <header>
-        <img src="https://www.realcpi.org/static/images/logo.jpg" alt="Real CPI Logo" style="max-width: 200px;">
+        <a id="logo" href="/">
+            <img src="https://www.realcpi.org/static/images/logo.jpg" alt="Real CPI Logo" style="max-width: 200px;">
+        </a>
         <h1>S&P 500 Investment Calculator</h1>
     </header>
     
@@ -127,8 +142,23 @@
                     finalAmount *= (1 + returns[year]);
                 }
             }
-            document.getElementById("result").textContent = `Final Value (December 31, 2024):<br>$${Math.round(finalAmount).toLocaleString()}`;
+            document.getElementById("result").textContent = `Final Value (December 31, 2024):$${Math.round(finalAmount).toLocaleString()}`;
         }
     </script>
+
+<a href="/">Go back to Real CPI</a>
+
+<footer>
+This information is provided for informational purposes only. This is not for advice.
+<br><br>
+Please let us know if you have any suggestions, including data series or metrics we could add to Real CPI.
+<br><br>
+Copyright © 2024
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<a href="mailto:contact@realcpi.org">contact@realcpi.org</a>
+</footer>
 </body>
 </html>
