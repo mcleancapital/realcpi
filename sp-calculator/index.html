@@ -127,7 +127,7 @@
                     finalAmount *= (1 + returns[year]);
                 }
             }
-            document.getElementById("result").textContent = `Final Value (December 31, 2024): $${finalAmount.toFixed(2)}`;
+            document.getElementById("result").textContent = `Final Value (December 31, 2024):<br>$${Math.round(finalAmount).toLocaleString()}`;
         }
     </script>
 </body>
