@@ -49,7 +49,7 @@ def fetch_recent_cpi_data(url):
         if len(parts) < 2:
             raise Exception("Unexpected format for GDP Growth data.")
 
-        recent_value = float(parts[0].replace('T USD', ''))  # Extract GDP Growth Rate
+        recent_value = float(parts[0].replace('T', ''))  # Extract GDP Growth Rate
         recent_date = convert_quarter_to_date(parts[2].replace("for ", ""))  # Convert to 'YYYY-MM-DD'
 
         print(f"Fetched GDP Growth data - Value: {recent_value}, Date: {recent_date}")
