@@ -89,6 +89,9 @@ for entry in feed.entries[:15]:  # Fetch the latest 15 articles
     # Fetch the image URL
     image_url = fetch_image_url(article_url)
 
+    # Ensure the image URL is properly formatted to prevent '&' encoding issues
+    image_url = image_url.replace("&", "&amp;") if image_url else None
+
     # Add the article to the HTML, including the image if available
     html_content += f"""
         <li>
