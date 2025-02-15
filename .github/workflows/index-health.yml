@@ -1,8 +1,6 @@
 name: Index.html - Update Healthcare
 
 on:
-  schedule:
-    - cron: '10 1 4 2,5,8,11 *'  # Runs at 01:10 UTC on the 4th day of Feb, May, Aug, Nov
   workflow_dispatch:        # Allow manual triggering
 
 permissions:
