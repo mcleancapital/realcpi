@@ -34,7 +34,8 @@ def fetch_recent_cpi_data(url):
             raise Exception("Unexpected format for GDP Growth data.")
 
         recent_value = float(parts[0].replace('%', ''))  # Extract GDP Growth Rate
-        recent_date = datetime.strptime(parts[2].replace("for ", ""), "%B %Y").strftime("%Y-%m-01")  # Convert to 'YYYY-MM-DD' (first day of month)
+        recent_date_str = parts[2].replace("for ", "")  # Clean up the date
+        recent_date = datetime.strptime(recent_date_str, "%b %Y").strftime("%Y-%m-%d")  # Convert to YYYY-MM-DD format
 
         print(f"Fetched GDP Growth data - Value: {recent_value}, Date: {recent_date}")
         return recent_date, recent_value
