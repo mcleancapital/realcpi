@@ -1,8 +1,6 @@
 name: Excel - Healthcare
 
 on:
-  schedule:
-    - cron: '0 1 4 2,5,8,11 *'  # Runs at 01:00 UTC on the 4th day of Feb, May, Aug, Nov
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
