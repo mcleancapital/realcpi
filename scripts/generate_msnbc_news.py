@@ -108,7 +108,7 @@ html_content += """
 """
 
 # Save the HTML file
-output_file = "news_msnbc.html"
+output_file = "news2.html"
 with open(output_file, "w", encoding="utf-8") as file:
     file.write(html_content)
 
