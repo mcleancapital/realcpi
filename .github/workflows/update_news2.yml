@@ -1,4 +1,4 @@
-name: Update CNBC News
+name: Update MSNBC News
 
 on:
   schedule:
