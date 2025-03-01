@@ -50,7 +50,7 @@ html_content = """
             font-weight: normal;
         }
         img {
-            max-width: 250px; /* Set a maximum width for images */
+            max-width: 325px; /* Set a maximum width for images */
             height: auto; /* Maintain aspect ratio */
             display: block;
             margin-bottom: 10px; /* Add spacing below the image */
