@@ -15,7 +15,7 @@ html_content = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Business News</title>
+    <title>Top News</title>
     <style>
         body {
             font-family: garamond, sans-serif;
