@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from yahoo_fin.stock_info import get_data
+from alpha_vantage.timeseries import TimeSeries
 from openpyxl import load_workbook
 from datetime import datetime
 
