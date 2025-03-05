@@ -36,7 +36,7 @@ def fetch_latest_sp500_pe(url):
         latest_value_str = latest_data[1].text.strip().replace("†", "").replace("\n", "").strip()
 
         # Convert the value to a float
-        latest_value = float(latest_value_str)
+        latest_value = float(latest_value_str.replace(",", ""))
 
         # Convert date to YYYY-MM-DD format
         latest_date = datetime.strptime(latest_date, "%b %d, %Y").strftime("%Y-%m-%d")
