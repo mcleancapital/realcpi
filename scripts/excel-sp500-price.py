@@ -6,7 +6,7 @@ from datetime import datetime
 from openpyxl import load_workbook
 
 # Constants
-EXCEL_FILE_PATH = "./data/sp-500-pe.xlsx"
+EXCEL_FILE_PATH = "./data/sp-500-prices.xlsx"
 SHEET_NAME = "Data"  # Ensure the sheet is always named "Data"
 URL = "https://www.multpl.com/s-p-500-historical-prices/table/by-month"
 HEADERS = {
