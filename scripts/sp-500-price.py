@@ -8,16 +8,20 @@ from datetime import datetime
 EXCEL_FILE_PATH = './data/sp-500-prices.xlsx'
 
 def fetch_recent_sp500_data():
-    """Fetch the most recent S&P 500 data (date and price) from Yahoo Finance."""
     try:
-        # Get historical data
-        data = get_data("^GSPC", start_date="2024-01-01")
-        recent_date = data.index[-1].date()  # Most recent date
-        recent_price = data['close'][-1]    # Most recent closing price
+        ts = TimeSeries(key="J4KBSZ8GP0PFVR3R", output_format="pandas")
+        data, meta_data = ts.get_daily(symbol="SPX", outputsize="compact")
+
+        # Ensure data isn't empty
+        if data.empty:
+            raise ValueError("No data returned from Alpha Vantage.")
+
+        recent_date = data.index[-1].date()
+        recent_price = data["4. close"][-1]
         print(f"Fetched data - Date: {recent_date}, Price: {recent_price}")
         return recent_date, recent_price
     except Exception as e:
-        print(f"Error fetching recent S&P 500 data: {e}")
+        print(f"Error fetching S&P 500 data: {e}")
         return None, None
 
 def update_excel(file_path, recent_date, recent_price):
