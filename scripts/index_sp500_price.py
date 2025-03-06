@@ -6,6 +6,22 @@ def update_sp500_html(html_file, excel_file, output_file):
         print("Step 1: Reading Excel file...")
         # Read the Excel file
         df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value"], header=0)
+
+        # Calculate "B2 / B14 - 1" (assuming row indices 1 and 13 correspond to B2 and B14)
+        try:
+            # Ensure that B2 is the first available "first-of-month" value
+            b2_row = df[df["Date"].dt.day == 1].iloc[0]  # First row where day is 1
+            b14_row = df[df["Date"].dt.day == 1].iloc[12]  # 12 months before
+
+            b2 = b2_row["Value"]
+            b14 = b14_row["Value"]
+
+            percentage_change = (b2 / b14 - 1) * 100
+
+            formatted_percentage = f" (+{percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
+        except Exception as e:
+            print(f"Error calculating percentage change: {e}")
+            formatted_percentage = ""
         
         # Drop rows where 'Date' or 'Value' is missing
         df = df.dropna(subset=["Date", "Value"])
@@ -39,22 +55,6 @@ def update_sp500_html(html_file, excel_file, output_file):
         # Format the date into "4:00 PM EST, Fri Dec 13" format
         formatted_date = most_recent_date.strftime("4:00 PM EST, %a %b %d")
         formatted_value = f"{most_recent_value:,.2f}"
-        
-        # Calculate "B2 / B14 - 1" (assuming row indices 1 and 13 correspond to B2 and B14)
-        try:
-            # Ensure that B2 is the first available "first-of-month" value
-            b2_row = df[df["Date"].dt.day == 1].iloc[0]  # First row where day is 1
-            b14_row = df[df["Date"].dt.day == 1].iloc[12]  # 12 months before
-
-            b2 = b2_row["Value"]
-            b14 = b14_row["Value"]
-
-            percentage_change = (b2 / b14 - 1) * 100
-
-            formatted_percentage = f" (+{percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
-        except Exception as e:
-            print(f"Error calculating percentage change: {e}")
-            formatted_percentage = ""
         
         # Append percentage change to the value
         formatted_value += formatted_percentage
