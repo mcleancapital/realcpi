@@ -26,7 +26,7 @@ jobs:
       # Step 3: Install dependencies
       - name: Install dependencies
         run: |
-          pip install pandas openpyxl
+          pip install pandas openpyxl beautifulsoup4 requests
 
       # Step 4: Run the update script
       - name: Run the update script
