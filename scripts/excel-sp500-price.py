@@ -33,7 +33,7 @@ def fetch_latest_sp500_pe(url):
 
         # Extract and clean the date
         latest_date = latest_data[0].text.strip()
-        latest_value_str = latest_data[1].text.strip().replace("†", "").replace("\n", "").strip()
+        latest_value_str = latest_data[1].text.strip().replace("\u2020", "").replace("\n", "").strip()
 
         # Convert the value to a float
         latest_value = float(latest_value_str.replace(",", ""))
@@ -71,6 +71,11 @@ def update_excel(file_path, latest_date, latest_value):
             new_row = pd.DataFrame([[latest_date_dt, latest_value, None]], 
                                    columns=["Date", "Value", "% Change vs Last Year"])
             df = pd.concat([new_row, df], ignore_index=True)
+
+            # Check if the last row is NOT the first day of the month, and delete it
+            if len(df) > 1 and df.iloc[-1]["Date"].day != 1:
+                print(f"Deleting last row because {df.iloc[-1]['Date']} is not the first of the month.")
+                df = df.iloc[:-1]  # Remove last row
 
             print(f"Added new data: {latest_date}, Value: {latest_value}")
 
