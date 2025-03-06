@@ -42,8 +42,8 @@ def update_sp500_html(html_file, excel_file, output_file):
         
         # Calculate "B2 / B14 - 1" (assuming row indices 1 and 13 correspond to B2 and B14)
         try:
-            b2 = df.iloc[1, 1]  # Second row, 'Value' column
-            b14 = df.iloc[13, 1]  # Fourteenth row, 'Value' column
+            b2 = df.iloc[1]["Value"]  # Second row, 'Value' column
+            b14 = df.iloc[13]["Value"]  # Fourteenth row, 'Value' column
             percentage_change = (b2 / b14 - 1) * 100
             formatted_percentage = f" (+{percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
         except Exception as e:
