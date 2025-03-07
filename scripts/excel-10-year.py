@@ -48,13 +48,13 @@ def fetch_latest_sp500_pe(url):
         return None, None
 
 def update_excel(file_path, latest_date, latest_value):
-    """Update Excel file with new data while ensuring formulas and sheet name are correct."""
+    """Update Excel file with new data while ensuring sheet name is correct."""
     try:
         # Load existing workbook or create a new one
         if os.path.exists(file_path):
             df = pd.read_excel(file_path, sheet_name=SHEET_NAME)
         else:
-            df = pd.DataFrame(columns=["Date", "Value", "% Change vs Last Year"])
+            df = pd.DataFrame(columns=["Date", "Value"])
 
         # Convert 'Date' column to datetime and normalize (removes time part)
         df["Date"] = pd.to_datetime(df["Date"], errors='coerce').dt.normalize()
@@ -68,8 +68,8 @@ def update_excel(file_path, latest_date, latest_value):
             df.at[0, "Value"] = latest_value
         else:
             # Insert new row at the top
-            new_row = pd.DataFrame([[latest_date_dt, latest_value, None]], 
-                                   columns=["Date", "Value", "% Change vs Last Year"])
+            new_row = pd.DataFrame([[latest_date_dt, latest_value]], 
+                                   columns=["Date", "Value"])
             df = pd.concat([new_row, df], ignore_index=True)
 
             print(f"Added new data: {latest_date}, Value: {latest_value}")
@@ -78,24 +78,7 @@ def update_excel(file_path, latest_date, latest_value):
         with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
             df.to_excel(writer, sheet_name=SHEET_NAME, index=False)
 
-        # Reopen Excel file using openpyxl to insert formulas
-        wb = load_workbook(file_path)
-        if SHEET_NAME not in wb.sheetnames:
-            ws = wb.active
-            ws.title = SHEET_NAME
-        else:
-            ws = wb[SHEET_NAME]
-
-        # Insert formulas in Column C
-        for i in range(2, ws.max_row + 1):  # Start from row 2 (skip headers)
-            if i + 12 <= ws.max_row:  # Ensure 12 months exist
-                ws[f"C{i}"] = f"=((B{i}/B{i+12})-1)*100"
-            else:
-                ws[f"C{i}"] = None  # No formula if not enough data
-
-        # Save the Excel file with formulas
-        wb.save(file_path)
-        print(f"Excel file updated successfully with formulas in sheet '{SHEET_NAME}': {file_path}")
+        print(f"Excel file updated successfully in sheet '{SHEET_NAME}': {file_path}")
 
     except Exception as e:
         print(f"Error updating Excel file: {e}")
