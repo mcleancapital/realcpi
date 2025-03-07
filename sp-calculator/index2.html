@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3345310399251053"
+     crossorigin="anonymous"></script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-97F7RYQNKC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-97F7RYQNKC');
+</script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S&P 500 Investment Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        input, select, button {
+            margin: 10px;
+            padding: 10px;
+            width: 90%;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a id="logo" href="/">
+            <img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" style="padding: 10px;" />
+        </a>
+
+    <nav class="menu-bar">
+        <ul>
+            <li><a href="/">Daily Data</a></li>
+            <li><a href="stocks.html">Stock Market</a></li>
+            <li><a href="realestate.html">Real Estate</a></li>
+            <li><a href="economy.html">Economic Dashboard</a></li>
+            <li><a href="https://tradingeconomics.com/commodities" target="_blank" rel="noopener noreferrer">Commodities</a></li>
+            <li><a href="/sp-calculator">S&P 500 Calculator</a></li>
+            <li><a href="sectors.html">S&P 500 Sectors</a></li>
+            <li><a href="https://ca.finance.yahoo.com/currency-converter/" target="_blank" rel="noopener noreferrer">Currency Converter</a></li>
+        </ul>
+    </nav>
+      
+        <h1>S&P 500 Investment Calculator</h1>
+    </header>
+    
+    <div class="container">
+        <label for="investment">Amount Invested ($):</label>
+        <input type="number" id="investment" placeholder="Enter amount">
+        
+        <label for="year">Starting Year (January 1):</label>
+        <select id="year"></select>
+        
+        <button onclick="calculateInvestment()">Calculate</button>
+        <h3 id="result"></h3>
+    </div>
+
+    <script>
+        const returns = {
+            2024.0: 0.2502,
+            2023.0: 0.26289999999999997,
+            2022.0: -0.18109999999999998,
+            2021.0: 0.2871,
+            2020.0: 0.184,
+            2019.0: 0.31489999999999996,
+            2018.0: -0.0438,
+            2017.0: 0.2183,
+            2016.0: 0.11960000000000001,
+            2015.0: 0.0138,
+            2014.0: 0.1369,
+            2013.0: 0.3239,
+            2012.0: 0.16,
+            2011.0: 0.021099999999999997,
+            2010.0: 0.1506,
+            2009.0: 0.2646,
+            2008.0: -0.37,
+            2007.0: 0.054900000000000004,
+            2006.0: 0.15789999999999998,
+            2005.0: 0.049100000000000005,
+            2004.0: 0.10880000000000001,
+            2003.0: 0.2868,
+            2002.0: -0.221,
+            2001.0: -0.1188,
+            2000.0: -0.09,
+            1999.0: 0.2103,
+            1998.0: 0.2816,
+            1997.0: 0.3374,
+            1996.0: 0.2268,
+            1995.0: 0.3762,
+            1994.0: 0.0132,
+            1993.0: 0.1077,
+            1992.0: 0.0752,
+            1991.0: 0.3023,
+            1990.0: -0.031,
+            1989.0: 0.3169,
+            1988.0: 0.1681,
+            1987.0: 0.0523,
+            1986.0: 0.1888,
+            1985.0: 0.3193,
+            1984.0: 0.0613,
+            1983.0: 0.2256,
+            1982.0: 0.2166,
+            1981.0: -0.0491,
+            1980.0: 0.3227,
+            1979.0: 0.1816,
+            1978.0: 0.0656,
+            1977.0: -0.0718,
+            1976.0: 0.2383,
+            1975.0: 0.3720,
+            1974.0: -0.2615,
+            1973.0: -0.1466,
+            1972.0: 0.1898,
+            1971.0: 0.1431,
+            1970.0: 0.0385,
+            1969.0: -0.0850,
+            1968.0: 0.1106,
+            1967.0: 0.2398,
+            1966.0: -0.1006,
+            1965.0: 0.1245,
+            1964.0: 0.1648,
+            1963.0: 0.228,
+            1962.0: -0.0873,
+            1961.0: 0.2689,
+            1960.0: 0.0047,
+            1959.0: 0.1196,
+            1958.0: 0.4336,
+            1957.0: -0.1078,
+            1956.0: 0.0656,
+            1955.0: 0.3156,
+            1954.0: 0.5262,
+            1953.0: -0.0099,
+            1952.0: 0.1837,
+            1951.0: 0.2402,
+            1950.0: 0.3171,
+            1949.0: 0.1879,
+            1948.0: 0.0550,
+            1947.0: 0.0571,
+            1946.0: -0.0807,
+            1945.0: 0.3644,
+            1944.0: 0.1975,
+            1943.0: 0.2590,
+            1942.0: 0.2034,
+            1941.0: -0.1159,
+            1940.0: -0.0978,
+            1939.0: -0.0041,
+            1938.0: 0.3112,
+            1937.0: -0.3503,
+            1936.0: 0.3392,
+            1935.0: 0.4767,
+            1934.0: -0.0144,
+            1933.0: 0.5399,
+            1932.0: -0.0819,
+            1931.0: -0.4334,
+            1930.0: -0.2490,
+            1929.0: -0.0842,
+            1928.0: 0.4361,
+            1927.0: 0.3749,
+            1926.0: 0.1162
+        };
+        
+        window.onload = function() {
+            let yearSelect = document.getElementById("year");
+            for (let year = 1926; year <= 2024; year++) {
+                let option = document.createElement("option");
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+        };
+        
+        function calculateInvestment() {
+            let investment = parseFloat(document.getElementById("investment").value);
+            let startYear = parseInt(document.getElementById("year").value);
+            if (isNaN(investment) || investment <= 0) {
+                alert("Please enter a valid investment amount.");
+                return;
+            }
+            
+            let finalAmount = investment;
+            for (let year = startYear; year <= 2024; year++) {
+                if (returns[year] !== undefined) {
+                    finalAmount *= (1 + returns[year]);
+                }
+            }
+            document.getElementById("result").innerHTML = `Final Value (December 31, 2024):<br><br><br>$${Math.round(finalAmount).toLocaleString()}`;
+        }
+    </script>
+<br><br><br><br>
+<a href="/">Go back to Real CPI</a>
+<br><br><br><br>
+<footer>
+This information is provided for informational purposes only. This is not for advice.
+<br><br>
+Please let us know if you have any suggestions, including data series or metrics we could add to Real CPI.
+<br><br>
+Copyright © 2024
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<a href="mailto:contact@realcpi.org">contact@realcpi.org</a>
+</footer>
+</body>
+</html>
