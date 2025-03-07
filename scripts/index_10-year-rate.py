@@ -5,10 +5,26 @@ def update_sp500_html(html_file, excel_file, output_file):
     try:
         print("Step 1: Reading Excel file...")
         # Read the Excel file
-        df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value", "% Change vs Last Year"], header=0)
+        df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value"], header=0)
 
-        # Drop rows where 'Date', 'Value', or '% Change vs Last Year' is missing
-        df = df.dropna(subset=["Date", "Value", "% Change vs Last Year"])
+        # Calculate "B2 / B14 - 1" (assuming row indices 1 and 13 correspond to B2 and B14)
+        try:
+            # Ensure that B2 is the first available "first-of-month" value
+            b2_row = df[df["Date"].dt.day == 1].iloc[0]  # First row where day is 1
+            b14_row = df[df["Date"].dt.day == 1].iloc[12]  # 12 months before
+
+            b2 = b2_row["Value"]
+            b14 = b14_row["Value"]
+
+            percentage_change = (b2 / b14 - 1) * 100
+
+            formatted_percentage = f" (+{percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
+        except Exception as e:
+            print(f"Error calculating percentage change: {e}")
+            formatted_percentage = ""
+        
+        # Drop rows where 'Date' or 'Value' is missing
+        df = df.dropna(subset=["Date", "Value"])
 
         # Convert 'Date' to datetime
         df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
@@ -32,15 +48,16 @@ def update_sp500_html(html_file, excel_file, output_file):
         # Combine the formatted array with the required suffix
         formatted_data = f"[[{formatted_dates}], [{formatted_values}], null, null, '%', 0, []]"
 
-        # Get the most recent date, value, and "% Change vs Last Year"
+        # Get the most recent date and value
         most_recent_date = df.iloc[-1]["Date"]
         most_recent_value = df.iloc[-1]["Value"]
-        most_recent_change = df.iloc[-1]["% Change vs Last Year"]
 
-        # Format the date, value, and change
+        # Format the date into "4:00 PM EST, Fri Dec 13" format
         formatted_date = most_recent_date.strftime("4:00 PM EST, %a %b %d")
-        formatted_value = f"{most_recent_value:,.2f}%"
-        formatted_change = f"({most_recent_change:,.2f}% vs last year)"
+        formatted_value = f"{most_recent_value:,.2f}"
+        
+        # Append percentage change to the value
+        formatted_value += formatted_percentage
 
         print("Step 2: Reading HTML file...")
         # Read the HTML content
@@ -64,12 +81,12 @@ def update_sp500_html(html_file, excel_file, output_file):
             print(f"Data section marker '{data_marker}' not found in HTML.")
             return
 
-        # Step 4: Locate the specific section for 10-Year Treasury Rate
-        print("Step 4: Updating the specific section for 10-Year Treasury Rate...")
+        # Step 4: Locate the specific section for S&P 500 Historical Prices
+        print("Step 4: Updating the specific section for S&P 500 Historical Prices...")
         sp500_marker = '<a class=box href="/10-year-treasury-rate">'
         marker_start = html_content.find(sp500_marker)
         if marker_start == -1:
-            print("Marker for 10-Year Treasury Rate not found in the HTML.")
+            print("Marker for S&P 500 Historical Prices not found in the HTML.")
             return
 
         # Locate the end of this section
@@ -79,14 +96,9 @@ def update_sp500_html(html_file, excel_file, output_file):
         # Update the value <div> within this section
         value_start = section_content.find("<div>", section_content.find("<h3>")) + 5
         value_end = section_content.find("</div>", value_start)
-
-        # Combine the updated value and change
-        updated_value = f"{formatted_value} {formatted_change}"
-
-        # Update the section with the new value
         updated_section = (
             section_content[:value_start] +
-            updated_value +
+            formatted_value +
             section_content[value_end:]
         )
 
