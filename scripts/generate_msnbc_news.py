@@ -2,7 +2,7 @@ import feedparser
 from bs4 import BeautifulSoup
 import requests
 
-# MSNBC Business News RSS Feed URL
+# MSNBC News RSS Feed URL
 RSS_FEED_URL = "https://www.msnbc.com/feeds/latest"
 
 # Parse the RSS feed
@@ -59,7 +59,7 @@ html_content = """
 </head>
 <body>
     <div id="news-section">
-        <h2>Top Business News</h2>
+        <h2>Top News</h2>
         <ul>
 """
 
