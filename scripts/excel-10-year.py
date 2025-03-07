@@ -62,17 +62,24 @@ def update_excel(file_path, latest_date, latest_value):
         # Convert `latest_date` to datetime and normalize it
         latest_date_dt = pd.to_datetime(latest_date).normalize()
 
-        # Check if the latest date is already present
+        # Check if the latest date is the 1st of the month
+        is_first_of_month = latest_date_dt.day == 1
+
+        # If the latest date already exists, update the first row
         if not df.empty and df.iloc[0]["Date"] == latest_date_dt:
             print("Latest date already exists. Updating value instead of inserting new row.")
             df.at[0, "Value"] = latest_value
-        else:
-            # Insert new row at the top
+        elif is_first_of_month:
+            # Insert new row at the top only if it's the first of the month
             new_row = pd.DataFrame([[latest_date_dt, latest_value]], 
                                    columns=["Date", "Value"])
             df = pd.concat([new_row, df], ignore_index=True)
-
             print(f"Added new data: {latest_date}, Value: {latest_value}")
+        else:
+            # Update the most recent row if new data is not the 1st of the month
+            print("Latest data is not from the 1st of the month. Updating most recent row instead.")
+            df.at[0, "Date"] = latest_date_dt
+            df.at[0, "Value"] = latest_value
 
         # Save the updated DataFrame to Excel
         with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
