@@ -52,33 +52,33 @@ def update_excel(file_path, latest_date, latest_value):
     try:
         # Load existing workbook or create a new one
         if os.path.exists(file_path):
-            df = pd.read_excel(file_path, sheet_name=SHEET_NAME)
+            df = pd.read_excel(file_path, sheet_name=SHEET_NAME, dtype={"Date": str})
         else:
             df = pd.DataFrame(columns=["Date", "Value"])
 
-        # Convert 'Date' column to datetime and normalize (removes time part)
-        df["Date"] = pd.to_datetime(df["Date"], errors='coerce').dt.normalize()
+        # Convert 'Date' column to string format YYYY-MM-DD
+        df["Date"] = pd.to_datetime(df["Date"], errors='coerce').dt.strftime("%Y-%m-%d")
 
-        # Convert `latest_date` to datetime and normalize it
-        latest_date_dt = pd.to_datetime(latest_date).normalize()
+        # Ensure `latest_date` is also in YYYY-MM-DD format
+        latest_date_str = datetime.strptime(latest_date, "%Y-%m-%d").strftime("%Y-%m-%d")
 
         # Check if the latest date is the 1st of the month
-        is_first_of_month = latest_date_dt.day == 1
+        is_first_of_month = datetime.strptime(latest_date, "%Y-%m-%d").day == 1
 
         # If the latest date already exists, update the first row
-        if not df.empty and df.iloc[0]["Date"] == latest_date_dt:
+        if not df.empty and df.iloc[0]["Date"] == latest_date_str:
             print("Latest date already exists. Updating value instead of inserting new row.")
             df.at[0, "Value"] = latest_value
         elif is_first_of_month:
             # Insert new row at the top only if it's the first of the month
-            new_row = pd.DataFrame([[latest_date_dt, latest_value]], 
+            new_row = pd.DataFrame([[latest_date_str, latest_value]], 
                                    columns=["Date", "Value"])
             df = pd.concat([new_row, df], ignore_index=True)
             print(f"Added new data: {latest_date}, Value: {latest_value}")
         else:
             # Update the most recent row if new data is not the 1st of the month
             print("Latest data is not from the 1st of the month. Updating most recent row instead.")
-            df.at[0, "Date"] = latest_date_dt
+            df.at[0, "Date"] = latest_date_str
             df.at[0, "Value"] = latest_value
 
         # Save the updated DataFrame to Excel
