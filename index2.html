@@ -278,6 +278,12 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     "@type": "Thing",
     "name": "Financial Data"
 }
+
+function toggleMenu() {
+    var menu = document.getElementById("menu-items");
+    menu.classList.toggle("show");
+}
+
 </script>
 <meta name="description" content="Financial metrics that give you the real data about the market and the economy.">
 <link rel="canonical" href="https://www.realcpi.org/"/>
@@ -289,8 +295,11 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     <img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" style="padding: 10px;" />
 </a>
 
+    <!-- Hamburger Button for Mobile -->
+    <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
+	
     <nav class="menu-bar">
-        <ul>
+        <ul id="menu-items">
             <li class="current"><a href="/" style="color: blue;">Daily Data</a></li>
             <li><a href="stocks.html">Stock Market</a></li>
             <li><a href="realestate.html">Real Estate</a></li>
