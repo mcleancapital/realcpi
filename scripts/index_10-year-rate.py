@@ -7,17 +7,23 @@ def update_sp500_html(html_file, excel_file, output_file):
         # Read the Excel file
         df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value"], header=0)
 
-        # Calculate "B2 / B14 - 1" (assuming row indices 1 and 13 correspond to B2 and B14)
+        # Calculate "B2 / B14 - 1" using the most recent date and the closest match 12 months prior
         try:
-            # Ensure that B2 is the first available "first-of-month" value
-            b2_row = df[df["Date"].dt.day == 1].iloc[0]  # First row where day is 1
-            b14_row = df[df["Date"].dt.day == 1].iloc[12]  # 12 months before
+            # Ensure DataFrame is sorted in descending order (most recent first)
+            df = df.sort_values(by="Date", ascending=False).reset_index(drop=True)
 
+            # B2 is simply the most recent entry
+            b2_row = df.iloc[0]  # Most recent row
+            b2_date = b2_row["Date"]
             b2 = b2_row["Value"]
+
+            # Find the closest match from approximately 12 months before
+            one_year_ago = b2_date - pd.DateOffset(years=1)
+            b14_row = df[df["Date"] <= one_year_ago].iloc[0]  # First available row within the last 12 months
             b14 = b14_row["Value"]
 
+            # Calculate percentage change
             percentage_change = (b2 / b14 - 1) * 100
-
             formatted_percentage = f" (+{percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
         except Exception as e:
             print(f"Error calculating percentage change: {e}")
