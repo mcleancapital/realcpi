@@ -14,8 +14,8 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
 }
 
-def fetch_latest_sp500_pe(url):
-    """Fetch the latest S&P 500 P/E ratio from the webpage."""
+def fetch_latest_sp500_price(url):
+    """Fetch the latest S&P 500 price from the webpage."""
     try:
         response = requests.get(url, headers=HEADERS)
         if response.status_code != 200:
@@ -39,51 +39,50 @@ def fetch_latest_sp500_pe(url):
         latest_value = float(latest_value_str.replace(",", ""))
 
         # Convert date to YYYY-MM-DD format
-        latest_date = datetime.strptime(latest_date, "%b %d, %Y").strftime("%Y-%m-%d")
+        latest_date = datetime.strptime(latest_date, "%b %d, %Y").date()
 
         print(f"Fetched Latest Data - Date: {latest_date}, Value: {latest_value}")
         return latest_date, latest_value
     except Exception as e:
-        print(f"Error fetching S&P 500 P/E data: {e}")
+        print(f"Error fetching S&P 500 data: {e}")
         return None, None
 
 def update_excel(file_path, latest_date, latest_value):
-    """Update Excel file with new data while ensuring formulas and sheet name are correct."""
+    """Update Excel file with new S&P 500 data, ensuring correct insertion rules."""
     try:
         # Load existing workbook or create a new one
         if os.path.exists(file_path):
             df = pd.read_excel(file_path, sheet_name=SHEET_NAME)
         else:
-            df = pd.DataFrame(columns=["Date", "Value", "% Change vs Last Year"])
+            df = pd.DataFrame(columns=["Date", "Value"])
 
         # Convert 'Date' column to datetime and normalize (removes time part)
-        df["Date"] = pd.to_datetime(df["Date"], errors='coerce').dt.normalize()
+        df["Date"] = pd.to_datetime(df["Date"], errors='coerce').dt.date
 
-        # Convert `latest_date` to datetime and normalize it
-        latest_date_dt = pd.to_datetime(latest_date).normalize()
+        # Check if there is existing data
+        if not df.empty:
+            most_recent_date = df.iloc[0]["Date"]  # Most recent row (top of DataFrame)
 
-        # Check if the latest date is already present
-        if not df.empty and df.iloc[0]["Date"] == latest_date_dt:
-            print("Latest date already exists. Updating value instead of inserting new row.")
-            df.at[0, "Value"] = latest_value
+            # If the most recent date is NOT the first of the month, update it
+            if most_recent_date.day != 1:
+                print(f"Replacing row {most_recent_date} with {latest_date}.")
+                df.at[0, "Date"] = latest_date
+                df.at[0, "Value"] = latest_value
+            else:
+                # If the most recent row is the first of the month, add a new row
+                new_row = pd.DataFrame([[latest_date, latest_value]], columns=["Date", "Value"])
+                df = pd.concat([new_row, df], ignore_index=True)
+                print(f"Added new data: {latest_date}, Value: {latest_value}")
         else:
-            # Insert new row at the top
-            new_row = pd.DataFrame([[latest_date_dt, latest_value, None]], 
-                                   columns=["Date", "Value", "% Change vs Last Year"])
-            df = pd.concat([new_row, df], ignore_index=True)
-
-            # Check if the last row is NOT the first day of the month, and delete it
-            if len(df) > 1 and df.iloc[-1]["Date"].day != 1:
-                print(f"Deleting last row because {df.iloc[-1]['Date']} is not the first of the month.")
-                df = df.iloc[:-1]  # Remove last row
-
-            print(f"Added new data: {latest_date}, Value: {latest_value}")
+            # If there is no data, initialize the file with the new row
+            df = pd.DataFrame([[latest_date, latest_value]], columns=["Date", "Value"])
+            print(f"Initializing data with {latest_date}, Value: {latest_value}")
 
         # Save the updated DataFrame to Excel
         with pd.ExcelWriter(file_path, engine="openpyxl") as writer:
             df.to_excel(writer, sheet_name=SHEET_NAME, index=False)
 
-        # Reopen Excel file using openpyxl to insert formulas
+        # Reopen Excel file to confirm data integrity
         wb = load_workbook(file_path)
         if SHEET_NAME not in wb.sheetnames:
             ws = wb.active
@@ -91,23 +90,16 @@ def update_excel(file_path, latest_date, latest_value):
         else:
             ws = wb[SHEET_NAME]
 
-        # Insert formulas in Column C
-        for i in range(2, ws.max_row + 1):  # Start from row 2 (skip headers)
-            if i + 12 <= ws.max_row:  # Ensure 12 months exist
-                ws[f"C{i}"] = f"=((B{i}/B{i+12})-1)*100"
-            else:
-                ws[f"C{i}"] = None  # No formula if not enough data
-
-        # Save the Excel file with formulas
+        # Save the final Excel file
         wb.save(file_path)
-        print(f"Excel file updated successfully with formulas in sheet '{SHEET_NAME}': {file_path}")
+        print(f"Excel file updated successfully with new S&P 500 data in sheet '{SHEET_NAME}': {file_path}")
 
     except Exception as e:
         print(f"Error updating Excel file: {e}")
 
 if __name__ == "__main__":
-    # Fetch latest S&P 500 P/E data
-    latest_date, latest_value = fetch_latest_sp500_pe(URL)
+    # Fetch latest S&P 500 data
+    latest_date, latest_value = fetch_latest_sp500_price(URL)
 
     # Update the Excel file if data was successfully fetched
     if latest_date and latest_value:
