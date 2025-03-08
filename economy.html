@@ -112,7 +112,15 @@ header{display:flex;align-items:center;padding:0 24px}
                         border:.5px solid #ccc;
                         border-radius:16px}
                 main{padding:var(--std_padding) 16px}
-                #grid{grid-gap:24px 8px}}
+                #grid{grid-gap:24px 8px}
+	.hamburger-menu {
+       		display: none;
+  		}
+   	.menu-bar ul {
+        	display: flex;
+    		}
+
+}
                 a.box{
                         padding:8px}
         #tag{flex:1 0 auto;padding-left:24px;font-weight:700}
@@ -146,11 +154,11 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
                 background-color: #ffffff;
                 border-bottom: 1px solid #ccc;
                 z-index: 1000;
-                padding: 10px 0;
+                padding: 5px 0;
             }
             .mobile-menu button {
                 flex: 1;
-                padding: 10px;
+                padding: 0px;
                 font-size: 16px;
                 border: none;
                 background-color: #fff;
@@ -161,7 +169,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
                 background-color: #e0e0e0;
             }
             body {
-                margin-top: 50px; /* Prevent content overlap with the fixed menu */
+                margin-top: 64px; /* Prevent content overlap with the fixed menu */
             }
 
 
@@ -211,6 +219,47 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     text-align: center;
     padding: 1px;
 }
+
+/* Hide the menu items by default on mobile */
+@media (max-width: 729px) {
+    .menu-bar ul {
+        display: none;
+        flex-direction: column;
+        background-color: white;
+        position: fixed; * Now stays visible while scrolling */
+        top: 40px;
+        left: 0;
+        width: 100%;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        padding: 0;
+    }
+
+    /* Show menu when toggled */
+    .menu-bar ul.show {
+        display: flex;
+    }
+
+    /* Style menu items in mobile mode */
+    .menu-bar ul li {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    /* Style hamburger button */
+    .hamburger-menu {
+        display: block;
+        font-size: 24px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        margin-left: auto;
+    }
+}
+	
 </style>
 
 <meta name="viewport" content="initial-scale=1" />
@@ -241,7 +290,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 </a>
 
     <nav class="menu-bar">
-        <ul>
+        <ul id="menu-items">
             <li><a href="/">Daily Data</a></li>
             <li><a href="stocks.html">Stock Market</a></li>
             <li><a href="realestate.html">Real Estate</a></li>
@@ -276,9 +325,9 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     <div class="right-column">
 
 <div class="mobile-menu">
-    <img src="/static/images/logo.jpg" alt="Real CPI Logo" height="54" />
-    <a href="https://www.realcpi.org"><button id="data-button">Data</button></a>
-    <a href="https://www.realcpi.org/news_mobile.html"><button id="news-button">News</button></a>
+    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
+	<!-- Hamburger Button for Mobile -->
+    	<button class="hamburger-menu" onclick="toggleMenu()">☰</button>
 </div>
 
 <div class="center-text">Economic Dashboard
@@ -697,6 +746,16 @@ Copyright © 2024
 &nbsp;
 <a href="mailto:contact@realcpi.org">contact@realcpi.org</a>
 </footer>
+
+<script>
+
+function toggleMenu() {
+    var menu = document.getElementById("menu-items");
+    menu.classList.toggle("show");
+}
+
+</script>
+	
 </body>
     <!-- The next section gives the data for each chart on the index page. Each chart's data comes after [[. -->
 <script>
