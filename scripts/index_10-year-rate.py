@@ -10,6 +10,7 @@ def update_sp500_html(html_file, excel_file, output_file):
         # Calculate "B2 / B14 - 1" using the most recent date and the closest match 12 months prior
         try:
             # Ensure DataFrame is sorted in descending order (most recent first)
+            df["Date"] = pd.to_datetime(df["Date"], errors="coerce")  # Convert Date column to datetime
             df = df.sort_values(by="Date", ascending=False).reset_index(drop=True)
 
             # B2 is simply the most recent entry
