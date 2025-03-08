@@ -27,7 +27,7 @@ def update_sp500_html(html_file, excel_file, output_file):
             formatted_percentage = f" (+{percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
         except Exception as e:
             print(f"Error calculating percentage change: {e}")
-            formatted_percentage = ""
+            formatted_percentage = " (N/A vs last year)"
         
         # Drop rows where 'Date' or 'Value' is missing
         df = df.dropna(subset=["Date", "Value"])
