@@ -100,23 +100,31 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
               grid-template-columns:repeat(var(--grid-columns,1),1fr)}
         
 @media(min-width:730px){
+	.mobile-menu {
+        	display: none;
+    	}
 
-.mobile-menu {
-        display: none;
-    }
+	header{display:flex;align-items:center;padding:0 24px}
+	#logo svg{height:32px}
+	#logo{flex:0 0 auto;display:inline-flex;align-items:center;height:80px}
+                	a.box:hover{
+                	        border:.5px solid #ccc;
+                	        border-radius:16px}
+               	 main{padding:var(--std_padding) 16px}
+               	 #grid{grid-gap:24px 8px}
 
-header{display:flex;align-items:center;padding:0 24px}
-#logo svg{height:32px}
-#logo{flex:0 0 auto;display:inline-flex;align-items:center;height:80px}
-                a.box:hover{
-                        border:.5px solid #ccc;
-                        border-radius:16px}
-                main{padding:var(--std_padding) 16px}
-                #grid{grid-gap:24px 8px}}
-                a.box{
-                        padding:8px}
-        #tag{flex:1 0 auto;padding-left:24px;font-weight:700}
-        #tag{flex:0 1 auto;display:none}
+	.hamburger-menu {
+       		display: none;
+  		}
+   	.menu-bar ul {
+        	display: flex;
+    		}
+	}
+
+
+a.box{padding:8px}
+#tag{flex:1 0 auto;padding-left:24px;font-weight:700}
+#tag{flex:0 1 auto;display:none}
         
 @media (min-width:730px){#tag{display:block}}
                 a.box{
