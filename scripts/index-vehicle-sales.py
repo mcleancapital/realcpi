@@ -118,9 +118,9 @@ def update_sp500_html(html_file, excel_file, output_file):
         print(f"An error occurred: {e}")
 
 # File paths
-html_file = './index.html'
+html_file = './economy.html'
 excel_file = './data/vehicle-sales.xlsx'
-output_file = './index.html'
+output_file = './economy.html'
 
 # Run the update function
 update_sp500_html(html_file, excel_file, output_file)
