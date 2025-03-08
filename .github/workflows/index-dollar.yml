@@ -1,8 +1,6 @@
-name: Index.html - Update US Dollar
+name: z_Index.html - Update US Dollar
 
 on:
-  schedule:
-    - cron: "00 8 * * *"  # Run daily at 8:00 AM UTC (3:00 AM ET)
   workflow_dispatch:        # Allow manual triggering
 
 permissions:
