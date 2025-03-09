@@ -25,7 +25,7 @@ try:
         # B2 is simply the most recent entry
         b2_row = df.iloc[0]  # Most recent row
         b2_date = b2_row["Date"]
-         b2 = b2_row["Value"]
+        b2 = b2_row["Value"]
 
         # Find the closest match from approximately 12 months before
         one_year_ago = b2_date - pd.DateOffset(years=1)
