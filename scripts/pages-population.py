@@ -48,16 +48,16 @@ except Exception as e:
     formatted_percentage = " (N/A vs last year)"
     latest_percentage_change = formatted_percentage
 
-# Format the "let pi" data for JavaScript
-dates_since_reference = ",".join(map(str, (data["Date"] - datetime(1969, 12, 20)).dt.days.tolist()))
-monthly_totals = ",".join(map(str, data["Value"].tolist()))
-pi_data = f"let pi = [[{dates_since_reference}], [{monthly_totals}], null, null, '', 1, []];"
+# Format the "let pi" data for JavaScript (ensuring it properly formats for the chart)
+dates_since_reference = "[" + ",".join(map(str, (data["Date"] - datetime(1969, 12, 20)).dt.days.tolist())) + "]"
+monthly_totals = "[" + ",".join(map(str, data["Value"].tolist())) + "]"
+pi_data = f"let pi = [{dates_since_reference}, {monthly_totals}, null, null, '', 1, []];"
 
 # Read the HTML template
 with open(html_template, "r", encoding="utf-8") as file:
     html_content = file.read()
 
-# Replace "let pi" data
+# Replace "let pi" data inside the HTML file
 html_content = re.sub(r"let pi = \[.*?\];", pi_data, html_content, flags=re.DOTALL)
 
 # Replace the values and percentage change
@@ -79,3 +79,5 @@ html_content = re.sub(
 # Save the updated HTML locally
 with open(output_html, "w", encoding="utf-8") as file:
     file.write(html_content)
+
+print("HTML file updated successfully!")
