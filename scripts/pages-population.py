@@ -19,32 +19,39 @@ latest_volume = int(data.iloc[-1]["Value"])
 
 # Calculate "B2 / B14 - 1" using the most recent date and the closest match 12 months prior
 try:
-        # Ensure DataFrame is sorted in descending order (most recent first)
-        df = df.sort_values(by="Date", ascending=False).reset_index(drop=True)
+    # Ensure DataFrame is sorted in descending order (most recent first)
+    data = data.sort_values(by="Date", ascending=False).reset_index(drop=True)
 
-        # B2 is simply the most recent entry
-        b2_row = df.iloc[0]  # Most recent row
-        b2_date = b2_row["Date"]
-        b2 = b2_row["Value"]
+    # B2 is simply the most recent entry
+    b2_row = data.iloc[0]  # Most recent row
+    b2_date = b2_row["Date"]
+    b2 = b2_row["Value"]
 
-        # Find the closest match from approximately 12 months before
-        one_year_ago = b2_date - pd.DateOffset(years=1)
-        b14_row = df[df["Date"] <= one_year_ago].iloc[0]  # First available row within the last 12 months
+    # Find the closest match from approximately 12 months before
+    one_year_ago = b2_date - pd.DateOffset(years=1)
+    
+    # Select the closest available row from at most one year ago
+    b14_candidates = data[data["Date"] <= one_year_ago]
+    if not b14_candidates.empty:
+        b14_row = b14_candidates.iloc[-1]  # Pick the closest available row
         b14 = b14_row["Value"]
-
         # Calculate percentage change
         percentage_change = (b2 / b14 - 1) * 100
         formatted_percentage = f" (+{percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
-        latest_percentage_change = formatted_percentage
-except Exception as e:
-        print(f"Error calculating percentage change: {e}")
+    else:
         formatted_percentage = " (N/A vs last year)"
-        latest_percentage_change = formatted_percentage
 
-# Format the "let pi" data
-dates_since_reference = (data["Date"] - datetime(1969, 12, 20)).dt.days.tolist()
-monthly_totals = data["Value"].tolist()
-pi_data = f"let pi = [{dates_since_reference}, {monthly_totals}, null, null, '', 1, []];"
+    latest_percentage_change = formatted_percentage
+
+except Exception as e:
+    print(f"Error calculating percentage change: {e}")
+    formatted_percentage = " (N/A vs last year)"
+    latest_percentage_change = formatted_percentage
+
+# Format the "let pi" data for JavaScript
+dates_since_reference = ",".join(map(str, (data["Date"] - datetime(1969, 12, 20)).dt.days.tolist()))
+monthly_totals = ",".join(map(str, data["Value"].tolist()))
+pi_data = f"let pi = [[{dates_since_reference}], [{monthly_totals}], null, null, '', 1, []];"
 
 # Read the HTML template
 with open(html_template, "r", encoding="utf-8") as file:
@@ -56,7 +63,7 @@ html_content = re.sub(r"let pi = \[.*?\];", pi_data, html_content, flags=re.DOTA
 # Replace the values and percentage change
 html_content = re.sub(
     r"<b>Current <span class=\"currentTitle\">.*?</span>:</b>.*?\(.*?\)",
-    f"<b>Current <span class=\"currentTitle\">US Population</span>:</b> {latest_volume:,}M {formatted_percentage},
+    f"<b>Current <span class=\"currentTitle\">US Population</span>:</b> {latest_volume:,}M {formatted_percentage}",
     html_content,
     flags=re.DOTALL
 )
