@@ -17,18 +17,29 @@ data.sort_values(by="Date", inplace=True)
 latest_date = data.iloc[-1]["Date"]
 latest_volume = int(data.iloc[-1]["Value"])
 
-# Read cell C2 for '% Change vs Last Year' using openpyxl
-try:
-    wb = load_workbook(excel_file, data_only=True)  # data_only=True retrieves evaluated formula values
-    sheet = wb["Data"]
-    latest_percentage_change = sheet["C2"].value  # Retrieve the value of cell C2
-    print(f"Value of C2 (openpyxl): {latest_percentage_change}")
-except Exception as e:
-    print(f"Error reading C2 with openpyxl: {e}")
-    latest_percentage_change = None
+        # Calculate "B2 / B14 - 1" using the most recent date and the closest match 12 months prior
+        try:
+            # Ensure DataFrame is sorted in descending order (most recent first)
+            df = df.sort_values(by="Date", ascending=False).reset_index(drop=True)
 
-# Handle cases where C2 is None or invalid
-formatted_percentage_change = f"{latest_percentage_change:+.1f}%" if latest_percentage_change else "N/A"
+            # B2 is simply the most recent entry
+            b2_row = df.iloc[0]  # Most recent row
+            b2_date = b2_row["Date"]
+            b2 = b2_row["Value"]
+
+            # Find the closest match from approximately 12 months before
+            one_year_ago = b2_date - pd.DateOffset(years=1)
+            b14_row = df[df["Date"] <= one_year_ago].iloc[0]  # First available row within the last 12 months
+            b14 = b14_row["Value"]
+
+            # Calculate percentage change
+            percentage_change = (b2 / b14 - 1) * 100
+            formatted_percentage = f" (+{percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
+            latest_percentage_change = formatted_percentage
+        except Exception as e:
+            print(f"Error calculating percentage change: {e}")
+            formatted_percentage = " (N/A vs last year)"
+            latest_percentage_change = formatted_percentage
 
 # Format the "let pi" data
 dates_since_reference = (data["Date"] - datetime(1969, 12, 20)).dt.days.tolist()
@@ -45,7 +56,7 @@ html_content = re.sub(r"let pi = \[.*?\];", pi_data, html_content, flags=re.DOTA
 # Replace the values and percentage change
 html_content = re.sub(
     r"<b>Current <span class=\"currentTitle\">.*?</span>:</b>.*?\(.*?\)",
-    f"<b>Current <span class=\"currentTitle\">US Population</span>:</b> {latest_volume:,}M ({formatted_percentage_change} vs last year)",
+    f"<b>Current <span class=\"currentTitle\">US Population</span>:</b> {latest_volume:,}M {formatted_percentage},
     html_content,
     flags=re.DOTALL
 )
