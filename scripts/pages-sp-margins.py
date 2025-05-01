@@ -5,8 +5,8 @@ import re
 
 # Paths for the files
 excel_file = './data/sp-500-margins.xlsx'
-html_template = './s-p-500-margins/index.html'
-output_html = './s-p-500-margins/index.html'
+html_template = './s-p-500-net-margins/index.html'
+output_html = './s-p-500-net-margins/index.html'
 
 # Read Excel data
 data = pd.read_excel(excel_file, sheet_name="Data", engine="openpyxl")
