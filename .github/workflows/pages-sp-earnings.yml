@@ -25,7 +25,7 @@ jobs:
         run: pip install pandas openpyxl
 
       - name: Run Python script
-        run: python scripts/pages-sp-earnings.py
+        run: python scripts/sp-earnings-growth.py
 
       - name: Commit and push changes
         run: |
