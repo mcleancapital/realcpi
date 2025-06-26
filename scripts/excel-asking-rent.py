@@ -10,7 +10,7 @@ from datetime import datetime
 EXCEL_FILE_PATH = './data/asking-rent.xlsx'
 
 # URL and headers
-URL = "https://ycharts.com/indicators/us_total_population"
+URL = "https://ycharts.com/indicators/us_median_asking_rent"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
     "Accept-Language": "en-US,en;q=0.9",
