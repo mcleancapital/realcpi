@@ -2,7 +2,7 @@ name: Excel - CPI
 
 on:
   schedule:
-    - cron: '30 3 12 * *'  # Run on the 12th of every month at 03:30 UTC
+    - cron: '10 0 16 * *'  # Run on the 16th of every month at 00:10 UTC
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
