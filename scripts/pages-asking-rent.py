@@ -37,7 +37,7 @@ html_content = re.sub(
 # Replace the current value and timestamp
 html_content = re.sub(
     r"<b>Current <span class=\"currentTitle\">.*?</span>:</b>.*?<div id=\"timestamp\">.*?</div>",
-    f"<b>Current <span class=\"currentTitle\">US Median Asking Rent</span>:</b> {latest_volume:.2f}%"
+    f"<b>Current <span class=\"currentTitle\">US Median Asking Rent</span>:</b> ${latest_volume:.2f}"
     f"<div id=\"timestamp\">{latest_date.strftime('%b %Y')}</div>",
     html_content,
     flags=re.DOTALL
