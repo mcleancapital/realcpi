@@ -314,8 +314,31 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 
 </header>
+
 <main>
 
+<div id="converter-box" style="padding: 20px; background: #f0f0f0; border-radius: 12px;">
+  <label for="amount">Amount:</label>
+  <input type="number" id="amount" value="1" style="width: 100px;">
+
+  <br><br>
+
+  <label for="from">From:</label>
+  <select id="from"></select>
+
+  <label for="to">To:</label>
+  <select id="to"></select>
+
+  <br><br>
+
+  <button onclick="convertCurrency()">Convert</button>
+
+  <p id="result" style="margin-top: 12px; font-weight: bold;"></p>
+</div>
+
+
+	
+	
 <div class="container">
     <!-- Left Column -->
     <div class="left-column">
@@ -366,4 +389,46 @@ Copyright © 2024
 <a href="mailto:contact@realcpi.org">contact@realcpi.org</a>
 </footer>
 
+<script>
+const currencyList = [
+  "USD", "CAD", "EUR", "GBP", "JPY", "AUD", "CHF", "CNY", "HKD", "INR", "MXN", "NZD", "SEK", "SGD", "ZAR"
+];
+
+// Populate dropdowns
+window.onload = () => {
+  const fromSel = document.getElementById("from");
+  const toSel = document.getElementById("to");
+
+  currencyList.forEach(curr => {
+    fromSel.innerHTML += `<option value="${curr}">${curr}</option>`;
+    toSel.innerHTML += `<option value="${curr}">${curr}</option>`;
+  });
+
+  fromSel.value = "CAD";
+  toSel.value = "USD";
+};
+
+async function convertCurrency() {
+  const amount = parseFloat(document.getElementById("amount").value);
+  const from = document.getElementById("from").value;
+  const to = document.getElementById("to").value;
+  const resultBox = document.getElementById("result");
+
+  try {
+    const url = `https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.success) {
+      resultBox.innerText = `${amount} ${from} = ${data.result.toFixed(2)} ${to}`;
+    } else {
+      resultBox.innerText = "Error converting currency.";
+    }
+  } catch (err) {
+    resultBox.innerText = "Error fetching data.";
+  }
+}
+</script>
+</body>
+
+	
 </html>
