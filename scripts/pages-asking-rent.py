@@ -20,7 +20,7 @@ latest_volume = data.iloc[-1]["Value"]
 # Format the "let pi" data
 dates_since_reference = (data["Date"] - datetime(1970, 1, 1)).dt.days.tolist()
 monthly_totals = data["Value"].tolist()
-pi_data = f"let pi = [{dates_since_reference}, {monthly_totals}, null, null, '%', 0, []];"
+pi_data = f"let pi = [{dates_since_reference}, {monthly_totals}, null, null, '$', 0, []];"
 
 # Read the HTML template
 with open(html_template, "r", encoding="utf-8") as file:
