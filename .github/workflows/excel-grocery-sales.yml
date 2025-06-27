@@ -3,6 +3,7 @@ name: Excel - Groceries
 on:
   schedule:
     - cron: '0 2 12 * *'  # Run on the 12th of every month at 02:00 UTC
+    - cron: '0 2 26 * *'  # Run on the 26th of every month at 02:00 UTC
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
