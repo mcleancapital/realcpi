@@ -52,9 +52,11 @@ def update_sp500_html(html_file, excel_file, output_file):
         most_recent_date = df.iloc[-1]["Date"]
         most_recent_value = df.iloc[-1]["Value"]
 
-        # Format the date into "4:00 PM EST, Fri Dec 13" format
-        formatted_date = most_recent_date.strftime("4:00 PM EST, %a %b %d")
-        formatted_value = f"{most_recent_value:,.2f}"
+        # Format date as "Mar 2025"
+        formatted_date = most_recent_date.strftime("%b %Y")
+
+        # Format value as "$1,468"
+        formatted_value = f"${int(most_recent_value):,}"
 
         # Append percentage change to the value
         formatted_value += formatted_percentage
