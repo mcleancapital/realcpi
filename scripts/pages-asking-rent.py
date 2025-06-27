@@ -14,35 +14,34 @@ data = pd.read_excel(excel_file, sheet_name="Data", engine="openpyxl")
 data["Date"] = pd.to_datetime(data["Date"])
 data.sort_values(by="Date", inplace=True)
 
-# Extract latest data
+# Extract latest values
 latest_row = data.iloc[-1]
 latest_date = latest_row["Date"]
-latest_value = int(latest_row["Value"])  # <- corrected column name
+latest_value = float(latest_row["Value"])  # Keep decimal
 
-# Read '% Change vs Last Year' from C2
+# Read % change from C2
 try:
     wb = load_workbook(excel_file, data_only=True)
     sheet = wb["Data"]
-    latest_percentage_change = sheet["C2"].value  # assuming C2 has YoY %
+    latest_percentage_change = sheet["C2"].value
 except Exception as e:
     print(f"Error reading C2: {e}")
     latest_percentage_change = None
 
-# Format YoY
 formatted_percentage_change = f"{latest_percentage_change:+.1f}%" if latest_percentage_change is not None else "N/A"
 
-# Format JS chart data
+# Chart data
 dates_since_ref = (data["Date"] - datetime(1969, 12, 20)).dt.days.tolist()
-values = data["Value"].tolist()  # <- corrected column name
+values = data["Value"].tolist()
 date_str = ",".join(map(str, dates_since_ref))
 value_str = ",".join(map(str, values))
 pi_js = f"let pi = [[{date_str}],[{value_str}],null,null,'',1,[]];"
 
-# Read HTML
+# Load HTML
 with open(html_template, "r", encoding="utf-8") as file:
     html_content = file.read()
 
-# Inject JS chart data
+# Replace chart data
 html_content = re.sub(
     r"let pi = \[.*?\];",
     pi_js,
@@ -50,9 +49,9 @@ html_content = re.sub(
     flags=re.DOTALL
 )
 
-# Replace current rent value + YoY
+# Replace text content
 def replace_current_text(match):
-    return f'{match.group(1)}{latest_value:,} ({formatted_percentage_change} vs last year)'
+    return f'{match.group(1)}${latest_value:,.0f} ({formatted_percentage_change} vs last year)'
 
 html_content = re.sub(
     r'(<b>Current <span class="currentTitle">US Median Asking Rent</span>:</b>\s*)\$?[\d,]+(?:\s*\(.*?\))?',
@@ -67,8 +66,8 @@ html_content = re.sub(
     html_content
 )
 
-# Save output
+# Save result
 with open(output_html, "w", encoding="utf-8") as file:
     file.write(html_content)
 
-print("✅ HTML successfully updated.")
+print("✅ HTML updated with latest rent + chart data.")
