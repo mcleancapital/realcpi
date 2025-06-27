@@ -17,7 +17,7 @@ data.sort_values(by="Date", inplace=True)
 # Extract latest values
 latest_row = data.iloc[-1]
 latest_date = latest_row["Date"]
-latest_value = float(latest_row["Value"])  # Keep decimal
+latest_value = int(latest_row["Value"])
 
 # Read % change from C2
 try:
