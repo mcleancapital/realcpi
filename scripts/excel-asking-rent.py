@@ -49,7 +49,12 @@ def fetch_recent_rent_data(url):
         quarter_str = parts[1].strip()  # e.g., "Q1 2025"
 
         # Convert to a more sortable format: "2025-Q1"
-        formatted_period = f"{quarter_str[-4:]}-{quarter_str[:2]}"
+        # Convert "Q1 2025" to "2025/03/01" (end of quarter month as representative)
+        qmap = {"Q1": "03", "Q2": "06", "Q3": "09", "Q4": "12"}
+        quarter, year = quarter_str.split()
+        month = qmap.get(quarter, "01")
+        formatted_period = f"{year}/{month}/01"
+
 
         print(f"Fetched Rent data - Value: {value}, Period: {formatted_period}")
         return formatted_period, value
