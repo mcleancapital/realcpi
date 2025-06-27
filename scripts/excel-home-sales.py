@@ -2,8 +2,8 @@ import os
 import pandas as pd
 from openpyxl import load_workbook
 from datetime import datetime
-import requests                         # ✅ REQUIRED for web scraping
-from bs4 import BeautifulSoup           # ✅ REQUIRED for parsing HTML
+import requests
+from bs4 import BeautifulSoup
 
 # File path to the Excel file
 EXCEL_FILE_PATH = './data/existing-home-sales.xlsx'
@@ -49,24 +49,25 @@ def update_excel(file_path, recent_date, recent_value):
             print(f"File not found: {file_path}")
             return
 
-        df = pd.read_excel(file_path, sheet_name="Data")
+        df = pd.read_excel(file_path, sheet_name="Data", engine="openpyxl")
 
         # Ensure correct columns and drop rows with missing values
         df = df[["Date", "Value"]].dropna()
         df["Date"] = pd.to_datetime(df["Date"])
-        df = df.sort_values("Date", ascending=False).reset_index(drop=True)
 
-        # Insert the new data if not duplicate
+        # Insert the new data if not already present
         if not (df["Date"].dt.strftime("%Y-%m-%d") == recent_date).any():
             new_row = pd.DataFrame({"Date": [recent_date], "Value": [recent_value]})
             df = pd.concat([new_row, df], ignore_index=True)
 
-        # Sort again and reset index
-        df["Date"] = pd.to_datetime(df["Date"])
-        df = df.sort_values("Date", ascending=False).reset_index(drop=True)
+        # Sort from oldest to newest for correct pct_change
+        df = df.sort_values("Date", ascending=True).reset_index(drop=True)
 
         # Calculate % Change vs Last Year
         df["% Change vs Last Year"] = df["Value"].pct_change(periods=12) * 100
+
+        # Optional: re-sort from newest to oldest for display
+        df = df.sort_values("Date", ascending=False).reset_index(drop=True)
 
         # Write back to Excel
         with pd.ExcelWriter(file_path, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
