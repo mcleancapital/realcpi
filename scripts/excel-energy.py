@@ -1,111 +1,92 @@
 import os
 import pandas as pd
 from openpyxl import load_workbook
+from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
-import xlwings as xw  # Added for formula evaluation
+import xlwings as xw
 
-# File path to the Excel file
+# === CONFIG ===
 EXCEL_FILE_PATH = './data/energy.xlsx'
-
-# URL and headers
+SHEET_NAME = "Data"
 URL = "https://ycharts.com/indicators/us_primary_energy_consumption"
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+    "User-Agent": "Mozilla/5.0",
     "Accept-Language": "en-US,en;q=0.9",
 }
 
-def fetch_recent_cpi_data(url):
-    """Fetch the most recent CPI data from the YCharts page."""
+
+def fetch_recent_energy_data(url):
+    """Fetch the most recent energy data from YCharts."""
     try:
         response = requests.get(url, headers=HEADERS)
         if response.status_code != 200:
-            raise Exception(f"Request failed with status code {response.status_code}")
+            raise Exception(f"Request failed: {response.status_code}")
 
         soup = BeautifulSoup(response.content, "html.parser")
-        cpi_element = soup.find("div", class_="key-stat-title")
-        if not cpi_element:
-            raise Exception("Failed to find the element with class 'key-stat-title'.")
+        elem = soup.find("div", class_="key-stat-title")
+        if not elem:
+            raise Exception("Missing key-stat-title on page.")
 
-        cpi_text = cpi_element.get_text(strip=True)
-        parts = cpi_text.split(maxsplit=2)
-        if len(parts) < 2:
-            raise Exception("Unexpected format for CPI data.")
+        text = elem.get_text(strip=True)
+        parts = text.split(maxsplit=2)
+        if len(parts) < 3:
+            raise Exception("Unexpected format.")
 
-        recent_value = float(parts[0].replace('Q', ''))  # Extract CPI value
-        recent_date_str = parts[2].replace("for ", "")  # Clean up the date
-        recent_date = datetime.strptime(recent_date_str, "%b %Y").strftime("%Y-%m-%d")  # Convert to YYYY-MM-DD format
-
-        print(f"Fetched CPI data - Value: {recent_value}, Date: {recent_date}")
-        return recent_date, recent_value
+        value = float(parts[0].replace('Q', ''))
+        date = datetime.strptime(parts[2].replace("for ", ""), "%b %Y").strftime("%Y-%m-%d")
+        print(f"✔️  Fetched energy data: {value}Q BTU for {date}")
+        return date, value
     except Exception as e:
-        print(f"Error fetching CPI data: {e}")
+        print(f"❌ Error fetching energy data: {e}")
         return None, None
 
-def update_excel(file_path, recent_date, recent_value):
-    """Update the Excel file with the most recent CPI data."""
+
+def update_excel_with_energy(file_path, recent_date, recent_value):
+    """Insert the new data and update formulas in Excel, then convert to values with xlwings."""
     try:
-        # Check if the file exists
         if not os.path.exists(file_path):
-            print(f"File not found: {file_path}")
+            print(f"❌ Excel file not found: {file_path}")
             return
 
-        # Load the workbook
         wb = load_workbook(file_path)
-        sheet_name = "Data"  # Assuming your data is in a sheet named 'Data'
-        if sheet_name not in wb.sheetnames:
-            print(f"'{sheet_name}' sheet not found in the workbook.")
+        if SHEET_NAME not in wb.sheetnames:
+            print(f"❌ Sheet '{SHEET_NAME}' not found.")
             return
-        ws = wb[sheet_name]
+        ws = wb[SHEET_NAME]
 
-        # Check the most recent date in A2
-        most_recent_date_in_excel = ws.cell(row=2, column=1).value
-        if most_recent_date_in_excel:
-            most_recent_date_in_excel = pd.to_datetime(most_recent_date_in_excel).strftime("%Y-%m-%d")
-
-        # Add a new row only if the date is not already present
-        if most_recent_date_in_excel == recent_date:
-            print(f"Recent date {recent_date} already exists in the Excel file. No update needed.")
+        most_recent = ws.cell(row=2, column=1).value
+        if most_recent and pd.to_datetime(most_recent).strftime("%Y-%m-%d") == recent_date:
+            print(f"ℹ️  {recent_date} already exists — skipping insert.")
             return
 
-        # Insert a new row
         ws.insert_rows(2)
-        ws.cell(row=2, column=1, value=recent_date)  # Date
-        ws.cell(row=2, column=2, value=recent_value)  # CPI Value
+        ws.cell(row=2, column=1, value=recent_date)
+        ws.cell(row=2, column=2, value=recent_value)
 
-        # Update formulas in column C for all rows
         for row in range(2, ws.max_row + 1):
             ws.cell(row=row, column=3, value=f"=(B{row}/B{row+12}-1)*100")
 
-        print(f"Added new data - Date: {recent_date}, Value: {recent_value}, Updated formulas in column C.")
-
-        # Save the workbook
         wb.save(file_path)
+        print("💾 Excel updated with formulas. Launching Excel for evaluation...")
 
-        # Use xlwings to evaluate formulas
-        print("Evaluating formulas in Excel...")
-        app = xw.App(visible=False)  # Launch Excel
+        app = xw.App(visible=False)
         wb_xlw = app.books.open(file_path)
-        sheet = wb_xlw.sheets[sheet_name]
+        sheet = wb_xlw.sheets[SHEET_NAME]
 
-        # Replace formulas with values in column C
-        for row in range(2, ws.max_row + 1):
-            value = sheet.range(f"C{row}").value  # Get calculated value
-            sheet.range(f"C{row}").value = value  # Replace formula with value
+        for row in range(2, sheet.range("A1").end("down").row + 1):
+            val = sheet.range(f"C{row}").value
+            sheet.range(f"C{row}").value = val  # Overwrite formula with evaluated value
 
-        wb_xlw.save(file_path)
+        wb_xlw.save()
         wb_xlw.close()
         app.quit()
-        print(f"Formulas in column C have been replaced with their evaluated values.")
-
+        print("✅ Formulas evaluated and saved as values.")
     except Exception as e:
-        print(f"Error updating Excel file: {e}")
+        print(f"❌ Error updating Excel: {e}")
+
 
 if __name__ == "__main__":
-    # Fetch the most recent CPI data
-    recent_date, recent_value = fetch_recent_cpi_data(URL)
-
-    # Update the Excel file if data is successfully fetched
-    if recent_date and recent_value:
-        update_excel(EXCEL_FILE_PATH, recent_date, recent_value)
+    date, value = fetch_recent_energy_data(URL)
+    if date and value:
+        update_excel_with_energy(EXCEL_FILE_PATH, date, value)
