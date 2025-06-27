@@ -2,6 +2,8 @@ import os
 import pandas as pd
 from openpyxl import load_workbook
 from datetime import datetime
+import requests                         # ✅ REQUIRED for web scraping
+from bs4 import BeautifulSoup           # ✅ REQUIRED for parsing HTML
 
 # File path to the Excel file
 EXCEL_FILE_PATH = './data/existing-home-sales.xlsx'
