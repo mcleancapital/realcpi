@@ -4,7 +4,6 @@ from openpyxl import load_workbook
 from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
-import xlwings as xw
 
 # === CONFIG ===
 EXCEL_FILE_PATH = './data/energy.xlsx'
@@ -33,7 +32,7 @@ def fetch_recent_energy_data(url):
         if len(parts) < 3:
             raise Exception("Unexpected data format from YCharts.")
 
-        value = float(parts[0].replace('Q', ''))
+        value = float(parts[0].replace('Q', ''))  # Example: 97.23Q
         date = datetime.strptime(parts[2].replace("for ", ""), "%b %Y").strftime("%Y-%m-%d")
 
         print(f"✔️  Fetched energy value: {value}Q BTU for {date}")
@@ -44,57 +43,57 @@ def fetch_recent_energy_data(url):
 
 
 def update_excel_with_energy(file_path, recent_date, recent_value):
-    """Update Excel with new energy data and replace formulas with static values."""
+    """Update Excel with new energy data and compute % change vs last year using Python."""
     try:
         if not os.path.exists(file_path):
             print(f"❌ File not found: {file_path}")
             return
 
-        # Load workbook with openpyxl
         wb = load_workbook(file_path)
         if SHEET_NAME not in wb.sheetnames:
             print(f"❌ Sheet '{SHEET_NAME}' not found.")
             return
         ws = wb[SHEET_NAME]
 
-        most_recent = ws.cell(row=2, column=1).value
-        if most_recent and pd.to_datetime(most_recent).strftime("%Y-%m-%d") == recent_date:
-            print(f"ℹ️  {recent_date} already exists — skipping insert.")
-            return
+        # Read existing data
+        existing_data = []
+        for row in range(2, ws.max_row + 1):
+            date_val = ws.cell(row=row, column=1).value
+            value_val = ws.cell(row=row, column=2).value
+            existing_data.append((date_val, value_val))
+
+        # Check for duplicate date
+        if existing_data:
+            most_recent_in_excel = existing_data[0][0]
+            if pd.to_datetime(most_recent_in_excel).strftime("%Y-%m-%d") == recent_date:
+                print(f"ℹ️  {recent_date} already exists — skipping insert.")
+                return
 
         # Insert new row at top
         ws.insert_rows(2)
         ws.cell(row=2, column=1, value=recent_date)
         ws.cell(row=2, column=2, value=recent_value)
 
-        # Add formulas in column C
-        for row in range(2, ws.max_row + 1):
-            ws.cell(row=row, column=3, value=f"=(B{row}/B{row+12}-1)*100")
+        # Rebuild data list with new entry on top
+        existing_data.insert(0, (recent_date, recent_value))
 
-        # Save so xlwings can open with formulas in place
+        # Calculate % change vs last year using Python
+        for i in range(len(existing_data)):
+            row_excel = i + 2  # account for header row
+            if i + 12 < len(existing_data):
+                curr_val = existing_data[i][1]
+                prev_val = existing_data[i + 12][1]
+                if curr_val is not None and prev_val not in [0, None]:
+                    change = (curr_val / prev_val - 1) * 100
+                    ws.cell(row=row_excel, column=3, value=round(change, 1))
+                else:
+                    ws.cell(row=row_excel, column=3, value=None)
+            else:
+                ws.cell(row=row_excel, column=3, value=None)
+
+        # Save final workbook
         wb.save(file_path)
-        print("💾 Excel saved with formulas. Launching Excel for calculation...")
-
-        # Open with xlwings for calculation and value replacement
-        app = xw.App(visible=False)
-        wb_xlw = app.books.open(file_path)
-        sheet = wb_xlw.sheets[SHEET_NAME]
-
-        # Force full calculation
-        app.calculate()
-        app.api.CalculateFullRebuild()
-
-        # Replace formulas in column C with their evaluated values
-        last_row = sheet.range("B1").end("down").row
-        for row in range(2, last_row + 1):
-            cell = sheet.range(f"C{row}")
-            val = cell.value
-            cell.value = val  # overwrite with static number
-
-        wb_xlw.save()
-        wb_xlw.close()
-        app.quit()
-        print("✅ Excel updated: formulas evaluated and saved as values.")
+        print("✅ Excel file updated successfully with calculated values.")
 
     except Exception as e:
         print(f"❌ Error updating Excel: {e}")
