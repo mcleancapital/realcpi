@@ -317,24 +317,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 <main>
 
-<div id="converter-box" style="padding: 20px; background: #f0f0f0; border-radius: 12px;">
-  <label for="amount">Amount:</label>
-  <input type="number" id="amount" value="1" style="width: 100px;">
 
-  <br><br>
-
-  <label for="from">From:</label>
-  <select id="from"></select>
-
-  <label for="to">To:</label>
-  <select id="to"></select>
-
-  <br><br>
-
-  <button onclick="convertCurrency()">Convert</button>
-
-  <p id="result" style="margin-top: 12px; font-weight: bold;"></p>
-</div>
 
 
 	
@@ -360,8 +343,30 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 </div>
 
+
+
+	    
 <br>
 
+<div id="converter-box" style="padding: 20px; background: #f0f0f0; border-radius: 12px;">
+  <label for="amount">Amount:</label>
+  <input type="number" id="amount" value="1" style="width: 100px;">
+
+  <br><br>
+
+  <label for="from">From:</label>
+  <select id="from"></select>
+
+  <label for="to">To:</label>
+  <select id="to"></select>
+
+  <br><br>
+
+  <button onclick="convertCurrency()">Convert</button>
+
+  <p id="result" style="margin-top: 12px; font-weight: bold;"></p>
+</div>
+	    
 
 <br><br>
 <iframe src="news2.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
@@ -400,8 +405,12 @@ window.onload = () => {
   const toSel = document.getElementById("to");
 
   currencyList.forEach(curr => {
-    fromSel.innerHTML += `<option value="${curr}">${curr}</option>`;
-    toSel.innerHTML += `<option value="${curr}">${curr}</option>`;
+    const opt1 = document.createElement("option");
+    const opt2 = document.createElement("option");
+    opt1.value = opt2.value = curr;
+    opt1.text = opt2.text = curr;
+    fromSel.appendChild(opt1);
+    toSel.appendChild(opt2);
   });
 
   fromSel.value = "CAD";
@@ -414,20 +423,32 @@ async function convertCurrency() {
   const to = document.getElementById("to").value;
   const resultBox = document.getElementById("result");
 
+  if (isNaN(amount) || amount <= 0) {
+    resultBox.innerText = "Please enter a valid amount.";
+    return;
+  }
+
   try {
     const url = `https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`;
     const res = await fetch(url);
     const data = await res.json();
-    if (data.success) {
-      resultBox.innerText = `${amount} ${from} = ${data.result.toFixed(2)} ${to}`;
+
+    if (data && data.result !== undefined) {
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: to
+      }).format(data.result);
+
+      resultBox.innerText = `${amount} ${from} = ${formatted}`;
     } else {
-      resultBox.innerText = "Error converting currency.";
+      resultBox.innerText = "Conversion failed. Please try again.";
     }
   } catch (err) {
-    resultBox.innerText = "Error fetching data.";
+    resultBox.innerText = "Error fetching conversion rate.";
   }
 }
 </script>
+
 </body>
 
 	
