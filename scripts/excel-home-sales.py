@@ -1,9 +1,6 @@
 import os
 import pandas as pd
 from openpyxl import load_workbook
-from openpyxl.utils.cell import get_column_letter
-import requests
-from bs4 import BeautifulSoup
 from datetime import datetime
 
 # File path to the Excel file
@@ -12,12 +9,12 @@ EXCEL_FILE_PATH = './data/existing-home-sales.xlsx'
 # URL and headers
 URL = "https://ycharts.com/indicators/us_existing_home_sales"
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+    "User-Agent": "Mozilla/5.0",
     "Accept-Language": "en-US,en;q=0.9",
 }
 
 def fetch_recent_cpi_data(url):
-    """Fetch the most recent CPI data from the YCharts page."""
+    """Fetch the most recent Existing Home Sales data from YCharts."""
     try:
         response = requests.get(url, headers=HEADERS)
         if response.status_code != 200:
@@ -26,70 +23,58 @@ def fetch_recent_cpi_data(url):
         soup = BeautifulSoup(response.content, "html.parser")
         cpi_element = soup.find("div", class_="key-stat-title")
         if not cpi_element:
-            raise Exception("Failed to find the element with class 'key-stat-title'.")
+            raise Exception("Element with class 'key-stat-title' not found.")
 
         cpi_text = cpi_element.get_text(strip=True)
         parts = cpi_text.split(maxsplit=2)
-        if len(parts) < 2:
-            raise Exception("Unexpected format for CPI data.")
+        if len(parts) < 3:
+            raise Exception("Unexpected CPI format.")
 
-        recent_value = float(parts[0].replace('M', ''))  # Extract CPI value
-        recent_date_str = parts[2].replace("for ", "")  # Clean up the date
-        recent_date = datetime.strptime(recent_date_str, "%b %Y").strftime("%Y-%m-%d")  # Convert to YYYY-MM-DD format
+        recent_value = float(parts[0].replace("M", ""))
+        recent_date_str = parts[2].replace("for ", "")
+        recent_date = datetime.strptime(recent_date_str, "%b %Y").strftime("%Y-%m-%d")
 
-        print(f"Fetched CPI data - Value: {recent_value}, Date: {recent_date}")
+        print(f"Fetched: {recent_value}M for {recent_date}")
         return recent_date, recent_value
     except Exception as e:
         print(f"Error fetching CPI data: {e}")
         return None, None
 
 def update_excel(file_path, recent_date, recent_value):
-    """Update the Excel file with the most recent CPI data."""
+    """Update the Excel file with static % change calculation in column C."""
     try:
-        # Check if the file exists
         if not os.path.exists(file_path):
             print(f"File not found: {file_path}")
             return
 
-        # Load the workbook
-        wb = load_workbook(file_path)
-        sheet_name = "Data"  # Assuming your data is in a sheet named 'Data'
-        if sheet_name not in wb.sheetnames:
-            print(f"'{sheet_name}' sheet not found in the workbook.")
-            return
-        ws = wb[sheet_name]
+        df = pd.read_excel(file_path, sheet_name="Data")
 
-        # Check the most recent date in A2
-        most_recent_date_in_excel = ws.cell(row=2, column=1).value
-        if most_recent_date_in_excel:
-            most_recent_date_in_excel = pd.to_datetime(most_recent_date_in_excel).strftime("%Y-%m-%d")
+        # Ensure correct columns and drop rows with missing values
+        df = df[["Date", "Value"]].dropna()
+        df["Date"] = pd.to_datetime(df["Date"])
+        df = df.sort_values("Date", ascending=False).reset_index(drop=True)
 
-        # Add a new row only if the date is not already present
-        if most_recent_date_in_excel == recent_date:
-            print(f"Recent date {recent_date} already exists in the Excel file. No update needed.")
-            return
+        # Insert the new data if not duplicate
+        if not (df["Date"].dt.strftime("%Y-%m-%d") == recent_date).any():
+            new_row = pd.DataFrame({"Date": [recent_date], "Value": [recent_value]})
+            df = pd.concat([new_row, df], ignore_index=True)
 
-        # Insert a new row
-        ws.insert_rows(2)
-        ws.cell(row=2, column=1, value=recent_date)  # Date
-        ws.cell(row=2, column=2, value=recent_value)  # CPI Value
+        # Sort again and reset index
+        df["Date"] = pd.to_datetime(df["Date"])
+        df = df.sort_values("Date", ascending=False).reset_index(drop=True)
 
-        # Update formulas in column C for all rows
-        for row in range(2, ws.max_row + 1):
-            ws.cell(row=row, column=3, value=f"=(B{row}/B{row+12}-1)*100")
+        # Calculate % Change vs Last Year
+        df["% Change vs Last Year"] = df["Value"].pct_change(periods=12) * 100
 
-        print(f"Added new data - Date: {recent_date}, Value: {recent_value}, Updated formulas in column C.")
+        # Write back to Excel
+        with pd.ExcelWriter(file_path, engine="openpyxl", mode="a", if_sheet_exists="replace") as writer:
+            df.to_excel(writer, sheet_name="Data", index=False)
 
-        # Save the workbook
-        wb.save(file_path)
-        print(f"Excel file updated successfully: {file_path}")
+        print(f"✅ Excel updated: {file_path}")
     except Exception as e:
-        print(f"Error updating Excel file: {e}")
+        print(f"❌ Error updating Excel file: {e}")
 
 if __name__ == "__main__":
-    # Fetch the most recent CPI data
     recent_date, recent_value = fetch_recent_cpi_data(URL)
-
-    # Update the Excel file if data is successfully fetched
     if recent_date and recent_value:
         update_excel(EXCEL_FILE_PATH, recent_date, recent_value)
