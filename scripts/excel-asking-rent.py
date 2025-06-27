@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from openpyxl import load_workbook
+from openpyxl import load_workbook, Workbook
 from openpyxl.utils.cell import get_column_letter
 import requests
 from bs4 import BeautifulSoup
@@ -16,76 +16,90 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
 }
 
-def fetch_recent_cpi_data(url):
-    """Fetch the most recent CPI data from the YCharts page."""
+def ensure_excel_exists(path):
+    """Create Excel file and Data sheet if missing."""
+    if not os.path.exists(path):
+        print(f"{path} not found. Creating new file.")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Data"
+        ws.append(["Period", "Asking Rent (USD)", "YoY (%)"])
+        wb.save(path)
+        print(f"Created file with headers: {path}")
+
+def fetch_recent_rent_data(url):
+    """Fetch the most recent asking rent data from the YCharts page."""
     try:
         response = requests.get(url, headers=HEADERS)
         if response.status_code != 200:
             raise Exception(f"Request failed with status code {response.status_code}")
 
         soup = BeautifulSoup(response.content, "html.parser")
-        cpi_element = soup.find("div", class_="key-stat-title")
-        if not cpi_element:
+        rent_element = soup.find("div", class_="key-stat-title")
+        if not rent_element:
             raise Exception("Failed to find the element with class 'key-stat-title'.")
 
-        cpi_text = cpi_element.get_text(strip=True)
-        parts = cpi_text.split(maxsplit=2)
-        if len(parts) < 2:
-            raise Exception("Unexpected format for CPI data.")
+        rent_text = rent_element.get_text(strip=True)
+        parts = rent_text.replace("USD", "").split("for")
+        if len(parts) != 2:
+            raise Exception("Unexpected format for rent data.")
 
-        recent_value = float(parts[0])  # Extract CPI value
-        recent_date_str = parts[2].replace("USD for ", "")  # Clean up the date
-        recent_date = datetime.strptime(recent_date_str, "%b %Y").strftime("%Y-%m-%d")  # Convert to YYYY-MM-DD format
+        value = float(parts[0].strip().replace(",", ""))
+        quarter_str = parts[1].strip()  # e.g., "Q1 2025"
 
-        print(f"Fetched CPI data - Value: {recent_value}, Date: {recent_date}")
-        return recent_date, recent_value
+        # Convert to a more sortable format: "2025-Q1"
+        formatted_period = f"{quarter_str[-4:]}-{quarter_str[:2]}"
+
+        print(f"Fetched Rent data - Value: {value}, Period: {formatted_period}")
+        return formatted_period, value
     except Exception as e:
-        print(f"Error fetching CPI data: {e}")
+        print(f"Error fetching rent data: {e}")
         return None, None
 
-def update_excel(file_path, recent_date, recent_value):
-    """Update the Excel file with the most recent CPI data."""
+def update_excel(file_path, recent_period, recent_value):
+    """Update the Excel file with the most recent asking rent data."""
     try:
-        # Check if the file exists
-        if not os.path.exists(file_path):
-            print(f"File not found: {file_path}")
-            return
-
-        # Load the workbook
         wb = load_workbook(file_path)
-        sheet_name = "Data"  # Assuming your data is in a sheet named 'Data'
+        sheet_name = "Data"
         if sheet_name not in wb.sheetnames:
-            print(f"'{sheet_name}' sheet not found in the workbook.")
-            return
-        ws = wb[sheet_name]
+            print(f"'{sheet_name}' sheet not found. Creating it.")
+            ws = wb.create_sheet(title=sheet_name)
+            ws.append(["Period", "Asking Rent (USD)", "YoY (%)"])
+        else:
+            ws = wb[sheet_name]
 
-        # Check the most recent date in A2
-        most_recent_date_in_excel = ws.cell(row=2, column=1).value
-        if most_recent_date_in_excel:
-            most_recent_date_in_excel = pd.to_datetime(most_recent_date_in_excel).strftime("%Y-%m-%d")
-
-        # Add a new row only if the date is not already present
-        if most_recent_date_in_excel == recent_date:
-            print(f"Recent date {recent_date} already exists in the Excel file. No update needed.")
+        # Check if recent period already exists in A2
+        most_recent_period = ws.cell(row=2, column=1).value
+        if most_recent_period == recent_period:
+            print(f"Recent period {recent_period} already exists. No update needed.")
             return
 
-        # Insert a new row
+        # Insert a new row at the top (after headers)
         ws.insert_rows(2)
-        ws.cell(row=2, column=1, value=recent_date)  # Date
-        ws.cell(row=2, column=2, value=recent_value)  # CPI Value
+        ws.cell(row=2, column=1, value=recent_period)
+        ws.cell(row=2, column=2, value=recent_value)
 
-        print(f"Added new data - Date: {recent_date}, Value: {recent_value}")
+        # Update column C: YoY = row / (row+3) - 1
+        for row in range(2, ws.max_row + 1):
+            try:
+                curr = ws.cell(row=row, column=2).value
+                prev = ws.cell(row=row + 3, column=2).value
+                if isinstance(curr, (int, float)) and isinstance(prev, (int, float)) and prev != 0:
+                    yoy = (curr / prev - 1) * 100
+                    ws.cell(row=row, column=3, value=round(yoy, 2))
+                else:
+                    ws.cell(row=row, column=3, value=None)
+            except:
+                ws.cell(row=row, column=3, value=None)
 
-        # Save the workbook
         wb.save(file_path)
         print(f"Excel file updated successfully: {file_path}")
     except Exception as e:
         print(f"Error updating Excel file: {e}")
 
 if __name__ == "__main__":
-    # Fetch the most recent CPI data
-    recent_date, recent_value = fetch_recent_cpi_data(URL)
-
-    # Update the Excel file if data is successfully fetched
-    if recent_date and recent_value:
-        update_excel(EXCEL_FILE_PATH, recent_date, recent_value)
+    ensure_excel_exists(EXCEL_FILE_PATH)
+    recent_period, recent_value = fetch_recent_rent_data(URL)
+    if recent_period and recent_value:
+        update_excel(EXCEL_FILE_PATH, recent_period, recent_value)
