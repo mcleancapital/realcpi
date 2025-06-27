@@ -429,21 +429,23 @@ async function convertCurrency() {
   }
 
   try {
-    const url = `https://api.exchangerate.host/convert?from=${from}&to=${to}&amount=${amount}`;
+    const url = `https://api.frankfurter.app/latest?amount=${amount}&from=${from}&to=${to}`;
     const res = await fetch(url);
     const data = await res.json();
 
-    if (data && data.result !== undefined) {
+    if (data && data.rates && data.rates[to]) {
+      const rate = data.rates[to];
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: to
-      }).format(data.result);
+      }).format(rate);
 
       resultBox.innerText = `${amount} ${from} = ${formatted}`;
     } else {
       resultBox.innerText = "Conversion failed. Please try again.";
     }
   } catch (err) {
+    console.error(err);
     resultBox.innerText = "Error fetching conversion rate.";
   }
 }
