@@ -11,12 +11,12 @@ EXCEL_FILE_PATH = './data/lei.xlsx'
 # URL and headers
 URL = "https://tradingeconomics.com/united-states/leading-economic-index"
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+    "User-Agent": "Mozilla/5.0",
     "Accept-Language": "en-US,en;q=0.9",
 }
 
 def fetch_recent_lei_data(url):
-    """Fetch the first numeric value and the date from the 5th <td> element."""
+    """Fetch the most recent LEI value and date from TradingEconomics."""
     try:
         response = requests.get(url, headers=HEADERS)
         if response.status_code != 200:
@@ -27,11 +27,11 @@ def fetch_recent_lei_data(url):
         # Find all <td> elements
         td_elements = soup.find_all("td")
 
-        # Extract the first numeric value for the LEI
+        # Extract the first numeric value for LEI
         recent_value = None
         for td in td_elements:
             text = td.get_text(strip=True)
-            if text.replace('.', '', 1).isdigit():  # Check if the text is a valid number
+            if text.replace('.', '', 1).isdigit():
                 recent_value = float(text)
                 break
 
@@ -42,8 +42,8 @@ def fetch_recent_lei_data(url):
         if len(td_elements) < 5:
             raise Exception("Less than 5 <td> elements found.")
         recent_date_str = td_elements[4].get_text(strip=True)
-        
-        # Parse the date and reformat it as "YYYY-MM-DD"
+
+        # Parse date in "MMM YYYY" format
         recent_date = datetime.strptime(recent_date_str, "%b %Y").replace(day=1).strftime("%Y-%m-%d")
 
         print(f"Fetched LEI data - Value: {recent_value}, Date: {recent_date}")
@@ -53,7 +53,7 @@ def fetch_recent_lei_data(url):
         return None, None
 
 def update_excel(file_path, recent_date, recent_value):
-    """Update the Excel file with the most recent LEI data."""
+    """Update the Excel file with the most recent LEI data and compute YoY % in column C."""
     try:
         if not os.path.exists(file_path):
             print(f"File not found: {file_path}")
@@ -66,26 +66,40 @@ def update_excel(file_path, recent_date, recent_value):
             return
         ws = wb[sheet_name]
 
+        # Check most recent existing date in Excel
         most_recent_date_in_excel = ws.cell(row=2, column=1).value
         if most_recent_date_in_excel:
             most_recent_date_in_excel = pd.to_datetime(most_recent_date_in_excel).strftime("%Y-%m-%d")
-
         if most_recent_date_in_excel == recent_date:
             print(f"Recent date {recent_date} already exists in the Excel file. No update needed.")
             return
 
-        # Insert a new row with date in "YYYY-MM-DD" format
+        # Insert new row at the top
         ws.insert_rows(2)
-        ws.cell(row=2, column=1, value=recent_date)  # Date in "YYYY-MM-DD" format
-        ws.cell(row=2, column=2, value=recent_value)  # LEI Value
+        ws.cell(row=2, column=1, value=recent_date)
+        ws.cell(row=2, column=2, value=recent_value)
 
-        # Update formulas in column C for all rows
+        # Gather all LEI values from column B
+        values = []
         for row in range(2, ws.max_row + 1):
-            ws.cell(row=row, column=3, value=f"=(B{row}/B{row+12}-1)*100")
+            val = ws.cell(row=row, column=2).value
+            values.append(val)
 
-        # Save the workbook
+        # Compute YoY % in column C using Python
+        for i in range(len(values)):
+            if i + 12 < len(values):
+                prev = values[i + 12]
+                curr = values[i]
+                if prev and prev != 0:
+                    yoy = ((curr / prev) - 1) * 100
+                    ws.cell(row=i + 2, column=3, value=round(yoy, 2))
+                else:
+                    ws.cell(row=i + 2, column=3, value="N/A")
+            else:
+                ws.cell(row=i + 2, column=3, value="")
+
         wb.save(file_path)
-        print(f"Excel file updated successfully: {file_path}")
+        print(f"Excel file updated successfully with LEI data and Python-computed YoY %.")
     except Exception as e:
         print(f"Error updating Excel file: {e}")
 
