@@ -8,7 +8,7 @@ from datetime import datetime
 # File path to the Excel file
 EXCEL_FILE_PATH = './data/apparel.xlsx'
 
-# URL and headers
+# YCharts URL for U.S. clothing store sales
 URL = "https://ycharts.com/indicators/us_clothing_store_sales"
 HEADERS = {
     "User-Agent": "Mozilla/5.0",
@@ -28,13 +28,12 @@ def fetch_recent_apparel_sales_data(url):
             raise Exception("Failed to find the element with class 'key-stat-title'.")
 
         text = element.get_text(strip=True)
-        parts = text.split(maxsplit=2)
-        if len(parts) < 3:
-            raise Exception("Unexpected format for apparel sales data.")
+        if " USD for " not in text:
+            raise Exception("Unexpected format: missing ' USD for '")
 
-        value = float(parts[0].replace('B', '').replace(',', ''))
-        date_str = parts[2].replace("USD for ", "")
-        date = datetime.strptime(date_str, "%b %Y").strftime("%Y-%m-%d")
+        value_str, date_str = text.split(" USD for ")
+        value = float(value_str.replace('B', '').replace(',', '').strip())
+        date = datetime.strptime(date_str.strip(), "%b %Y").strftime("%Y-%m-%d")
 
         print(f"Fetched Apparel Sales - Value: {value}B, Date: {date}")
         return date, value
