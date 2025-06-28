@@ -31,7 +31,7 @@ except Exception as e:
 formatted_percentage_change = f"{latest_percentage_change:+.1f}%" if latest_percentage_change else "N/A"
 
 # Format the "let pi" data
-dates_since_reference = (data["Date"] - datetime(1970, 1, 1)).dt.days.tolist()
+dates_since_reference = (data["Date"] - datetime(1969, 12, 10)).dt.days.tolist()
 monthly_totals = data["Value"].tolist()
 pi_data = f"let pi = [{dates_since_reference}, {monthly_totals}, null, null, '', 1, []];"
 
