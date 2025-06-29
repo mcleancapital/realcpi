@@ -23,7 +23,7 @@ def get_fred_annual_data(series_id, api_key):
     data = response.json()
     if "observations" in data:
         return {
-            obs["date"][:4]: float(obs["value"])
+            f"{obs['date'][:4]}-12-31": float(obs["value"])
             for obs in data["observations"]
             if obs["value"] != "."
         }
