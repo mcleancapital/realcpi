@@ -10,7 +10,8 @@ output_html = './us-deficit/index.html'
 
 # Read Excel data
 data = pd.read_excel(excel_file, sheet_name="Data", engine="openpyxl")
-data["Date"] = pd.to_datetime(data["Date"])
+data["Date"] = pd.to_datetime(data["Date"], format="mixed", errors="coerce")
+data.dropna(subset=["Date"], inplace=True)
 data.sort_values(by="Date", inplace=True)
 
 # Calculate the latest values
