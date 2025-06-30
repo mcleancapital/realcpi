@@ -1,0 +1,36 @@
+name: Pages - Aerospace
+
+on:
+  schedule:
+    - cron: "15 8 11 4 *"  # Runs at 08:15 UTC on April 11 every year
+  workflow_dispatch:  # Allows manual triggering if needed
+
+permissions:
+  contents: write
+
+jobs:
+  update-html:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install pandas openpyxl
+
+      - name: Run Python script
+        run: python scripts/pages-aerospace.py
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add ./aerospace/index.html
+          git commit -m "Updated HTML with latest data"
+          git push
