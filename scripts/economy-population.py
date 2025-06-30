@@ -18,7 +18,7 @@ def update_sp500_html(html_file, excel_file, output_file):
 
             percentage_change = (b2 / b14 - 1) * 100
 
-            formatted_percentage = f" ({percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
+            formatted_percentage = f" ({'+' if percentage_change >= 0 else ''}{percentage_change:.1f}% vs last year)"
         except Exception as e:
             print(f"Error calculating percentage change: {e}")
             formatted_percentage = ""
