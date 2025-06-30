@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install yahoo_fin pandas openpyxl
+          pip install yfinance pandas openpyxl
 
       # Run the Python script
       - name: Run update script
