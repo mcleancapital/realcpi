@@ -38,7 +38,7 @@ def update_sp500_html(html_file, excel_file, output_file):
 
         # Format the date and value
         formatted_date = most_recent_date.strftime("%b %Y")
-        formatted_value = f"{most_recent_value:,.2f}%"
+        formatted_value = f"{most_recent_value:,.2f}"
 
         print("Step 2: Reading HTML file...")
         # Read the HTML content
