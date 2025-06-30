@@ -86,7 +86,8 @@ def update_excel(file_path, recent_date, recent_value):
                 curr = values[i]
                 if prev != 0:
                     yoy = ((curr / prev) - 1) * 100
-                    ws.cell(row=i + 2, column=3, value=round(yoy, 2))
+                    sign = "+" if yoy >= 0 else ""
+                    ws.cell(row=i + 2, column=3, value=f"{sign}{round(yoy, 1)}%")
                 else:
                     ws.cell(row=i + 2, column=3, value="N/A")
             else:
