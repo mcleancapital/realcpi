@@ -1,124 +1,104 @@
 import pandas as pd
 from datetime import datetime
+import re
 
-def update_sp500_html(html_file, excel_file, output_file):
+def update_m2_html(html_file, excel_file, output_file):
     try:
         print("Step 1: Reading Excel file...")
-        # Read the Excel file
-        df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value"], header=0)
+        df = pd.read_excel(excel_file, sheet_name="Data", header=0)
 
-        # Drop rows where 'Date' or 'Value'is missing
+        # Drop rows with missing data
         df = df.dropna(subset=["Date", "Value"])
-
-        # Convert 'Date' to datetime
         df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-        df = df.dropna(subset=["Date"])  # Remove rows with invalid dates
+        df = df.dropna(subset=["Date"])
+        df = df.sort_values(by="Date").reset_index(drop=True)
 
-        # Calculate numeric representation of dates relative to 1970-01-01
+        # Prepare data arrays
         epoch = datetime(1969, 12, 20)
         df["Date_Numeric"] = (df["Date"] - epoch).dt.days
-
-        # Sort data in ascending order of dates
-        df = df.sort_values(by="Date_Numeric", ascending=True).reset_index(drop=True)
-
-        # Extract arrays for the output
         date_array = df["Date_Numeric"].tolist()
         value_array = df["Value"].tolist()
+        formatted_data = f"[[{', '.join(map(str, date_array))}], [{', '.join(map(str, value_array))}], null, null, '', 0, []]"
 
-        # Format arrays as strings
-        formatted_dates = ", ".join(map(str, date_array))
-        formatted_values = ", ".join(map(str, value_array))
+        # Get latest data point
+        latest_date = df.iloc[-1]["Date"]
+        latest_value = df.iloc[-1]["Value"]
+        try:
+            latest_yoy = df.iloc[-1][2]  # Assumes column C is the YoY % change
+            if pd.isna(latest_yoy):
+                yoy_text = ""
+            else:
+                sign = "+" if latest_yoy >= 0 else ""
+                yoy_text = f" ({sign}{latest_yoy:.2f}% vs last year)"
+        except Exception:
+            yoy_text = ""
 
-        # Combine the formatted array with the required suffix
-        formatted_data = f"[[{formatted_dates}], [{formatted_values}], null, null, '', 0, []]"
-
-        # Get the most recent date and value
-        most_recent_date = df.iloc[-1]["Date"]
-        most_recent_value = df.iloc[-1]["Value"]
-
-        # Format the date and value
-        formatted_date = most_recent_date.strftime("%b %Y")
-        formatted_value = f"{most_recent_value:,.2f}"
+        formatted_value = f"{latest_value:,.2f}{yoy_text}"
+        formatted_date = latest_date.strftime("%b %Y")
 
         print("Step 2: Reading HTML file...")
-        # Read the HTML content
         with open(html_file, "r", encoding="utf-8") as file:
             html_content = file.read()
 
-        # Step 3: Update the data section in HTML
-        print("Step 3: Updating the data section in HTML...")
+        print("Step 3: Updating chart data...")
         data_marker = "<!-- M2 -->"
         if data_marker in html_content:
             data_start = html_content.find(data_marker) + len(data_marker)
-            data_end = html_content.find("]]", data_start) + 2  # Locate the end of the array
+            data_end = html_content.find("]]", data_start) + 2
             html_content = (
                 html_content[:data_start] +
-                "\n" +
-                formatted_data +
-                "\n" +
+                "\n" + formatted_data + "\n" +
                 html_content[data_end:]
             )
         else:
-            print(f"Data section marker '{data_marker}' not found in HTML.")
+            print(f"Data marker '{data_marker}' not found.")
             return
 
-        # Step 4: Locate the specific section for Home Prices 
-        print("Step 4: Updating the specific section for Real GDP Growth...")
-        sp500_marker = '<a class=box href="/m2">'
-        marker_start = html_content.find(sp500_marker)
-        if marker_start == -1:
-            print("Marker for 10-Year Treasury Rate not found in the HTML.")
+        print("Step 4: Updating summary box...")
+        box_marker = '<a class=box href="/m2">'
+        box_start = html_content.find(box_marker)
+        if box_start == -1:
+            print("Summary box for M2 not found.")
             return
 
-        # Locate the end of this section
-        section_end = html_content.find("</a>", marker_start) + 4
-        section_content = html_content[marker_start:section_end]
+        box_end = html_content.find("</a>", box_start) + 4
+        box_content = html_content[box_start:box_end]
 
-        # Update the value <div> within this section
-        value_start = section_content.find("<div>", section_content.find("<h3>")) + 5
-        value_end = section_content.find("</div>", value_start)
-
-        # Combine the updated value
-        updated_value = f"{formatted_value}"
-
-        # Update the section with the new value
-        updated_section = (
-            section_content[:value_start] +
-            updated_value +
-            section_content[value_end:]
+        # Replace value
+        value_start = box_content.find("<div>", box_content.find("<h3>")) + 5
+        value_end = box_content.find("</div>", value_start)
+        box_content = (
+            box_content[:value_start] +
+            formatted_value +
+            box_content[value_end:]
         )
 
-        # Update the date <div> within this section
+        # Replace date
         date_marker = '<div class="date">'
-        date_start = updated_section.find(date_marker) + len(date_marker)
-        date_end = updated_section.find("</div>", date_start)
-        updated_section = (
-            updated_section[:date_start] +
+        date_start = box_content.find(date_marker) + len(date_marker)
+        date_end = box_content.find("</div>", date_start)
+        box_content = (
+            box_content[:date_start] +
             formatted_date +
-            updated_section[date_end:]
+            box_content[date_end:]
         )
 
-        # Replace the original section in the HTML
-        html_content = (
-            html_content[:marker_start] +
-            updated_section +
-            html_content[section_end:]
-        )
+        # Update HTML
+        html_content = html_content[:box_start] + box_content + html_content[box_end:]
 
-        # Step 5: Save the updated HTML
-        print("Step 5: Writing updated HTML to output file...")
+        print("Step 5: Saving updated HTML...")
         with open(output_file, "w", encoding="utf-8") as file:
             file.write(html_content)
 
-        print(f"HTML file '{output_file}' updated successfully!")
+        print(f"✔ HTML file '{output_file}' updated successfully!")
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"❌ An error occurred: {e}")
 
 # File paths
 html_file = './stocks.html'
 excel_file = './data/m2.xlsx'
 output_file = './stocks.html'
 
-# Run the update function
-update_sp500_html(html_file, excel_file, output_file)
+# Run the update
+update_m2_html(html_file, excel_file, output_file)
