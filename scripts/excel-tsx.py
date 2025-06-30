@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 # 🔐 Your API key from FMP
-API_KEY = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj"  # ← Replace this
+API_KEY = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj"
 
 # Index symbol for S&P/TSX Composite
 INDEX_SYMBOL = "^GSPTSE"
@@ -29,9 +29,24 @@ def fetch_tsx_history(symbol, api_key):
     # Convert to DataFrame
     df = pd.DataFrame(records)
     df["date"] = pd.to_datetime(df["date"])
-    df = df.sort_values("date", ascending=False)
+    df = df.sort_values("date", ascending=False).reset_index(drop=True)
     df = df[["date", "close"]].rename(columns={"date": "Date", "close": "Value"})
 
+    # Calculate % change vs 252 rows later (approx. 1 year for daily data)
+    pct_change = []
+    for i in range(len(df)):
+        if i + 252 < len(df):
+            current = df.at[i, "Value"]
+            past = df.at[i + 252, "Value"]
+            if past != 0:
+                change = ((current / past) - 1) * 100
+                pct_change.append(round(change, 2))
+            else:
+                pct_change.append(None)
+        else:
+            pct_change.append(None)
+
+    df["% Change vs Last Year"] = pct_change
     return df
 
 # Write to Excel
@@ -47,10 +62,10 @@ def write_to_excel(df, file_path):
         wb = Workbook()
 
     ws = wb.create_sheet(SHEET_NAME, 0)
-    ws.append(["Date", "Value"])
+    ws.append(["Date", "Value", "% Change vs Last Year"])
 
     for _, row in df.iterrows():
-        ws.append([row["Date"].date(), row["Value"]])
+        ws.append([row["Date"].date(), row["Value"], row["% Change vs Last Year"]])
 
     wb.save(file_path)
     print(f"✔ Data saved to {file_path}")
