@@ -1,87 +1,65 @@
-import os
+import requests
 import pandas as pd
-import yfinance as yf
-from openpyxl import load_workbook
+from openpyxl import Workbook, load_workbook
 from datetime import datetime
+import os
 
-# File path to the Excel file
-EXCEL_FILE_PATH = './data/tsx.xlsx'
+# 🔐 Your API key from FMP
+API_KEY = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj"  # ← Replace this
 
-def fetch_recent_tsx_data():
-    """Fetch the most recent S&P/TSX Composite Index data from Yahoo Finance using yfinance."""
-    try:
-        ticker = yf.Ticker("^GSPTSE")
-        hist = ticker.history(start="2024-01-01")
+# Index symbol for S&P/TSX Composite
+INDEX_SYMBOL = "^GSPTSE"
 
-        if hist.empty:
-            print("No data returned for ^GSPTSE.")
-            return None, None
+# Excel file path
+EXCEL_FILE = "./data/tsx.xlsx"
+SHEET_NAME = "Data"
 
-        recent_date = hist.index[-1].date()
-        recent_price = hist["Close"][-1]
-        print(f"Fetched data - Date: {recent_date}, Price: {recent_price}")
-        return recent_date, recent_price
-    except Exception as e:
-        print(f"Error fetching TSX data: {e}")
-        return None, None
+# Fetch monthly historical prices from FMP
+def fetch_tsx_history(symbol, api_key):
+    url = f"https://financialmodelingprep.com/api/v3/historical-price-full/index/{symbol}?timeseries=1000&apikey={api_key}"
+    response = requests.get(url)
+    response.raise_for_status()
+    data = response.json()
 
-def update_excel(file_path, recent_date, recent_price):
-    """Update the Excel file in the 'Data' tab and directly calculate values for column C."""
-    try:
-        if not os.path.exists(file_path):
-            print(f"File not found: {file_path}")
-            return
+    if "historical" not in data:
+        raise Exception("No 'historical' key in response data")
 
+    records = data["historical"]
+
+    # Convert to DataFrame
+    df = pd.DataFrame(records)
+    df["date"] = pd.to_datetime(df["date"])
+    df = df.sort_values("date", ascending=False)
+    df = df[["date", "close"]].rename(columns={"date": "Date", "close": "Value"})
+
+    return df
+
+# Write to Excel
+def write_to_excel(df, file_path):
+    if not os.path.exists(os.path.dirname(file_path)):
+        os.makedirs(os.path.dirname(file_path))
+
+    if os.path.exists(file_path):
         wb = load_workbook(file_path)
-        if "Data" not in wb.sheetnames:
-            print(f"'Data' sheet not found in the workbook.")
-            return
+        if SHEET_NAME in wb.sheetnames:
+            del wb[SHEET_NAME]
+    else:
+        wb = Workbook()
 
-        ws = wb["Data"]
+    ws = wb.create_sheet(SHEET_NAME, 0)
+    ws.append(["Date", "Value"])
 
-        # Check dates of the second and third rows
-        second_row_date = ws.cell(row=2, column=1).value
-        third_row_date = ws.cell(row=3, column=1).value
+    for _, row in df.iterrows():
+        ws.append([row["Date"].date(), row["Value"]])
 
-        if second_row_date:
-            second_row_date = pd.to_datetime(second_row_date).date()
-        if third_row_date:
-            third_row_date = pd.to_datetime(third_row_date).date()
+    wb.save(file_path)
+    print(f"✔ Data saved to {file_path}")
 
-        # Determine whether to add a new row or update
-        if second_row_date and third_row_date and second_row_date.month != third_row_date.month:
-            ws.insert_rows(2)
-            ws.cell(row=2, column=1, value=recent_date)
-            ws.cell(row=2, column=2, value=recent_price)
-            print(f"Inserted a new row with date {recent_date} and price {recent_price}.")
-        else:
-            ws.cell(row=2, column=1, value=recent_date)
-            ws.cell(row=2, column=2, value=recent_price)
-            print(f"Updated the second row with date {recent_date} and price {recent_price}.")
-
-        # Directly calculate and update column C values
-        max_row = ws.max_row
-        for row in range(2, max_row + 1):
-            reference_row = row + 252
-            if reference_row <= max_row:
-                current_value = ws.cell(row=row, column=2).value
-                reference_value = ws.cell(row=reference_row, column=2).value
-
-                if current_value is not None and reference_value not in (None, 0):
-                    calculated_value = ((current_value / reference_value) - 1) * 100
-                    ws.cell(row=row, column=3, value=calculated_value)
-                else:
-                    ws.cell(row=row, column=3, value=None)
-            else:
-                ws.cell(row=row, column=3, value=None)
-
-        print(f"Updated values in column C for rows 2 to {max_row}.")
-        wb.save(file_path)
-        print(f"Workbook saved successfully at {file_path}.")
-    except Exception as e:
-        print(f"Error updating Excel file: {e}")
-
-if __name__ == "__main__":
-    recent_date, recent_price = fetch_recent_tsx_data()
-    if recent_date and recent_price:
-        update_excel(EXCEL_FILE_PATH, recent_date, recent_price)
+# Run everything
+try:
+    print("🔍 Fetching TSX historical data from FMP...")
+    tsx_df = fetch_tsx_history(INDEX_SYMBOL, API_KEY)
+    print(f"✅ Fetched {len(tsx_df)} records.")
+    write_to_excel(tsx_df, EXCEL_FILE)
+except Exception as e:
+    print(f"❌ Error: {e}")
