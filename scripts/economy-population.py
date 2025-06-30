@@ -18,7 +18,7 @@ def update_sp500_html(html_file, excel_file, output_file):
 
             percentage_change = (b2 / b14 - 1) * 100
 
-            formatted_percentage = f" (+{percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
+            formatted_percentage = f" ({percentage_change:.1f}% vs last year)" if percentage_change >= 0 else f" ({percentage_change:.1f}% vs last year)"
         except Exception as e:
             print(f"Error calculating percentage change: {e}")
             formatted_percentage = ""
@@ -31,7 +31,7 @@ def update_sp500_html(html_file, excel_file, output_file):
         df = df.dropna(subset=["Date"])  # Remove rows with invalid dates
 
         # Calculate numeric representation of dates relative to 1970-01-01
-        epoch = datetime(1970, 1, 1)
+        epoch = datetime(1969, 12, 20)
         df["Date_Numeric"] = (df["Date"] - epoch).dt.days
 
         # Sort data in ascending order of dates
@@ -53,7 +53,7 @@ def update_sp500_html(html_file, excel_file, output_file):
         most_recent_value = df.iloc[-1]["Value"]
 
         # Format the date into "4:00 PM EST, Fri Dec 13" format
-        formatted_date = most_recent_date.strftime("4:00 PM EST, %a %b %d")
+        formatted_date = most_recent_date.strftime("%b %Y")  # e.g., Dec 2024
         formatted_value = f"{most_recent_value:,.2f}"
 
         # Append percentage change to the value
