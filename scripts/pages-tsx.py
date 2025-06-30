@@ -4,7 +4,7 @@ from datetime import datetime
 import re
 
 # Paths for the files
-excel_file = './data/tsx-historical-prices.xlsx'
+excel_file = './data/tsx.xlsx'
 html_template = './tsx-historical-prices/index.html'
 output_html = './tsx-historical-prices/index.html'
 
