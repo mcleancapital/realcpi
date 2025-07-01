@@ -1,122 +1,81 @@
 import requests
-import pandas as pd
+from openpyxl import Workbook, load_workbook
+from openpyxl.utils import get_column_letter
 from datetime import datetime
 
-def update_interest_html(html_file, excel_file, output_file):
+# FRED API Setup
+API_KEY = "dc0a72da11fb0ffc6f4dc8d31e7afbb5"  # Replace with your own key
+FRED_BASE = "https://api.stlouisfed.org/fred/series/observations"
+SERIES_ID = "FYOIGDA188S"  # Interest Payments on Federal Debt as a % of GDP
+
+# Output Excel file
+EXCEL_FILE = "./data/federal-interest-gdp.xlsx"
+
+# Fetch annual data from FRED
+def get_fred_annual_data(series_id, api_key):
+    params = {
+        "series_id": series_id,
+        "api_key": api_key,
+        "file_type": "json",
+        "frequency": "a"  # Annual frequency
+    }
+    response = requests.get(FRED_BASE, params=params)
+    response.raise_for_status()
+    data = response.json()
+    if "observations" in data:
+        return {
+            obs["date"]: float(obs["value"])
+            for obs in data["observations"]
+            if obs["value"] != "."
+        }
+    else:
+        raise Exception(f"No data found for series {series_id}")
+
+# Main logic
+try:
+    # Step 1: Get latest data
+    data = get_fred_annual_data(SERIES_ID, API_KEY)
+    latest_date = max(data.keys())
+    latest_value = data[latest_date]
+
+    # Step 2: Load or create Excel file
     try:
-        print("Step 1: Reading Excel file...")
-        # Read the Excel file
-        df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value", "% Change vs Last Year"], header=0)
+        wb = load_workbook(EXCEL_FILE)
+        sheet = wb.active
+    except FileNotFoundError:
+        wb = Workbook()
+        sheet = wb.active
+        sheet.append(["Date", "Value", "% Change vs Last Year"])
 
-        # Drop rows where 'Date' or 'Value' is missing
-        df = df.dropna(subset=["Date", "Value"])
+    # Step 3: Check if latest date is already in the file
+    existing_dates = [str(sheet.cell(row=i, column=1).value) for i in range(2, sheet.max_row + 1)]
 
-        # Convert 'Date' to datetime
-        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-        df = df.dropna(subset=["Date"])  # Remove rows with invalid dates
+    if latest_date not in existing_dates:
+        print(f"Inserting new row for {latest_date}...")
 
-        # Calculate numeric representation of dates relative to 1970-01-01
-        epoch = datetime(1969, 12, 20)
-        df["Date_Numeric"] = (df["Date"] - epoch).dt.days
+        # Insert new row at the top (row 2)
+        sheet.insert_rows(2)
+        sheet.cell(row=2, column=1, value=latest_date)
+        sheet.cell(row=2, column=2, value=latest_value)
 
-        # Sort data in ascending order of dates
-        df = df.sort_values(by="Date_Numeric", ascending=True).reset_index(drop=True)
+        # Insert formula in column C (=(B2/B3 - 1) * 100)
+        row_above = 2
+        row_below = 3
+        formula = f"=IF(B{row_below}=0,\"\",(B{row_above}/B{row_below}-1)*100)"
+        sheet.cell(row=2, column=3).value = formula
+    else:
+        print(f"{latest_date} already exists — skipping insertion.")
 
-        # Extract arrays for the output
-        date_array = df["Date_Numeric"].tolist()
-        value_array = df["Value"].tolist()
+    # Step 4: Recalculate column C for all rows (optional reprocessing)
+    for row in range(2, sheet.max_row):
+        current = row
+        next_row = row + 1
+        formula = f"=IF(B{next_row}=0,\"\",(B{current}/B{next_row}-1)*100)"
+        sheet.cell(row=current, column=3).value = formula
 
-        # Format arrays as strings
-        formatted_dates = ", ".join(map(str, date_array))
-        formatted_values = ", ".join(map(str, value_array))
+    # Step 5: Save workbook
+    wb.save(EXCEL_FILE)
+    print(f"{latest_date}: {latest_value:.2f}% saved to {EXCEL_FILE}")
 
-        # Combine the formatted array with the required suffix
-        formatted_data = f"[[{formatted_dates}], [{formatted_values}], null, null, '%', 0, []]"
-
-        # Get the most recent date, value, and "% Change vs Last Year"
-        most_recent_date = df.iloc[-1]["Date"]
-        most_recent_value = df.iloc[-1]["Value"]
-        most_recent_change = df.iloc[-1]["% Change vs Last Year"]
-
-        # Format the date, value, and change
-        formatted_date = most_recent_date.strftime("%b %Y")  # e.g., Dec 2024
-        formatted_value = f"{most_recent_value:,.2f}%"
-        formatted_change = f"({most_recent_change:,.2f}% vs last year)"
-
-        print("Step 2: Reading HTML file...")
-        # Read the HTML content
-        with open(html_file, "r", encoding="utf-8") as file:
-            html_content = file.read()
-
-        # Step 3: Update the data section in HTML
-        print("Step 3: Updating the data section in HTML...")
-        data_marker = "<!-- Federal Debt Service as a % of GDP -->"
-        if data_marker in html_content:
-            data_start = html_content.find(data_marker) + len(data_marker)
-            data_end = html_content.find("]]", data_start) + 2
-            html_content = (
-                html_content[:data_start] +
-                "\n" +
-                formatted_data +
-                "\n" +
-                html_content[data_end:]
-            )
-        else:
-            print(f"Data section marker '{data_marker}' not found in HTML.")
-            return
-
-        # Step 4: Locate and update the specific section for Interest Payments
-        print("Step 4: Updating the display section for Interest Payments...")
-        box_marker = '<a class=box href="/federal-interest-payments">'
-        marker_start = html_content.find(box_marker)
-        if marker_start == -1:
-            print("Marker for Federal Interest Payments not found in the HTML.")
-            return
-
-        section_end = html_content.find("</a>", marker_start) + 4
-        section_content = html_content[marker_start:section_end]
-
-        # Update the <div> with the value
-        value_start = section_content.find("<div>", section_content.find("<h3>")) + 5
-        value_end = section_content.find("</div>", value_start)
-        updated_value = f"{formatted_value} {formatted_change}"
-        updated_section = (
-            section_content[:value_start] +
-            updated_value +
-            section_content[value_end:]
-        )
-
-        # Update the date line
-        date_marker = '<div class="date">'
-        date_start = updated_section.find(date_marker) + len(date_marker)
-        date_end = updated_section.find("</div>", date_start)
-        updated_section = (
-            updated_section[:date_start] +
-            formatted_date +
-            updated_section[date_end:]
-        )
-
-        # Replace the section in the HTML
-        html_content = (
-            html_content[:marker_start] +
-            updated_section +
-            html_content[section_end:]
-        )
-
-        # Step 5: Save updated HTML
-        print("Step 5: Writing updated HTML to output file...")
-        with open(output_file, "w", encoding="utf-8") as file:
-            file.write(html_content)
-
-        print(f"HTML file '{output_file}' updated successfully!")
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-# File paths
-html_file = './economy.html'
-excel_file = './data/gov-debt-service.xlsx'
-output_file = './economy.html'
-
-# Run the function
-update_interest_html(html_file, excel_file, output_file)
+except Exception as e:
+    print(f"Error: {e}")
