@@ -565,6 +565,9 @@ async function loadTickerBar() {
         </a>
       `;
 
+      // ✅ Append the span to the ticker bar
+      bar.appendChild(span);
+	    
     });
   } catch (error) {
     document.getElementById("ticker-bar").textContent = "Unable to load market data.";
