@@ -9,7 +9,7 @@ FRED_BASE = "https://api.stlouisfed.org/fred/series/observations"
 SERIES_ID = "FYOIGDA188S"  # Interest Payments on Federal Debt as a % of GDP
 
 # Output Excel file
-EXCEL_FILE = "./data/federal-interest-gdp.xlsx"
+EXCEL_FILE = "./data/gov-debt-service.xlsx"
 
 # Fetch annual data from FRED
 def get_fred_annual_data(series_id, api_key):
