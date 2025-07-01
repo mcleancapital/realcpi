@@ -271,6 +271,8 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         cursor: pointer;
         padding: 10px;
         margin-left: auto;
+	position: relative;  /* Required for z-index to take effect */
+        z-index: 2001;        /* 👈 Make sure it floats above the ticker bar and input */
     }
 }
 	
