@@ -551,7 +551,20 @@ async function handleInput() {
     document.getElementById("companyName").textContent = "";
   }
 }
+
+window.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const ticker = params.get("ticker");
+  if (ticker) {
+    const input = document.getElementById("tickerInput");
+    input.value = ticker;
+    input.dispatchEvent(new Event('input')); // triggers name autofill
+    setTimeout(loadData, 500); // simulate Enter after short delay
+  }
+});
+	
 </script>
+
 
 
 
