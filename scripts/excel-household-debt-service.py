@@ -51,13 +51,23 @@ try:
     existing_dates = [str(sheet.cell(row=i, column=1).value) for i in range(2, sheet.max_row + 1)]
 
     if latest_date not in existing_dates:
+        print(f"Inserting new row for {latest_date}...")
+
         # Insert new row at the top (after header)
         sheet.insert_rows(2)
         sheet.cell(row=2, column=1, value=latest_date)
         sheet.cell(row=2, column=2, value=latest_value)
 
-        # Add Excel formula to column C (C2): =(B2/B14-1)*100
-        sheet.cell(row=2, column=3).value = "=(B2/B14-1)*100"
+        # Get B14 value (row 14, column 2)
+        b14_value = sheet.cell(row=14, column=2).value
+        if isinstance(b14_value, (int, float)) and b14_value != 0:
+            percent_change = (latest_value / b14_value - 1) * 100
+            sheet.cell(row=2, column=3, value=round(percent_change, 2))
+        else:
+            sheet.cell(row=2, column=3, value=None)  # Or "N/A" if you prefer
+
+    else:
+        print(f"{latest_date} already exists — skipping insertion.")
 
     # Save the workbook
     wb.save(EXCEL_FILE)
