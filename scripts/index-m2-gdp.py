@@ -15,7 +15,7 @@ def update_sp500_html(html_file, excel_file, output_file):
         df = df.dropna(subset=["Date"])  # Remove rows with invalid dates
 
         # Calculate numeric representation of dates relative to 1970-01-01
-        epoch = datetime(1970, 1, 1)
+        epoch = datetime(1969, 12, 20)
         df["Date_Numeric"] = (df["Date"] - epoch).dt.days
 
         # Sort data in ascending order of dates
@@ -118,9 +118,9 @@ def update_sp500_html(html_file, excel_file, output_file):
         print(f"An error occurred: {e}")
 
 # File paths
-html_file = './economy.html'
+html_file = './stocks.html'
 excel_file = './data/m2-nominal-gdp.xlsx'
-output_file = './economy.html'
+output_file = './stocks.html'
 
 # Run the update function
 update_sp500_html(html_file, excel_file, output_file)
