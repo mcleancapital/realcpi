@@ -1,6 +1,5 @@
 import requests
 from openpyxl import Workbook, load_workbook
-from openpyxl.utils import get_column_letter
 from datetime import datetime
 
 # FRED API Setup
@@ -58,20 +57,31 @@ try:
         sheet.cell(row=2, column=1, value=latest_date)
         sheet.cell(row=2, column=2, value=latest_value)
 
-        # Insert formula in column C (=(B2/B3 - 1) * 100)
-        row_above = 2
-        row_below = 3
-        formula = f"=IF(B{row_below}=0,\"\",(B{row_above}/B{row_below}-1)*100)"
-        sheet.cell(row=2, column=3).value = formula
+        # Compute % change from previous year (row 3)
+        try:
+            prev_value = sheet.cell(row=3, column=2).value
+            if prev_value not in (None, 0):
+                change = (latest_value / float(prev_value) - 1) * 100
+                sheet.cell(row=2, column=3, value=round(change, 2))
+            else:
+                sheet.cell(row=2, column=3, value="")
+        except Exception:
+            sheet.cell(row=2, column=3, value="")
     else:
         print(f"{latest_date} already exists — skipping insertion.")
 
-    # Step 4: Recalculate column C for all rows (optional reprocessing)
+    # Step 4: Recalculate column C for all rows
     for row in range(2, sheet.max_row):
-        current = row
-        next_row = row + 1
-        formula = f"=IF(B{next_row}=0,\"\",(B{current}/B{next_row}-1)*100)"
-        sheet.cell(row=current, column=3).value = formula
+        try:
+            current_val = sheet.cell(row=row, column=2).value
+            next_val = sheet.cell(row=row + 1, column=2).value
+            if current_val not in (None, "") and next_val not in (None, "", 0):
+                change = (float(current_val) / float(next_val) - 1) * 100
+                sheet.cell(row=row, column=3, value=round(change, 2))
+            else:
+                sheet.cell(row=row, column=3, value="")
+        except Exception:
+            sheet.cell(row=row, column=3, value="")
 
     # Step 5: Save workbook
     wb.save(EXCEL_FILE)
