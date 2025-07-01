@@ -387,7 +387,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   <style>
     input { font-size: 18px; padding: 8px; width: 300px; }
     #currentPrice { font-size: 24px; font-weight: bold; margin-left: 20px; display: inline-block; vertical-align: middle; }
-    #companyName { font-size: 20px; font-weight: bold; margin-left: 10px; display: inline-block; vertical-align: middle; }
+    #companyName { font-size: 20px; font-weight: bold !important; margin-left: 10px; display: inline-block; vertical-align: middle; }
     #controls { margin-top: 20px; }
     button.range-btn {
       padding: 6px 10px;
@@ -544,7 +544,7 @@ async function loadData() {
     <p>Equity / Total Liabilities: ${equityToLiabilities}</p>
     <p>Dividend Yield: ${dividendYield}</p>
     <p>Industry: ${profile.industry}</p>
-    <p><a href="${profile.website}" target="_blank">Website</a></p>
+    <p style="margin-top: 12px; margin-bottom: 12px;"><a href="${profile.website}" target="_blank">Website</a></p>
   `;
 
   document.getElementById("currentPrice").textContent = `$${Number(profile.price).toFixed(2)}`;
@@ -556,14 +556,28 @@ let selectedSuggestionIndex = -1;
 let currentSuggestions = [];
 
 async function handleInput() {
-  const input = document.getElementById("tickerInput").value;
+  const input = document.getElementById("tickerInput").value.trim();
   const suggestionBox = document.getElementById("suggestions");
   if (input.length < 1) {
     suggestionBox.style.display = "none";
     return;
   }
 
-  const results = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`).then(r => r.json());
+  let results = [];
+
+  // Try search-ticker first
+  try {
+    const res1 = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
+    results = await res1.json();
+
+    // Fallback to /search if no results
+    if (!results.length) {
+      const res2 = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`);
+      results = await res2.json();
+    }
+  } catch (err) {
+    console.error("Search error:", err);
+  }
 
   currentSuggestions = results;
   selectedSuggestionIndex = -1;
@@ -587,6 +601,7 @@ async function handleInput() {
     suggestionBox.style.display = "none";
   }
 }
+
 
 function handleKeyDown(event) {
   const suggestionBox = document.getElementById("suggestions");
