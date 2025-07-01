@@ -563,7 +563,7 @@ async function handleInput() {
     return;
   }
 
-  const results = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`).then(r => r.json());
+  const results = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`).then(r => r.json());
 
   currentSuggestions = results;
   selectedSuggestionIndex = -1;
