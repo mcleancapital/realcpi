@@ -5,10 +5,10 @@ def update_sp500_html(html_file, excel_file, output_file):
     try:
         print("Step 1: Reading Excel file...")
         # Read the Excel file
-        df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value", "% Change vs Last Year"], header=0)
+        df = pd.read_excel(excel_file, sheet_name="Data", usecols=["Date", "Value", "% Change vs Last Quarter"], header=0)
 
-        # Drop rows where 'Date', 'Value', or '% Change vs Last Year' is missing
-        df = df.dropna(subset=["Date", "Value", "% Change vs Last Year"])
+        # Drop rows where 'Date', 'Value', or '% Change vs Last Quarter' is missing
+        df = df.dropna(subset=["Date", "Value", "% Change vs Last Quarter"])
 
         # Convert 'Date' to datetime
         df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
@@ -32,15 +32,15 @@ def update_sp500_html(html_file, excel_file, output_file):
         # Combine the formatted array with the required suffix
         formatted_data = f"[[{formatted_dates}], [{formatted_values}], null, null, '%', 0, []]"
 
-        # Get the most recent date, value, and "% Change vs Last Year"
+        # Get the most recent date, value, and "% Change vs Last Quarter"
         most_recent_date = df.iloc[-1]["Date"]
         most_recent_value = df.iloc[-1]["Value"]
-        most_recent_change = df.iloc[-1]["% Change vs Last Year"]
+        most_recent_change = df.iloc[-1]["% Change vs Last Quarter"]
 
         # Format the date, value, and change
         formatted_date = most_recent_date.strftime("4:00 PM EST, %a %b %d")
         formatted_value = f"{most_recent_value:,.2f}%"
-        formatted_change = f"({most_recent_change:,.2f}% vs last year)"
+        formatted_change = f"({most_recent_change:,.2f}% vs last quarter)"
 
         print("Step 2: Reading HTML file...")
         # Read the HTML content
