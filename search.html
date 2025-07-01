@@ -548,7 +548,7 @@ async function loadData() {
   `;
 
   document.getElementById("currentPrice").textContent = `$${Number(profile.price).toFixed(2)}`;
-  document.getElementById("companyName").innerHTML = `<strong>${profile.companyName}</strong>`;
+  document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
 }
 
@@ -592,25 +592,28 @@ function handleKeyDown(event) {
   const suggestionBox = document.getElementById("suggestions");
   const items = suggestionBox.querySelectorAll("li");
 
-  if (!items.length) return;
-
   if (event.key === "ArrowDown") {
+    if (!items.length) return;
     selectedSuggestionIndex = (selectedSuggestionIndex + 1) % items.length;
     updateActiveSuggestion(items);
     event.preventDefault();
   } else if (event.key === "ArrowUp") {
+    if (!items.length) return;
     selectedSuggestionIndex = (selectedSuggestionIndex - 1 + items.length) % items.length;
     updateActiveSuggestion(items);
     event.preventDefault();
   } else if (event.key === "Enter") {
+    event.preventDefault();
     if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < currentSuggestions.length) {
+      // If suggestion selected, use it
       document.getElementById("tickerInput").value = currentSuggestions[selectedSuggestionIndex].symbol;
-      suggestionBox.style.display = "none";
-      loadData();
-      event.preventDefault();
     }
+    // Either way, trigger search with current value
+    document.getElementById("suggestions").style.display = "none";
+    loadData();
   }
 }
+
 
 function updateActiveSuggestion(items) {
   items.forEach((item, i) => {
