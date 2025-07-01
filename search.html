@@ -143,6 +143,19 @@ footer{
 a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.more:hover{text-decoration:none}a.more{text-align:center;display:block;margin:var(--std_padding) auto 0 auto;color:#fff;border:1px solid rgba(0,0,0,.08);border-radius:24px;background-color:#000;padding:14px 19px;width:80px}
 
         @media (max-width: 729px) {
+
+  #ticker-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    justify-content: flex-start; /* Align items to the left */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+
+  #ticker-bar span {
+    flex: 0 0 auto; /* Prevent shrinking */
+    min-width: 120px; /* Or more depending on your content */
+  }               
                         
     .mobile-menu {
                 display: flex;
@@ -524,8 +537,9 @@ async function loadData() {
   }
 
   document.getElementById("info").innerHTML = `
-    <h3>${profile.companyName} (${profile.symbol})</h3>
-    <p>Exchange: ${profile.exchange}</p>
+    <h3><strong>${profile.companyName} (${profile.symbol})</strong></h3>
+    <p><strong>Exchange:</strong> ${profile.exchange}</p>
+    <p style="margin-top: 8px;"><strong>Market Cap:</strong> $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
     <p>Market Cap: $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
     <p>P/E Ratio: ${peRatio}</p>
     <p>Forward P/E: ${forwardPE}</p>
@@ -536,7 +550,7 @@ async function loadData() {
   `;
 
   document.getElementById("currentPrice").textContent = `$${Number(profile.price).toFixed(2)}`;
-  document.getElementById("companyName").textContent = profile.companyName;
+  document.getElementById("companyName").innerHTML = `<strong>${profile.companyName}</strong>`;
   setRange(currentRange);
 }
 
