@@ -45,17 +45,21 @@ try:
     except FileNotFoundError:
         wb = Workbook()
         sheet = wb.active
-        sheet.append(["Quarter End", "Debt Service (% Disposable Income)"])
+        sheet.append(["Quarter End", "Debt Service (% Disposable Income)", "% Change vs B14"])
 
     # Get existing dates to avoid duplicates
     existing_dates = [str(sheet.cell(row=i, column=1).value) for i in range(2, sheet.max_row + 1)]
 
     if latest_date not in existing_dates:
+        # Insert new row at the top (after header)
         sheet.insert_rows(2)
         sheet.cell(row=2, column=1, value=latest_date)
         sheet.cell(row=2, column=2, value=latest_value)
 
-    # Save
+        # Add Excel formula to column C (C2): =(B2/B14-1)*100
+        sheet.cell(row=2, column=3).value = "=(B2/B14-1)*100"
+
+    # Save the workbook
     wb.save(EXCEL_FILE)
     print(f"{latest_date}: {latest_value:.2f}% saved to {EXCEL_FILE}")
 
