@@ -1,4 +1,4 @@
-name: Pages - US Cash use
+name: 7.2 Pages - US Cash use
 
 on:
   workflow_dispatch:  # Allows manual triggering if needed
