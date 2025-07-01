@@ -17,7 +17,7 @@ data.sort_values(by="Date", inplace=True)
 latest_date = data.iloc[-1]["Date"]
 latest_volume = data.iloc[-1]["Value"]
 
-# Read cell C2 for '% Change vs Last Year' using openpyxl
+# Read cell C2 for '% Change vs Last Quarter' using openpyxl
 try:
     wb = load_workbook(excel_file, data_only=True)  # data_only=True retrieves evaluated formula values
     sheet = wb["Data"]
@@ -45,7 +45,7 @@ html_content = re.sub(r"let pi = \[.*?\];", pi_data, html_content, flags=re.DOTA
 # Replace the values and percentage change
 html_content = re.sub(
     r"<b>Current <span class=\"currentTitle\">.*?</span>:</b>.*?\(.*?\)",
-    f"<b>Current <span class=\"currentTitle\">M2 / Nominal GDP</span>:</b> {latest_volume:.2f}% ({formatted_percentage_change} vs last year)",
+    f"<b>Current <span class=\"currentTitle\">M2 / Nominal GDP</span>:</b> {latest_volume:.2f}% ({formatted_percentage_change} vs last quarter)",
     html_content,
     flags=re.DOTALL
 )
