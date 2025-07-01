@@ -313,6 +313,45 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 
 </header>
+
+<div id="ticker-bar">
+  Loading market data...
+</div>
+
+<style>
+#ticker-bar {
+  background-color: #f0f0f0;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-family: "Whitney", sans-serif;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  text-align: center;
+}
+#ticker-bar span {
+  display: inline-block;
+  min-width: 90px;
+}
+.green {
+  color: #55a232;
+}
+.red {
+  color: #cc3314;
+}
+.blue {
+  color: #0056b3;
+  font-weight: bold;
+}
+</style>
+
+
+	
 <main>
 
 <div class="container">
@@ -460,6 +499,67 @@ function toggleMenu() {
 </script>
 
 </body>
+
+<script>
+function formatNumber(value) {
+  return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+async function loadTickerBar() {
+  const apiKey = 'y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj'; // Replace with your actual API key
+  const symbols = [
+    '^GSPC',       // S&P 500
+    '^IXIC',       // NASDAQ
+    '^RUT',        // Russell 2000
+    '^GSPTSE',     // TSX
+    'URTH',        // MSCI World ETF
+    'CLUSD',        // Crude Oil
+    '^TNX',        // 10-Year Treasury
+    'BTCUSD',     // Bitcoin
+    'CADUSD'     // CAD/USD
+  ];
+
+  const displayNames = {
+    '^GSPC': 'S&P 500',
+    '^IXIC': 'NASDAQ',
+    '^RUT': 'Russell 2000',
+    '^GSPTSE': 'S&P/TSX',
+    'URTH': 'MSCI World',
+    'CLUSD': 'Crude Oil',
+    '^TNX': '10-Year',
+    'BTCUSD': 'Bitcoin',
+    'CADUSD': 'CAD/USD'
+  };
+
+  try {
+    const url = `https://financialmodelingprep.com/api/v3/quote/${symbols.join(',')}?apikey=${apiKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const bar = document.getElementById("ticker-bar");
+    bar.innerHTML = "";
+
+    data.forEach(item => {
+      const changeClass = item.changesPercentage >= 0 ? "green" : "red";
+      const display = displayNames[item.symbol] || item.symbol;
+      const span = document.createElement("span");
+      span.innerHTML = `
+        <div class="blue">${display}</div>
+        <div>${formatNumber(item.price)}</div>
+        <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
+      `;
+      bar.appendChild(span);
+    });
+  } catch (error) {
+    document.getElementById("ticker-bar").textContent = "Unable to load market data.";
+    console.error("Ticker fetch error:", error);
+  }
+}
+
+loadTickerBar();
+setInterval(loadTickerBar, 30000); // Refresh every 30 seconds
+</script>
+
 
 
     <!-- The next section gives the data for each chart on the index page. Each chart's data comes after [[. -->
