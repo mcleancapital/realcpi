@@ -339,7 +339,6 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   font-size: 14px;
   font-family: "Whitney", sans-serif;
   display: flex;
-  flex-wrap: wrap;
   gap: 40px;
   justify-content: center;
   overflow-x: auto;
@@ -540,7 +539,6 @@ async function loadData() {
     <h3><strong>${profile.companyName} (${profile.symbol})</strong></h3>
     <p><strong>Exchange:</strong> ${profile.exchange}</p>
     <p style="margin-top: 8px;"><strong>Market Cap:</strong> $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
-    <p>Market Cap: $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
     <p>P/E Ratio: ${peRatio}</p>
     <p>Forward P/E: ${forwardPE}</p>
     <p>Equity / Total Liabilities: ${equityToLiabilities}</p>
