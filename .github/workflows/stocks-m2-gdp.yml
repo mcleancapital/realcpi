@@ -1,4 +1,4 @@
-name: Stocks.html - Update M2/GDP
+name: 2. Stocks.html - Update M2/GDP
 
 on:
   workflow_dispatch:        # Allow manual triggering
