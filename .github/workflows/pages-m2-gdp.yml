@@ -1,4 +1,4 @@
-name: Pages - M2/GDP
+name: 1.2 Pages - M2/GDP
 
 on:
   workflow_dispatch:  # Allows manual triggering if needed
