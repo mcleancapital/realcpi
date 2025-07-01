@@ -543,12 +543,28 @@ async function loadTickerBar() {
       const changeClass = item.changesPercentage >= 0 ? "green" : "red";
       const display = displayNames[item.symbol] || item.symbol;
       const span = document.createElement("span");
+      const tickerMap = {
+        '^GSPC': 'VOO',
+        '^IXIC': 'QQQ',
+        '^RUT': 'IWM',
+        '^GSPTSE': 'XIC',
+        'URTH': 'URTH',
+        'CLUSD': 'CL=F',
+        '^TNX': 'IEF',
+        'BTCUSD': 'BTC-USD',
+        'CADUSD': 'CADUSD=X'
+      };
+
+      const targetTicker = tickerMap[item.symbol] || item.symbol;
+
       span.innerHTML = `
-        <div class="blue">${display}</div>
-        <div>${formatNumber(item.price)}</div>
-        <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
+        <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
+          <div class="blue">${display}</div>
+          <div>${formatNumber(item.price)}</div>
+          <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
+        </a>
       `;
-      bar.appendChild(span);
+
     });
   } catch (error) {
     document.getElementById("ticker-bar").textContent = "Unable to load market data.";
