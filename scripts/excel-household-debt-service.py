@@ -8,7 +8,7 @@ FRED_BASE = "https://api.stlouisfed.org/fred/series/observations"
 SERIES_ID = "TDSP"  # Household Debt Service Payments as a % of Disposable Personal Income
 
 # Output Excel file
-EXCEL_FILE = "./data/us-household-debt-service.xlsx"
+EXCEL_FILE = "./data/household-debt-service.xlsx"
 
 # Fetch data from FRED
 def get_fred_quarterly_data(series_id, api_key):
