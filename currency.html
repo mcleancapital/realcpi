@@ -30,7 +30,7 @@
 
 .menu-bar ul li {
     display: inline-block;
-    margin: 0 15px;
+    margin: 0 30px;
 }
 
 .menu-bar ul li a {
@@ -298,10 +298,9 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
             <li><a href="stocks.html">Stock Market</a></li>
             <li><a href="realestate.html">Real Estate</a></li>
             <li><a href="economy.html">Economic Dashboard</a></li>
-            <li><a href="https://tradingeconomics.com/commodities" target="_blank" rel="noopener noreferrer">Commodities</a></li>
-            <li><a href="/sp-calculator">S&P 500 Calculator</a></li>
-            <li><a href="sectors.html">S&P 500 Sectors</a></li>
+            <li><a href="search.html">Stock Search</a></li>
             <li class="current"><a href="currency.html" style="color: blue;">Currency Converter</a></li>
+            <li><a href="https://tradingeconomics.com/commodities" target="_blank" rel="noopener noreferrer">Commodities</a></li>
         </ul>
     </nav>
 
@@ -314,6 +313,42 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 
 </header>
+
+<div id="ticker-bar">
+  Loading market data...
+</div>
+
+<style>
+#ticker-bar {
+  background-color: #f0f0f0;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-family: "Whitney", sans-serif;
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  text-align: center;
+}
+#ticker-bar span {
+  display: inline-block;
+  min-width: 90px;
+}
+.green {
+  color: #55a232;
+}
+.red {
+  color: #cc3314;
+}
+.blue {
+  color: #0056b3;
+  font-weight: bold;
+}
+</style>
+	
 
 <main>
 
@@ -381,9 +416,9 @@ This information is provided for informational purposes only. This is not for ad
 <br><br>
 Please let us know if you have any suggestions, including data series or metrics we could add to Real CPI.
 <br><br>
-View Canadian version of Real CPI:<br>
-<a href="https://www.realcpi.ca/">
-<img src="/static/images/logo.jpg" alt="Real CPI Logo" height="25" /><img src="/static/images/Maple_Leaf.png" alt="Canada" height="25" />
+View S&P 500 Calculator:<br><br>
+<a href="/sp-calculator">
+<img src="/static/images/sp_calculator.png" alt="S&P 500 Calculator Logo" height="25" />
 </a>
 <br><br>
 Copyright © 2024
@@ -463,5 +498,84 @@ function toggleMenu() {
 	
 </body>
 
+<script>
+function formatNumber(value) {
+  return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+async function loadTickerBar() {
+  const apiKey = 'y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj'; // Replace with your actual API key
+  const symbols = [
+    '^GSPC',       // S&P 500
+    '^IXIC',       // NASDAQ
+    '^RUT',        // Russell 2000
+    '^GSPTSE',     // TSX
+    'URTH',        // MSCI World ETF
+    'CLUSD',        // Crude Oil
+    '^TNX',        // 10-Year Treasury
+    'BTCUSD',     // Bitcoin
+    'CADUSD'     // CAD/USD
+  ];
+
+  const displayNames = {
+    '^GSPC': 'S&P 500',
+    '^IXIC': 'NASDAQ',
+    '^RUT': 'Russell 2000',
+    '^GSPTSE': 'S&P/TSX',
+    'URTH': 'MSCI World',
+    'CLUSD': 'Crude Oil',
+    '^TNX': '10-Year',
+    'BTCUSD': 'Bitcoin',
+    'CADUSD': 'CAD/USD'
+  };
+
+  try {
+    const url = `https://financialmodelingprep.com/api/v3/quote/${symbols.join(',')}?apikey=${apiKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const bar = document.getElementById("ticker-bar");
+    bar.innerHTML = "";
+
+    data.forEach(item => {
+      const changeClass = item.changesPercentage >= 0 ? "green" : "red";
+      const display = displayNames[item.symbol] || item.symbol;
+      const span = document.createElement("span");
+      const tickerMap = {
+        '^GSPC': 'VOO',
+        '^IXIC': 'QQQ',
+        '^RUT': 'IWM',
+        '^GSPTSE': 'XIC.to',
+        'URTH': 'URTH',
+        'CLUSD': 'CLUSD',
+        '^TNX': 'IEF',
+        'BTCUSD': 'BTCUSD',
+        'CADUSD': 'CADUSD'
+      };
+
+      const targetTicker = tickerMap[item.symbol] || item.symbol;
+
+      span.innerHTML = `
+        <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
+          <div class="blue">${display}</div>
+          <div>${formatNumber(item.price)}</div>
+          <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
+        </a>
+      `;
+
+      // ✅ Append the span to the ticker bar
+      bar.appendChild(span);
+	    
+    });
+  } catch (error) {
+    document.getElementById("ticker-bar").textContent = "Unable to load market data.";
+    console.error("Ticker fetch error:", error);
+  }
+}
+
+loadTickerBar();
+setInterval(loadTickerBar, 30000); // Refresh every 30 seconds
+</script>
+	
 	
 </html>
