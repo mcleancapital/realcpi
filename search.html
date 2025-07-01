@@ -407,7 +407,11 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 <h2>🔍 Lookup a Stock</h2>
 <div style="position: relative; display: inline-block;">
-  <input id="tickerInput" type="text" placeholder="Type ticker or company name..." oninput="handleInput()" onkeydown="if(event.key==='Enter') loadData()">
+  <div style="position: relative; display: inline-block;">
+    <input id="tickerInput" type="text" placeholder="Type ticker or company name..." oninput="handleInput()" onkeydown="handleKeyDown(event)">
+    <ul id="suggestions" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;"></ul>
+  </div>
+
 </div>
 <span id="currentPrice"></span>
 <span id="companyName"></span>
@@ -536,21 +540,73 @@ async function loadData() {
   setRange(currentRange);
 }
 
+let selectedSuggestionIndex = -1;
+let currentSuggestions = [];
+
 async function handleInput() {
   const input = document.getElementById("tickerInput").value;
+  const suggestionBox = document.getElementById("suggestions");
   if (input.length < 1) {
-    document.getElementById("companyName").textContent = "";
+    suggestionBox.style.display = "none";
     return;
   }
-  const results = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=1&apikey=${apiKey}`)
-    .then(r => r.json());
+
+  const results = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`).then(r => r.json());
+
+  currentSuggestions = results;
+  selectedSuggestionIndex = -1;
+  suggestionBox.innerHTML = "";
+
   if (results.length > 0) {
-    document.getElementById("companyName").textContent = results[0].name;
+    results.forEach((item, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${item.name} (${item.symbol})`;
+      li.style.padding = "8px";
+      li.style.cursor = "pointer";
+      li.addEventListener("click", () => {
+        document.getElementById("tickerInput").value = item.symbol;
+        suggestionBox.style.display = "none";
+        loadData();
+      });
+      suggestionBox.appendChild(li);
+    });
+    suggestionBox.style.display = "block";
   } else {
-    document.getElementById("companyName").textContent = "";
+    suggestionBox.style.display = "none";
   }
 }
 
+function handleKeyDown(event) {
+  const suggestionBox = document.getElementById("suggestions");
+  const items = suggestionBox.querySelectorAll("li");
+
+  if (!items.length) return;
+
+  if (event.key === "ArrowDown") {
+    selectedSuggestionIndex = (selectedSuggestionIndex + 1) % items.length;
+    updateActiveSuggestion(items);
+    event.preventDefault();
+  } else if (event.key === "ArrowUp") {
+    selectedSuggestionIndex = (selectedSuggestionIndex - 1 + items.length) % items.length;
+    updateActiveSuggestion(items);
+    event.preventDefault();
+  } else if (event.key === "Enter") {
+    if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < currentSuggestions.length) {
+      document.getElementById("tickerInput").value = currentSuggestions[selectedSuggestionIndex].symbol;
+      suggestionBox.style.display = "none";
+      loadData();
+      event.preventDefault();
+    }
+  }
+}
+
+function updateActiveSuggestion(items) {
+  items.forEach((item, i) => {
+    item.style.background = i === selectedSuggestionIndex ? "#eee" : "white";
+  });
+}
+
+	
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const ticker = params.get("ticker");
