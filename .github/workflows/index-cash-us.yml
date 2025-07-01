@@ -1,4 +1,4 @@
-name: Economy.html - US Cash use
+name: 7.1 Economy.html - US Cash use
 
 on:
   workflow_dispatch:        # Allow manual triggering
