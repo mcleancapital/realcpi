@@ -1,26 +1,13 @@
 import os
 import feedparser
-import requests
-from bs4 import BeautifulSoup
 import urllib.parse
-
-def fetch_image_url(article_url):
-    try:
-        headers = {"User-Agent": "Mozilla/5.0"}
-        response = requests.get(article_url, headers=headers, timeout=5)
-        if response.status_code != 200:
-            return None
-        soup = BeautifulSoup(response.content, "html.parser")
-        og_image = soup.find("meta", property="og:image")
-        return og_image["content"] if og_image else None
-    except:
-        return None
 
 def generate_news_html(ticker):
     query = urllib.parse.quote_plus(ticker)
     rss_url = f"https://news.google.com/rss/search?q={query}+stock"
 
     feed = feedparser.parse(rss_url)
+
     html = f"""
     <!DOCTYPE html>
     <html>
@@ -29,7 +16,6 @@ def generate_news_html(ticker):
     <style>
     body {{ font-family: Garamond, sans-serif; padding: 15px; line-height: 1.4; }}
     h2 {{ font-size: 20px; }}
-    img {{ max-width: 320px; margin-bottom: 10px; display: block; }}
     a {{ text-decoration: none; color: darkgreen; }}
     a:hover {{ text-decoration: underline; }}
     p {{ margin: 0; font-size: 15px; }}
@@ -45,11 +31,8 @@ def generate_news_html(ticker):
         link = entry.link
         title = entry.title
         summary = entry.summary
-        image_url = fetch_image_url(link)
 
         html += "<li>"
-        if image_url:
-            html += f"<img src='{image_url}' alt='Image'>"
         html += f"<a href='{link}' target='_blank'><b>{title}</b></a>"
         html += f"<p>{summary}</p></li>"
 
