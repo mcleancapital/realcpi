@@ -536,10 +536,22 @@ async function loadData() {
   const currentYear = new Date().getFullYear();
   const nextYearEstimate = estimatesData.find(est => new Date(est.date).getFullYear() === currentYear + 1);
   const estimatedEpsAvg = nextYearEstimate?.estimatedEpsAvg;
-  const forwardPE = estimatedEpsAvg && profile.price ? (profile.price / estimatedEpsAvg).toFixed(1) : "N/A";
+
+  const allowedCurrencies = ["USD", "CAD"];
+  const currency = profile.currency || "N/A";
+
+  const forwardPE = (allowedCurrencies.includes(currency) && estimatedEpsAvg && profile.price)
+    ? (profile.price / estimatedEpsAvg).toFixed(1)
+    : "N/A";
+
+  const dividendYield = (allowedCurrencies.includes(currency) && typeof profile.lastDiv === 'number' && profile.price)
+    ? ((profile.lastDiv / profile.price) * 100).toFixed(2) + '%'
+    : "N/A";
+
+
+	
   const peRatioRaw = profile.pe || ratios?.peRatioTTM || "N/A";
   const peRatio = typeof peRatioRaw === 'number' ? peRatioRaw.toFixed(1) : peRatioRaw;
-  const dividendYield = typeof profile.lastDiv === 'number' && profile.price ? ((profile.lastDiv / profile.price) * 100).toFixed(2) + '%' : "N/A";
   const equityToLiabilities = balance?.totalStockholdersEquity && balance?.totalLiabilities
     ? ((balance.totalStockholdersEquity / balance.totalLiabilities) * 100).toFixed(1) + '%'
     : "N/A";
@@ -554,6 +566,7 @@ async function loadData() {
   document.getElementById("info").innerHTML = `
     <h3><strong>${profile.companyName} (${profile.symbol})</strong></h3>
     <p><strong>Exchange:</strong> ${profile.exchange}</p>
+    <p><strong>Currency:</strong> ${profile.currency || 'N/A'}</p>
     <p style="margin-top: 8px;"><strong>Market Cap:</strong> $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
     <p>P/E Ratio: ${peRatio}</p>
     <p>Forward P/E: ${forwardPE}</p>
@@ -676,7 +689,6 @@ window.addEventListener("DOMContentLoaded", () => {
     setTimeout(loadData, 500); // simulate Enter after short delay
   }
 });
-
 
 	
 </script>
