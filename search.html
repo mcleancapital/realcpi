@@ -567,14 +567,16 @@ async function loadData() {
   document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
 
-  fetch('/generate-news', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ticker })
-  }).then(() => {
-    // Refresh iframe
-    const iframe = document.querySelector('iframe[src="news_ticker.html"]');
-    if (iframe) iframe.src = "news_ticker.html?" + new Date().getTime();  // Force reload
+  fetch("https://pqzw0hq6g4.execute-api.us-east-1.amazonaws.com/default", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ticker }) // ✅ dynamic value
+  })
+  .then(res => res.text())
+  .then(html => {
+    const iframe = document.getElementById("news-frame");
+    const blob = new Blob([html], { type: "text/html" });
+    iframe.src = URL.createObjectURL(blob);
   });
 
 }
@@ -680,7 +682,8 @@ window.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
-<iframe src="news_ticker.html" style="width:100%; height:100%; border:none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+<iframe id="news-frame" style="width:100%; height:600px; border:none;"></iframe>
+
 
 	    
 
