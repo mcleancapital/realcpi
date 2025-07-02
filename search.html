@@ -566,6 +566,17 @@ async function loadData() {
   document.getElementById("currentPrice").textContent = `$${Number(profile.price).toFixed(2)}`;
   document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
+
+  fetch('/generate-news', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ticker })
+  }).then(() => {
+    // Refresh iframe
+    const iframe = document.querySelector('iframe[src="news_ticker.html"]');
+    if (iframe) iframe.src = "news_ticker.html?" + new Date().getTime();  // Force reload
+  });
+
 }
 
 let selectedSuggestionIndex = -1;
@@ -663,6 +674,8 @@ window.addEventListener("DOMContentLoaded", () => {
     setTimeout(loadData, 500); // simulate Enter after short delay
   }
 });
+
+
 	
 </script>
 
