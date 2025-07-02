@@ -2,7 +2,7 @@ name: Economy.html - Update Rail
 
 on:
   schedule:
-    - cron: "25 8 11 4 *"  # Runs at 08:25 UTC on April 11 every year
+    - cron: "15 8 11 4 *"  # Runs at 08:15 UTC on April 11 every year
   workflow_dispatch:        # Allow manual triggering
 
 permissions:
