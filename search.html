@@ -563,8 +563,11 @@ async function loadData() {
     return;
   }
 
-  document.getElementById("info").innerHTML = `
-    <h3><strong>${profile.companyName} (${profile.symbol})</strong></h3>
+document.getElementById("info").innerHTML = `
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+      <img src="${profile.image}" alt="${profile.companyName} Logo" style="height: 36px; max-width: 60px;">
+      <h3 style="margin: 0;"><strong>${profile.companyName} (${profile.symbol})</strong></h3>
+    </div>
     <p><strong>Exchange:</strong> ${profile.exchange}</p>
     <p><strong>Currency:</strong> ${profile.currency || 'N/A'}</p>
     <p style="margin-top: 8px;"><strong>Market Cap:</strong> $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
