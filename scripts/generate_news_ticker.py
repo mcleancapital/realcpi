@@ -1,3 +1,4 @@
+import os
 import feedparser
 import requests
 from bs4 import BeautifulSoup
@@ -20,25 +21,25 @@ def generate_news_html(ticker):
     rss_url = f"https://news.google.com/rss/search?q={query}+stock"
 
     feed = feedparser.parse(rss_url)
-    html = """
+    html = f"""
     <!DOCTYPE html>
     <html>
     <head>
     <meta charset="UTF-8">
     <style>
-    body { font-family: Garamond, sans-serif; padding: 15px; line-height: 1.4; }
-    h2 { font-size: 20px; }
-    img { max-width: 320px; margin-bottom: 10px; display: block; }
-    a { text-decoration: none; color: darkgreen; }
-    a:hover { text-decoration: underline; }
-    p { margin: 0; font-size: 15px; }
-    li { margin-bottom: 25px; list-style: none; }
+    body {{ font-family: Garamond, sans-serif; padding: 15px; line-height: 1.4; }}
+    h2 {{ font-size: 20px; }}
+    img {{ max-width: 320px; margin-bottom: 10px; display: block; }}
+    a {{ text-decoration: none; color: darkgreen; }}
+    a:hover {{ text-decoration: underline; }}
+    p {{ margin: 0; font-size: 15px; }}
+    li {{ margin-bottom: 25px; list-style: none; }}
     </style>
     </head>
     <body>
-    <h2>📰 Related News for: {}</h2>
+    <h2>📰 Related News for: {ticker.upper()}</h2>
     <ul>
-    """.format(ticker.upper())
+    """
 
     for entry in feed.entries[:10]:
         link = entry.link
@@ -54,10 +55,14 @@ def generate_news_html(ticker):
 
     html += "</ul></body></html>"
 
-    with open("news_ticker.html", "w", encoding="utf-8") as f:
+    # 🔽 Write to repo root, even if this script is inside /scripts
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    output_path = os.path.join(repo_root, "news_ticker.html")
+
+    with open(output_path, "w", encoding="utf-8") as f:
         f.write(html)
 
-    print("✅ news_ticker.html generated.")
+    print(f"✅ news_ticker.html generated at {output_path}")
 
-# Example usage:
-generate_news_html("AAPL")  # Replace with dynamic ticker
+# Example usage
+generate_news_html("AAPL")
