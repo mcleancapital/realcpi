@@ -41,7 +41,7 @@ def update_m2_html(html_file, excel_file, output_file):
             html_content = file.read()
 
         print("Step 3: Updating chart data...")
-        data_marker = "<!-- Aerospace -->"
+        data_marker = "<!-- Labor Participation -->"
         if data_marker in html_content:
             data_start = html_content.find(data_marker) + len(data_marker)
             data_end = html_content.find("]]", data_start) + 2
