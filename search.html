@@ -573,7 +573,9 @@ async function loadData() {
     <p>Equity / Total Liabilities: ${equityToLiabilities}</p>
     <p>Dividend Yield: ${dividendYield}</p>
     <p>Industry: ${profile.industry}</p>
-    <p style="margin-top: 12px; margin-bottom: 12px;"><a href="${profile.website}" target="_blank">Website</a></p>
+    <p style="margin-top: 12px; margin-bottom: 12px;">
+      <a href="${profile.website}" target="_blank" style="color: #0056b3; font-weight: bold;">Website</a>
+    </p>
   `;
 
   document.getElementById("currentPrice").textContent = `$${Number(profile.price).toFixed(2)}`;
