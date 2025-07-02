@@ -39,7 +39,7 @@ def update_sp500_html(html_file, excel_file, output_file):
 
         # Format the date, value, and change
         formatted_date = most_recent_date.strftime("%b %Y")
-        formatted_value = f"{most_recent_value:,}B"
+        formatted_value = f"{most_recent_value:,.2f}"
         formatted_change = f"({most_recent_change:,.1f}% vs last year)"
 
         print("Step 2: Reading HTML file...")
