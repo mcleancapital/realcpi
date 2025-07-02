@@ -30,7 +30,7 @@ jobs:
 
       # Step 4: Run the update script
       - name: Run the update script
-        run: python scripts/index-wages.py
+        run: python scripts/economy-wages.py
 
       # Step 5: Commit and push changes
       - name: Commit and push changes
