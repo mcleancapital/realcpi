@@ -342,21 +342,9 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 </header>
 
-<div id="ticker-bar" style="display: flex; align-items: center; gap: 24px; overflow-x: auto;">
-  <!-- ✅ Search box stays untouched -->
-  <div id="stock-search-inline" style="flex-shrink: 0;">
-    <input id="tickerInputMini" type="text" placeholder="Search ticker..." 
-           style="font-size: 14px; padding: 6px; width: 160px;" 
-           oninput="handleInputMini()" 
-           onkeydown="handleKeyDownMini(event)">
-    <ul id="suggestionsMini" style="position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none; width: 160px;"></ul>
-  </div>
-
-  <!-- ✅ This will be dynamically updated -->
-  <div id="ticker-items" style="display: flex; gap: 24px;"></div>
+<div id="ticker-bar">
+  Loading market data...
 </div>
-
-
 
 <style>
 #ticker-bar {
@@ -395,7 +383,16 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <div class="container">
     <!-- Left Column -->
     <div class="left-column">
-  
+
+<h2>🔍 Lookup a Stock</h2>
+<div style="position: relative; display: inline-block;">
+  <div style="position: relative; display: inline-block;">
+    <input id="tickerInput" type="text" placeholder="Type ticker or company name..." oninput="handleInput()" onkeydown="handleKeyDown(event)">
+    <ul id="suggestions" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;"></ul>
+  </div>
+
+</div>
+	    
 	<iframe src="news.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
 
     </div>
@@ -445,14 +442,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   </style>
 
 
-<h2>🔍 Lookup a Stock</h2>
-<div style="position: relative; display: inline-block;">
-  <div style="position: relative; display: inline-block;">
-    <input id="tickerInput" type="text" placeholder="Type ticker or company name..." oninput="handleInput()" onkeydown="handleKeyDown(event)">
-    <ul id="suggestions" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;"></ul>
-  </div>
 
-</div>
 <span id="currentPrice"></span>
 <span id="companyName"></span>
 
@@ -502,7 +492,7 @@ function calculateReturns(data, range) {
 function setRange(range) {
   currentRange = range;
   document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
-  document.querySelector(`.range-btn[onclick*="${range}"]`).classList.add('active');
+  document.querySelector(.range-btn[onclick*="${range}"]).classList.add('active');
   const filtered = filterDataByRange(range);
   const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
   const labels = sorted.map(d => d.date);
@@ -523,8 +513,8 @@ function setRange(range) {
   document.getElementById("info").querySelector("#returns")?.remove();
   const div = document.createElement("div");
   div.id = "returns";
-  div.innerHTML = `<p><strong>Total return:</strong> ${returns.total}</p>` +
-                  (returns.annual ? `<p><strong>Annualized return:</strong> ${returns.annual}</p>` : "");
+  div.innerHTML = <p><strong>Total return:</strong> ${returns.total}</p> +
+                  (returns.annual ? <p><strong>Annualized return:</strong> ${returns.annual}</p> : "");
   document.getElementById("info").appendChild(div);
 }
 
@@ -534,11 +524,11 @@ async function loadData() {
   currentTicker = ticker;
 
   const [profileData, historyData, balanceSheetData, estimatesData, ratiosData] = await Promise.all([
-    fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-    fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${ticker}?serietype=line&apikey=${apiKey}`).then(r => r.json()),
-    fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json()),
-    fetch(`https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-    fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json())
+    fetch(https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${apiKey}).then(r => r.json()),
+    fetch(https://financialmodelingprep.com/api/v3/historical-price-full/${ticker}?serietype=line&apikey=${apiKey}).then(r => r.json()),
+    fetch(https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}).then(r => r.json()),
+    fetch(https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}).then(r => r.json()),
+    fetch(https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}).then(r => r.json())
   ]);
 
   const profile = profileData[0];
@@ -569,13 +559,13 @@ async function loadData() {
     : "N/A";
 
   if (!profile || allPrices.length === 0) {
-    document.getElementById("info").innerHTML = `<p>Not found.</p>`;
+    document.getElementById("info").innerHTML = <p>Not found.</p>;
     document.getElementById("currentPrice").textContent = "";
     document.getElementById("companyName").textContent = "";
     return;
   }
 
-document.getElementById("info").innerHTML = `
+document.getElementById("info").innerHTML = 
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
       <img src="${profile.image}" alt="${profile.companyName} Logo" style="height: 36px; max-width: 60px;">
       <h3 style="margin: 0;"><strong>${profile.companyName} (${profile.symbol})</strong></h3>
@@ -591,9 +581,9 @@ document.getElementById("info").innerHTML = `
     <p style="margin-top: 12px; margin-bottom: 12px;">
       <a href="${profile.website}" target="_blank" style="color: #0056b3; font-weight: bold;">Website</a>
     </p>
-  `;
+  ;
 
-  document.getElementById("currentPrice").textContent = `$${Number(profile.price).toFixed(2)}`;
+  document.getElementById("currentPrice").textContent = $${Number(profile.price).toFixed(2)};
   document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
 
@@ -626,12 +616,12 @@ async function handleInput() {
 
   // Try search-ticker first
   try {
-    const res1 = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
+    const res1 = await fetch(https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey});
     results = await res1.json();
 
     // Fallback to /search if no results
     if (!results.length) {
-      const res2 = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`);
+      const res2 = await fetch(https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey});
       results = await res2.json();
     }
   } catch (err) {
@@ -645,7 +635,7 @@ async function handleInput() {
   if (results.length > 0) {
     results.forEach((item, index) => {
       const li = document.createElement("li");
-      li.textContent = `${item.name} (${item.symbol})`;
+      li.textContent = ${item.name} (${item.symbol});
       li.style.padding = "8px";
       li.style.cursor = "pointer";
       li.addEventListener("click", () => {
@@ -786,13 +776,12 @@ async function loadTickerBar() {
   };
 
   try {
-    const url = `https://financialmodelingprep.com/api/v3/quote/${symbols.join(',')}?apikey=${apiKey}`;
+    const url = https://financialmodelingprep.com/api/v3/quote/${symbols.join(',')}?apikey=${apiKey};
     const res = await fetch(url);
     const data = await res.json();
 
-    const bar = document.getElementById("ticker-items");  // ✅ Only clearing ticker items
+    const bar = document.getElementById("ticker-bar");
     bar.innerHTML = "";
-
 
     data.forEach(item => {
       const changeClass = item.changesPercentage >= 0 ? "green" : "red";
@@ -812,13 +801,13 @@ async function loadTickerBar() {
 
       const targetTicker = tickerMap[item.symbol] || item.symbol;
 
-      span.innerHTML = `
+      span.innerHTML = 
         <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
           <div class="blue">${display}</div>
           <div>${formatNumber(item.price)}</div>
           <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
         </a>
-      `;
+      ;
 
       // ✅ Append the span to the ticker bar
       bar.appendChild(span);
@@ -831,86 +820,6 @@ async function loadTickerBar() {
 }
 
 loadTickerBar();
-
-<script>
-let selectedMiniIndex = -1;
-let miniSuggestions = [];
-
-async function handleInputMini() {
-  const input = document.getElementById("tickerInputMini").value.trim();
-  const suggestionBox = document.getElementById("suggestionsMini");
-  if (input.length < 1) {
-    suggestionBox.style.display = "none";
-    return;
-  }
-
-  let results = [];
-  try {
-    const res = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
-    results = await res.json();
-    if (!results.length) {
-      const fallback = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`);
-      results = await fallback.json();
-    }
-  } catch (err) {
-    console.error("Mini search error:", err);
-  }
-
-  miniSuggestions = results;
-  selectedMiniIndex = -1;
-  suggestionBox.innerHTML = "";
-
-  if (results.length > 0) {
-    results.forEach((item, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${item.name} (${item.symbol})`;
-      li.style.padding = "6px";
-      li.style.cursor = "pointer";
-      li.addEventListener("click", () => {
-        window.location.href = `/search.html?ticker=${item.symbol}`;
-      });
-      suggestionBox.appendChild(li);
-    });
-    suggestionBox.style.display = "block";
-  } else {
-    suggestionBox.style.display = "none";
-  }
-}
-
-function handleKeyDownMini(event) {
-  const suggestionBox = document.getElementById("suggestionsMini");
-  const items = suggestionBox.querySelectorAll("li");
-
-  if (event.key === "ArrowDown") {
-    if (!items.length) return;
-    selectedMiniIndex = (selectedMiniIndex + 1) % items.length;
-    updateMiniSuggestion(items);
-    event.preventDefault();
-  } else if (event.key === "ArrowUp") {
-    if (!items.length) return;
-    selectedMiniIndex = (selectedMiniIndex - 1 + items.length) % items.length;
-    updateMiniSuggestion(items);
-    event.preventDefault();
-  } else if (event.key === "Enter") {
-    event.preventDefault();
-    if (selectedMiniIndex >= 0 && selectedMiniIndex < miniSuggestions.length) {
-      window.location.href = `/search.html?ticker=${miniSuggestions[selectedMiniIndex].symbol}`;
-    } else {
-      const input = document.getElementById("tickerInputMini").value.trim().toUpperCase();
-      if (input) window.location.href = `/search.html?ticker=${input}`;
-    }
-    suggestionBox.style.display = "none";
-  }
-}
-
-function updateMiniSuggestion(items) {
-  items.forEach((item, i) => {
-    item.style.background = i === selectedMiniIndex ? "#eee" : "white";
-  });
-}
-</script>
-
-	
 setInterval(loadTickerBar, 30000); // Refresh every 30 seconds
 </script>
 </html>
