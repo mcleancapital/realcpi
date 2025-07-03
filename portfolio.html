@@ -32,6 +32,9 @@
         <th>FX Rate</th>
         <th>Purchase Date</th>
         <th>Notes</th>
+        <th>Live Price</th>
+        <th>Market Value</th>
+        <th>Gain/Loss</th>
       </tr>
     </thead>
     <tbody id="portfolioBody">
@@ -40,41 +43,64 @@
   </table>
 
   <script>
-    async function loadPortfolio() {
-      const userId = "ianmclean@mcleancapital.ca";  // Use dynamic session/user data in production
-      const url = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
-      
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-        const tbody = document.getElementById("portfolioBody");
-        tbody.innerHTML = "";
+async function loadPortfolio() {
+  const userId = "ianmclean@mcleancapital.ca";
+  const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
+  const fmpApiKey = "YOUR_API_KEY";  // ⬅️ Replace this with your actual FMP key
 
-        if (!Array.isArray(data)) {
-          tbody.innerHTML = "<tr><td colspan='7'>Invalid response from server.</td></tr>";
-          return;
-        }
+  try {
+    const res = await fetch(portfolioUrl);
+    const holdings = await res.json();
 
-        data.forEach(item => {
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${item.ticker}</td>
-            <td>${item.quantity}</td>
-            <td>${item.purchase_price}</td>
-            <td>${item.currency}</td>
-            <td>${item.fx_rate}</td>
-            <td>${item.purchase_date || ""}</td>
-            <td>${item.notes || ""}</td>
-          `;
-          tbody.appendChild(row);
-        });
-      } catch (error) {
-        document.getElementById("portfolioBody").innerHTML =
-          `<tr><td colspan='7'>Error loading portfolio: ${error}</td></tr>`;
-      }
+    const tbody = document.getElementById("portfolioBody");
+    tbody.innerHTML = "";
+
+    if (!Array.isArray(holdings)) {
+      tbody.innerHTML = "<tr><td colspan='10'>Invalid server response</td></tr>";
+      return;
     }
 
+    // Step 1: Get all unique tickers
+    const tickers = [...new Set(holdings.map(item => item.ticker))].join(",");
+    const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
+    const prices = await priceRes.json();
+    const priceMap = Object.fromEntries(prices.map(p => [p.symbol, p.price]));
+
+    // Step 2: Display each row
+    holdings.forEach(item => {
+      const livePrice = priceMap[item.ticker] || 0;
+      const quantity = parseFloat(item.quantity) || 0;
+      const purchasePrice = parseFloat(item.purchase_price) || 0;
+      const marketValue = quantity * livePrice;
+      const gainLoss = (livePrice - purchasePrice) * quantity;
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${item.ticker}</td>
+        <td>${quantity}</td>
+        <td>${purchasePrice.toFixed(2)}</td>
+        <td>${item.currency}</td>
+        <td>${item.fx_rate}</td>
+        <td>${item.purchase_date || ""}</td>
+        <td>${item.notes || ""}</td>
+        <td>${livePrice.toFixed(2)}</td>
+        <td>${marketValue.toFixed(2)}</td>
+        <td style="color:${gainLoss >= 0 ? 'green' : 'red'}">
+          ${gainLoss >= 0 ? "+" : ""}${gainLoss.toFixed(2)}
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+
+  } catch (error) {
+    document.getElementById("portfolioBody").innerHTML =
+      `<tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>`;
+  }
+}
+
+
     loadPortfolio();
+    setInterval(loadPortfolio, 30000);
   </script>
 </body>
 </html>
