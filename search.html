@@ -343,11 +343,19 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 </header>
 
 <div id="ticker-bar" style="display: flex; align-items: center; gap: 24px; overflow-x: auto;">
+  <!-- ✅ Search box stays untouched -->
   <div id="stock-search-inline" style="flex-shrink: 0;">
-    <input id="tickerInput" type="text" placeholder="Search ticker..." style="font-size: 14px; padding: 6px; width: 160px;" oninput="handleInput()" onkeydown="handleKeyDown(event)">
-    <ul id="suggestions" style="position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none; width: 160px;"></ul>
+    <input id="tickerInputMini" type="text" placeholder="Search ticker..." 
+           style="font-size: 14px; padding: 6px; width: 160px;" 
+           oninput="handleInputMini()" 
+           onkeydown="handleKeyDownMini(event)">
+    <ul id="suggestionsMini" style="position: absolute; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none; width: 160px;"></ul>
   </div>
+
+  <!-- ✅ This will be dynamically updated -->
+  <div id="ticker-items" style="display: flex; gap: 24px;"></div>
 </div>
+
 
 
 <style>
@@ -782,8 +790,9 @@ async function loadTickerBar() {
     const res = await fetch(url);
     const data = await res.json();
 
-    const bar = document.getElementById("ticker-bar");
+    const bar = document.getElementById("ticker-items");  // ✅ Only clearing ticker items
     bar.innerHTML = "";
+
 
     data.forEach(item => {
       const changeClass = item.changesPercentage >= 0 ? "green" : "red";
