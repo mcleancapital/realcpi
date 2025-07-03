@@ -272,6 +272,28 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         margin-left: auto;
     }
 }
+
+#suggestions2 {
+  background: white;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  position: absolute;
+  z-index: 2000;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#suggestions2 li {
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+#suggestions2 li:hover {
+  background-color: #f0f0f0;
+}
+
 	
 </style>
 
@@ -295,7 +317,18 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 </script>
 <meta name="description" content="Financial metrics that give you the real data about the market and the economy.">
 <link rel="canonical" href="https://www.realcpi.org/"/>
-        
+
+<style>
+#tickerInput2 {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+</style>
+	
 </head>
 <body>
 <header>
