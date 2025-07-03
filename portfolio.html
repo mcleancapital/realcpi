@@ -156,9 +156,14 @@
     }
 
     // Load both base currency and portfolio
-    await fetchBaseCurrency();
-    await loadPortfolio();
-    setInterval(loadPortfolio, 30000);
+    async function main() {
+      await fetchBaseCurrency();
+      await loadPortfolio();
+      setInterval(loadPortfolio, 30000);
+    }
+
+    main();
+
   </script>
 </body>
 </html>
