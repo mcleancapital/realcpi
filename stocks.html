@@ -626,6 +626,88 @@ async function loadTickerBar() {
 }
 
 loadTickerBar();
+
+<script>
+let selectedMiniIndex = -1;
+let miniSuggestions = [];
+
+async function handleInputMini() {
+  const input = document.getElementById("tickerInputMini").value.trim();
+  const suggestionBox = document.getElementById("suggestionsMini");
+  if (input.length < 1) {
+    suggestionBox.style.display = "none";
+    return;
+  }
+
+  let results = [];
+  try {
+    const res = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
+    results = await res.json();
+    if (!results.length) {
+      const fallback = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`);
+      results = await fallback.json();
+    }
+  } catch (err) {
+    console.error("Mini search error:", err);
+  }
+
+  miniSuggestions = results;
+  selectedMiniIndex = -1;
+  suggestionBox.innerHTML = "";
+
+  if (results.length > 0) {
+    results.forEach((item, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${item.name} (${item.symbol})`;
+      li.style.padding = "6px";
+      li.style.cursor = "pointer";
+      li.addEventListener("click", () => {
+        window.location.href = `/search.html?ticker=${item.symbol}`;
+      });
+      suggestionBox.appendChild(li);
+    });
+    suggestionBox.style.display = "block";
+  } else {
+    suggestionBox.style.display = "none";
+  }
+}
+
+function handleKeyDownMini(event) {
+  const suggestionBox = document.getElementById("suggestionsMini");
+  const items = suggestionBox.querySelectorAll("li");
+
+  if (event.key === "ArrowDown") {
+    if (!items.length) return;
+    selectedMiniIndex = (selectedMiniIndex + 1) % items.length;
+    updateMiniSuggestion(items);
+    event.preventDefault();
+  } else if (event.key === "ArrowUp") {
+    if (!items.length) return;
+    selectedMiniIndex = (selectedMiniIndex - 1 + items.length) % items.length;
+    updateMiniSuggestion(items);
+    event.preventDefault();
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    if (selectedMiniIndex >= 0 && selectedMiniIndex < miniSuggestions.length) {
+      window.location.href = `/search.html?ticker=${miniSuggestions[selectedMiniIndex].symbol}`;
+    } else {
+      const input = document.getElementById("tickerInputMini").value.trim().toUpperCase();
+      if (input) window.location.href = `/search.html?ticker=${input}`;
+    }
+    suggestionBox.style.display = "none";
+  }
+}
+
+function updateMiniSuggestion(items) {
+  items.forEach((item, i) => {
+    item.style.background = i === selectedMiniIndex ? "#eee" : "white";
+  });
+}
+</script>
+
+
+	
+	
 setInterval(loadTickerBar, 30000); // Refresh every 30 seconds
 </script>
 
