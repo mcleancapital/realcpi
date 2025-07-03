@@ -769,6 +769,27 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     <div class="left-column">
 
 
+<h2>🔍 Lookup a Stock</h2>
+<div style="position: relative; display: inline-block;">
+  <input id="tickerInput2" type="text" placeholder="Type ticker or company name..." oninput="handleInput2()" onkeydown="handleKeyDown2(event)">
+  <ul id="suggestions2" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;"></ul>
+</div>
+<span id="currentPrice2"></span>
+<span id="companyName2"></span>
+<div id="controls2">
+  <button class="range-btn" onclick="setRange2('ytd')">YTD</button>
+  <button class="range-btn" onclick="setRange2('5y')">5 Years</button>
+  <button class="range-btn" onclick="setRange2('10y')">10 Years</button>
+  <button class="range-btn" onclick="setRange2('max')">Max</button>
+</div>
+<div id="stock-container2">
+  <div id="chart-container2">
+    <canvas id="priceChart2"></canvas>
+  </div>
+  <div id="info2"></div>
+</div>
+
+	    
 
 	<iframe src="news.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
 
