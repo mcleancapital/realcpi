@@ -415,11 +415,14 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     	<button class="hamburger-menu" onclick="toggleMenu()">☰</button>
 </div>
 
-<div style="position: relative; display: block; width: 100%;">
-  <input id="tickerInput2" type="text" placeholder="Type ticker or company name..."
-         oninput="handleInput2()" onkeydown="handleKeyDown2(event)"
-         style="padding-right: 40px;" />
-  
+<div style="position: relative; width: 25%; min-width: 180px; margin-bottom: 20px;">
+  <input id="tickerInput2"
+         type="text"
+         placeholder="Type ticker or company name..."
+         oninput="handleInput2()"
+         onkeydown="handleKeyDown2(event)"
+         style="width: 100%; padding: 8px 36px 8px 8px; font-size: 16px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;" />
+
   <!-- Magnifying Glass Button -->
   <button onclick="submitSearch()" style="
     position: absolute;
