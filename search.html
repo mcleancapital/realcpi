@@ -1,704 +1,1414 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
 
+
+
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3345310399251053"
-crossorigin="anonymous"></script>
+
+     crossorigin="anonymous"></script>
+
+
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-97F7RYQNKC"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
 
-gtag('config', 'G-97F7RYQNKC');
+<script>
+
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag(){dataLayer.push(arguments);}
+
+  gtag('js', new Date());
+
+
+
+  gtag('config', 'G-97F7RYQNKC');
+
 </script>
 
+
+
 <style>
+
 .menu-bar {
-text-align: center;
-margin-top: 10px;
-padding: 10px;
-background-color: #f9f9f9;
+
+    text-align: center;
+
+    margin-top: 10px;
+
+    padding: 10px;
+
+    background-color: #f9f9f9;
+
 }
+
+
 
 .menu-bar ul {
-list-style: none;
-padding: 0;
-margin: 0;
+
+    list-style: none;
+
+    padding: 0;
+
+    margin: 0;
+
 }
+
+
 
 .menu-bar ul li {
-display: inline-block;
-margin: 0 30px;
+
+    display: inline-block;
+
+    margin: 0 30px;
+
 }
+
+
 
 .menu-bar ul li a {
-text-decoration: none;
-font-size: 18px;
-padding: 8px 12px;
-color: #222;
+
+    text-decoration: none;
+
+    font-size: 18px;
+
+    padding: 8px 12px;
+
+    color: #222;
+
 }
 
+
+
 .menu-bar ul li a:hover {
-text-decoration: underline;
+
+    text-decoration: underline;
+
 }
+
+
+
 
 
 .container {
-display: flex; /* Create a flex container */
-gap: 16px; /* Add space between columns */
+
+  display: flex; /* Create a flex container */
+
+  gap: 16px; /* Add space between columns */
+
 }
+
+
 
 .left-column {
-flex: 1; /* Takes up 1/4 of the space */
-background-color: #f9f9f9; /* Optional: Light background for visibility */
-padding: 16px;
+
+  flex: 1; /* Takes up 1/4 of the space */
+
+  background-color: #f9f9f9; /* Optional: Light background for visibility */
+
+  padding: 16px;
+
 }
+
+
 
 .right-column {
-flex: 3; /* Takes up 3/4 of the space */
-padding: 16px;
+
+  flex: 3; /* Takes up 3/4 of the space */
+
+  padding: 16px;
+
 }
+
+
 
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
-@font-face{
-font-family:"Whitney";
-font-style:normal;
-font-weight:400;
-font-stretch:normal;
-font-display:swap;
-src:url("/fonts/whitney-book-webfont.woff") format("woff");
-font-display: swap;}
-@font-face{
-font-family:concourse_ot_3_book;
-font-style:italic;
-font-weight:400;
-font-stretch:normal;
-font-display:swap;
-src:url('/static/fonts/concourse_ot_3_book_italic.woff2') format('woff2')}
-body{
-font-size:17px;
-color:#222;
-line-height:1.43;
--webkit-font-smoothing:antialiased;
-font-family:"Garamond", serif}
-@media (min-width:550px){:root{--grid-columns:2}}
-@media (min-width:950px){:root{--grid-columns:3}}
-@media (min-width:1128px){:root{--grid-columns:4}}
-.box{display:flex;flex-direction:column}.chart canvas{width:100%}:root{--std_padding:40px}
-header{
-position: relative;
-display:block;
-align-items:center;
-text-align:center}
-header{
-padding:0 var(--std_padding);
-box-shadow:rgb(0 0 0 / 8%) 0 1px 0}
-#logo{flex:1 0 auto;display:inline-flex;align-items:center;text-align:center;height:64px}#logo svg{height:20px}main{padding:var(--std_padding) 16px}
-#grid{display:grid;grid-gap:40px 12px;
-grid-template-columns:repeat(var(--grid-columns,1),1fr)}
+
+        @font-face{
+
+                font-family:"Whitney";
+
+                font-style:normal;
+
+                font-weight:400;
+
+                font-stretch:normal;
+
+                font-display:swap;
+
+                src:url("/fonts/whitney-book-webfont.woff") format("woff");
+
+                font-display: swap;}
+
+        @font-face{
+
+                font-family:concourse_ot_3_book;
+
+                font-style:italic;
+
+                font-weight:400;
+
+                font-stretch:normal;
+
+                font-display:swap;
+
+                src:url('/static/fonts/concourse_ot_3_book_italic.woff2') format('woff2')}
+
+        body{
+
+                font-size:17px;
+
+                color:#222;
+
+                line-height:1.43;
+
+                -webkit-font-smoothing:antialiased;
+
+                font-family:"Garamond", serif}
+
+        @media (min-width:550px){:root{--grid-columns:2}}
+
+        @media (min-width:950px){:root{--grid-columns:3}}
+
+        @media (min-width:1128px){:root{--grid-columns:4}}
+
+        .box{display:flex;flex-direction:column}.chart canvas{width:100%}:root{--std_padding:40px}
+
+        header{
+
+                position: relative;
+
+                display:block;
+
+                align-items:center;
+
+                text-align:center}
+
+        header{
+
+                padding:0 var(--std_padding);
+
+                box-shadow:rgb(0 0 0 / 8%) 0 1px 0}
+
+        #logo{flex:1 0 auto;display:inline-flex;align-items:center;text-align:center;height:64px}#logo svg{height:20px}main{padding:var(--std_padding) 16px}
+
+        #grid{display:grid;grid-gap:40px 12px;
+
+              grid-template-columns:repeat(var(--grid-columns,1),1fr)}
+
+
 
 @media(min-width:730px){
-.mobile-menu {
-display: none;
-}
 
-header{display:flex;align-items:center;padding:0 24px}
-#logo svg{height:32px}
-#logo{flex:0 0 auto;display:inline-flex;align-items:center;height:80px}
-a.box:hover{
-border:.5px solid #ccc;
-border-radius:16px}
-main{padding:var(--std_padding) 16px}
-#grid{grid-gap:24px 8px}
+	.mobile-menu {
 
-.hamburger-menu {
-display: none;
-}
-.menu-bar ul {
-display: flex;
-}
-}
+        	display: none;
+
+    	}
+
+
+
+	header{display:flex;align-items:center;padding:0 24px}
+
+	#logo svg{height:32px}
+
+	#logo{flex:0 0 auto;display:inline-flex;align-items:center;height:80px}
+
+                	a.box:hover{
+
+                	        border:.5px solid #ccc;
+
+                	        border-radius:16px}
+
+               	 main{padding:var(--std_padding) 16px}
+
+               	 #grid{grid-gap:24px 8px}
+
+
+
+	.hamburger-menu {
+
+       		display: none;
+
+  		}
+
+   	.menu-bar ul {
+
+        	display: flex;
+
+    		}
+
+	}
+
+
+
 
 
 a.box{padding:8px}
+
 #tag{flex:1 0 auto;padding-left:24px;font-weight:700}
+
 #tag{flex:0 1 auto;display:none}
 
+
+
 @media (min-width:730px){#tag{display:block}}
-a.box{
-border:.5px solid transparent;
-color:inherit;
-text-decoration:none}
-a.box:hover{
-text-decoration:none}
-a.touch_box{border:.5px solid #ccc;border-radius:16px}.box h3{font-weight:700}.box .date{color:#717171}.pos{color:#55a232}.neg{color:#cc3314}
+
+                a.box{
+
+                        border:.5px solid transparent;
+
+                        color:inherit;
+
+                        text-decoration:none}
+
+                a.box:hover{
+
+                        text-decoration:none}
+
+                a.touch_box{border:.5px solid #ccc;border-radius:16px}.box h3{font-weight:700}.box .date{color:#717171}.pos{color:#55a232}.neg{color:#cc3314}
+
+
 
 footer{
-padding:var(--std_padding);
-box-shadow:rgb(0 0 0 / 8%) 0 -1px 0;
-text-align:center;
-color:#717171;font-size:.75em}
+
+	padding:var(--std_padding);
+
+	box-shadow:rgb(0 0 0 / 8%) 0 -1px 0;
+
+	text-align:center;
+
+	color:#717171;font-size:.75em}
+
 a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.more:hover{text-decoration:none}a.more{text-align:center;display:block;margin:var(--std_padding) auto 0 auto;color:#fff;border:1px solid rgba(0,0,0,.08);border-radius:24px;background-color:#000;padding:14px 19px;width:80px}
 
-@media (max-width: 729px) {
 
-#ticker-bar {
-flex-wrap: nowrap;
-overflow-x: auto;
-white-space: nowrap;
-justify-content: flex-start; /* Align items to the left */
--webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-}
 
-#ticker-bar span {
-flex: 0 0 auto; /* Prevent shrinking */
-min-width: 120px; /* Or more depending on your content */
-}               
+        @media (max-width: 729px) {
 
-.mobile-menu {
-display: flex;
-justify-content: space-around;
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-background-color: #ffffff;
-border-bottom: 1px solid #ccc;
-z-index: 2000;
-padding: 5px 0;
-}
-.mobile-menu button {
-flex: 1;
-padding: 0px;
-font-size: 48px;
-top: 0;
-border: none;
-background-color: #fff;
-cursor: pointer;
-transition: background-color 0.3s ease;
-}
+
+
+  #ticker-bar {
+
+    flex-wrap: nowrap;
+
+    overflow-x: auto;
+
+    white-space: nowrap;
+
+    justify-content: flex-start; /* Align items to the left */
+
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+
+  }
+
+
+
+  #ticker-bar span {
+
+    flex: 0 0 auto; /* Prevent shrinking */
+
+    min-width: 120px; /* Or more depending on your content */
+
+  }               
+
+
+
+    .mobile-menu {
+
+                display: flex;
+
+                justify-content: space-around;
+
+                position: fixed;
+
+		top: 0;
+
+                left: 0;
+
+                width: 100%;
+
+                background-color: #ffffff;
+
+                border-bottom: 1px solid #ccc;
+
+                z-index: 2000;
+
+                padding: 5px 0;
+
+            }
+
+            .mobile-menu button {
+
+                flex: 1;
+
+                padding: 0px;
+
+                font-size: 48px;
+
+		top: 0;
+
+                border: none;
+
+                background-color: #fff;
+
+                cursor: pointer;
+
+                transition: background-color 0.3s ease;
+
+            }
+
+
 
 .mobile-menu button.hamburger-menu {
-flex: 1;
-padding: 0px;
-font-size: 48px;
-border: none;
-background-color: #fff;
-cursor: pointer;
-z-index: 2001; /* Ensure above ticker bar and input box */
-position: relative;
+
+    flex: 1;
+
+    padding: 0px;
+
+    font-size: 48px;
+
+    border: none;
+
+    background-color: #fff;
+
+    cursor: pointer;
+
+    z-index: 2001; /* Ensure above ticker bar and input box */
+
+    position: relative;
+
 }
 
 
-.mobile-menu button:hover {
-background-color: #e0e0e0;
-}
-body {
-margin-top: 64px; /* Prevent content overlap with the fixed menu */
-}
+
+
+
+            .mobile-menu button:hover {
+
+                background-color: #e0e0e0;
+
+            }
+
+            body {
+
+                margin-top: 64px; /* Prevent content overlap with the fixed menu */
+
+            }
+
+
+
+
 
 
 
 .left-column {
-display: none; /* Hide the left column */
-}
 
-.right-column {
-flex: 1; /* Take full width when left column is hidden */
-}
-#logo {
-display: none; /* Hide the logo on mobile */
+    display: none; /* Hide the left column */
 
-}
-}
+  }
+
+
+
+  .right-column {
+
+    flex: 1; /* Take full width when left column is hidden */
+
+  }
+
+                #logo {
+
+        display: none; /* Hide the logo on mobile */
+
+
+
+  }
+
+                }
+
+
 
 /* Add the center-text class here */
+
 .center-text {
-display: flex;
-justify-content: center; /* Center horizontally */
-align-items: center;     /* Center vertically */
-width: 100%;             /* Full width of the page */
-height: 5vh;           /* Take full viewport height */
-font-size: 35px;         /* Make the font larger */
-font-weight: bold;       /* Bold text */
-text-align: center;      /* Text alignment */
-border: 0.5px solid black; /* Add a border around the box */
-background-color: #e8e8e8; /* Light gray background for the box */
-padding: 10px;           /* Space between text and border */
-box-sizing: border-box;  /* Include padding and border in width/height */
+
+            display: flex;
+
+            justify-content: center; /* Center horizontally */
+
+            align-items: center;     /* Center vertically */
+
+            width: 100%;             /* Full width of the page */
+
+            height: 5vh;           /* Take full viewport height */
+
+            font-size: 35px;         /* Make the font larger */
+
+            font-weight: bold;       /* Bold text */
+
+            text-align: center;      /* Text alignment */
+
+   	    border: 0.5px solid black; /* Add a border around the box */
+
+    	    background-color: #e8e8e8; /* Light gray background for the box */
+
+    	    padding: 10px;           /* Space between text and border */
+
+    	    box-sizing: border-box;  /* Include padding and border in width/height */
+
 }
+
+
 
 .center-text2 {
-display: flex;
-justify-content: center; /* Center horizontally */
-align-items: center;     /* Center vertically */
-width: 100%;             /* Full width of the page */
-height: 5vh;           /* Take full viewport height */
-font-size: 25px;         /* Make the font larger */
-font-weight: bold;       /* Bold text */
-text-align: center;      /* Text alignment */
+
+            display: flex;
+
+            justify-content: center; /* Center horizontally */
+
+            align-items: center;     /* Center vertically */
+
+            width: 100%;             /* Full width of the page */
+
+            height: 5vh;           /* Take full viewport height */
+
+            font-size: 25px;         /* Make the font larger */
+
+            font-weight: bold;       /* Bold text */
+
+            text-align: center;      /* Text alignment */
+
 }
+
+
 
 .small-centered-text {
-font-size: 12px;
-text-align: center;
-padding: 1px;
+
+    font-size: 12px;
+
+    text-align: center;
+
+    padding: 1px;
+
 }
+
+
 
 /* Hide the menu items by default on mobile */
+
 @media (max-width: 729px) {
-.menu-bar ul {
-display: none;
-flex-direction: column;
-background-color: white;
-position: fixed; * Now stays visible while scrolling */
-top: 120px; /* Adjust so it appears below the hamburger */
-left: 0;
-width: 100%;
-z-index: 3000; /* <-- Add this */
-box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-text-align: center;
-padding: 0;
+
+    .menu-bar ul {
+
+        display: none;
+
+        flex-direction: column;
+
+        background-color: white;
+
+        position: fixed; * Now stays visible while scrolling */
+
+        top: 120px; /* Adjust so it appears below the hamburger */
+
+        left: 0;
+
+        width: 100%;
+
+	z-index: 3000; /* <-- Add this */
+
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+
+        text-align: center;
+
+        padding: 0;
+
+    }
+
+
+
+    /* Show menu when toggled */
+
+    .menu-bar ul.show {
+
+        display: flex;
+
+    }
+
+
+
+    /* Style menu items in mobile mode */
+
+    .menu-bar ul li {
+
+        display: block;
+
+        width: 100%;
+
+        padding: 10px 0;
+
+        border-bottom: 1px solid #ddd;
+
+    }
+
+
+
+    /* Style hamburger button */
+
+    .hamburger-menu {
+
+        display: block;
+
+        font-size: 48px;
+
+        background: none;
+
+        border: none;
+
+        cursor: pointer;
+
+        padding: 10px;
+
+        margin-left: auto;
+
+	position: relative;  /* Required for z-index to take effect */
+
+        z-index: 2001;        /* 👈 Make sure it floats above the ticker bar and input */
+
+    }
+
 }
 
-/* Show menu when toggled */
-.menu-bar ul.show {
-display: flex;
-}
 
-/* Style menu items in mobile mode */
-.menu-bar ul li {
-display: block;
-width: 100%;
-padding: 10px 0;
-border-bottom: 1px solid #ddd;
-}
-
-/* Style hamburger button */
-.hamburger-menu {
-display: block;
-font-size: 48px;
-background: none;
-border: none;
-cursor: pointer;
-padding: 10px;
-margin-left: auto;
-position: relative;  /* Required for z-index to take effect */
-z-index: 2001;        /* 👈 Make sure it floats above the ticker bar and input */
-}
-}
 
 </style>
 
+
+
 <meta name="viewport" content="initial-scale=1" />
 
+
+
 <title>Real CPI</title>
+
 <meta property="og:site_name" content="Real CPI" />
+
 <link rel="icon" type="image/png" href="/static/images/favicon.png">
+
 <script type="application/ld+json">
+
 {
+
 "@context" : "https://schema.org",
+
 "@type" : "WebSite",
+
 "name" : "Real CPI",
+
 "url" : "https://www.realcpi.org/"
+
 "description": "Real CPI provides economic, stock market, real estate, financial and industry-specific data.",
-"about": {
-"@type": "Thing",
-"name": "Financial Data"
+
+  "about": {
+
+    "@type": "Thing",
+
+    "name": "Financial Data"
+
 }
 
+
+
 </script>
+
 <meta name="description" content="Financial metrics that give you the real data about the market and the economy.">
+
 <link rel="canonical" href="https://www.realcpi.org/"/>
 
+
+
 </head>
+
 <body>
+
 <header>
+
 <a id="logo" href="/">
-<img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" style="padding: 10px;" />
+
+    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" style="padding: 10px;" />
+
 </a>
 
-<nav class="menu-bar">
-<ul id="menu-items">
-<li><a href="/">Daily Data</a></li>
-<li><a href="stocks.html">Stock Market</a></li>
-<li><a href="realestate.html">Real Estate</a></li>
-<li><a href="economy.html">Economic Dashboard</a></li>
-<li class="current"><a href="search.html" style="color: blue;">Stock Search</a></li>
-<li><a href="currency.html">Currency Converter</a></li>
-<li><a href="https://tradingeconomics.com/commodities" target="_blank" rel="noopener noreferrer">Commodities</a></li>
-</ul>
-</nav>
+
+
+    <nav class="menu-bar">
+
+        <ul id="menu-items">
+
+            <li><a href="/">Daily Data</a></li>
+
+            <li><a href="stocks.html">Stock Market</a></li>
+
+            <li><a href="realestate.html">Real Estate</a></li>
+
+            <li><a href="economy.html">Economic Dashboard</a></li>
+
+            <li class="current"><a href="search.html" style="color: blue;">Stock Search</a></li>
+
+            <li><a href="currency.html">Currency Converter</a></li>
+
+            <li><a href="https://tradingeconomics.com/commodities" target="_blank" rel="noopener noreferrer">Commodities</a></li>
+
+        </ul>
+
+    </nav>
+
+
 
 <!--
+
 <div id="top-right-links">
-       <a href="/list" class="top-link">List View</a>
-       <a href="/detailed" class="top-link">Detailed View</a>
+
+        <a href="/list" class="top-link">List View</a>
+
+        <a href="/detailed" class="top-link">Detailed View</a>
+
 </div> -->
+
+
+
+
 
 
 
 </header>
 
+
+
 <div id="ticker-bar">
-Loading market data...
+
+  Loading market data...
+
 </div>
 
+
+
 <style>
+
 #ticker-bar {
-background-color: #f0f0f0;
-border-top: 1px solid #ccc;
-border-bottom: 1px solid #ccc;
-padding: 8px 16px;
-font-size: 14px;
-font-family: "Whitney", sans-serif;
-display: flex;
-gap: 40px;
-justify-content: center;
-overflow-x: auto;
-white-space: nowrap;
-text-align: center;
+
+  background-color: #f0f0f0;
+
+  border-top: 1px solid #ccc;
+
+  border-bottom: 1px solid #ccc;
+
+  padding: 8px 16px;
+
+  font-size: 14px;
+
+  font-family: "Whitney", sans-serif;
+
+  display: flex;
+
+  gap: 40px;
+
+  justify-content: center;
+
+  overflow-x: auto;
+
+  white-space: nowrap;
+
+  text-align: center;
+
 }
+
 #ticker-bar span {
-display: inline-block;
-min-width: 90px;
+
+  display: inline-block;
+
+  min-width: 90px;
+
 }
+
 .green {
-color: #55a232;
+
+  color: #55a232;
+
 }
+
 .red {
-color: #cc3314;
+
+  color: #cc3314;
+
 }
+
 .blue {
-color: #0056b3;
-font-weight: bold;
+
+  color: #0056b3;
+
+  font-weight: bold;
+
 }
+
 </style>
+
+
+
 
 
 <main>
 
+
+
 <div class="container">
-<!-- Left Column -->
-<div class="left-column">
 
-<iframe src="news.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+    <!-- Left Column -->
 
-</div>
+    <div class="left-column">
 
-<!-- Right Column -->
-<div class="right-column">
+
+
+	<iframe src="news.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+
+
+
+    </div>
+
+
+
+    <!-- Right Column -->
+
+    <div class="right-column">
+
+
 
 <div class="mobile-menu">
-<img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
-<!-- Hamburger Button for Mobile -->
-<button class="hamburger-menu" onclick="toggleMenu()">☰</button>
+
+    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
+
+	<!-- Hamburger Button for Mobile -->
+
+    	<button class="hamburger-menu" onclick="toggleMenu()">☰</button>
+
 </div>
 
 
-<title>Stock Lookup</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-input { font-size: 18px; padding: 8px; width: 300px; }
-#currentPrice { font-size: 24px; font-weight: bold; margin-left: 20px; display: inline-block; vertical-align: middle; }
-#companyName { font-size: 20px; font-weight: bold !important; margin-left: 10px; display: inline-block; vertical-align: middle; }
-#controls { margin-top: 20px; }
-button.range-btn {
-padding: 6px 10px;
-margin-right: 6px;
-font-size: 14px;
-cursor: pointer;
-}
-button.range-btn.active {
-background-color: #007bff;
-color: white;
-}
-#stock-container {
-display: flex;
-flex-wrap: wrap;
-gap: 40px;
-margin-top: 20px;
-align-items: flex-start;
-}
-#chart-container {
-flex: 2;
-min-width: 300px;
-}
-#info {
-flex: 1;
-min-width: 250px;
-}
-</style>
+
+
+
+  <title>Stock Lookup</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+
+    input { font-size: 18px; padding: 8px; width: 300px; }
+
+    #currentPrice { font-size: 24px; font-weight: bold; margin-left: 20px; display: inline-block; vertical-align: middle; }
+
+    #companyName { font-size: 20px; font-weight: bold !important; margin-left: 10px; display: inline-block; vertical-align: middle; }
+
+    #controls { margin-top: 20px; }
+
+    button.range-btn {
+
+      padding: 6px 10px;
+
+      margin-right: 6px;
+
+      font-size: 14px;
+
+      cursor: pointer;
+
+    }
+
+    button.range-btn.active {
+
+      background-color: #007bff;
+
+      color: white;
+
+    }
+
+    #stock-container {
+
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 40px;
+
+      margin-top: 20px;
+
+      align-items: flex-start;
+
+    }
+
+    #chart-container {
+
+      flex: 2;
+
+      min-width: 300px;
+
+    }
+
+    #info {
+
+      flex: 1;
+
+      min-width: 250px;
+
+    }
+
+  </style>
+
+
+
 
 
 <h2>🔍 Lookup a Stock</h2>
+
 <div style="position: relative; display: inline-block;">
-<div style="position: relative; display: inline-block;">
-<input id="tickerInput" type="text" placeholder="Type ticker or company name..." oninput="handleInput()" onkeydown="handleKeyDown(event)">
-<ul id="suggestions" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;"></ul>
-</div>
+
+  <div style="position: relative; display: inline-block;">
+
+    <input id="tickerInput" type="text" placeholder="Type ticker or company name..." oninput="handleInput()" onkeydown="handleKeyDown(event)">
+
+    <ul id="suggestions" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;"></ul>
+
+  </div>
+
+
 
 </div>
+
 <span id="currentPrice"></span>
+
 <span id="companyName"></span>
 
+
+
 <div id="controls">
-<button class="range-btn" onclick="setRange('ytd')">YTD</button>
-<button class="range-btn" onclick="setRange('5y')">5 Years</button>
-<button class="range-btn" onclick="setRange('10y')">10 Years</button>
-<button class="range-btn" onclick="setRange('max')">Max</button>
+
+  <button class="range-btn" onclick="setRange('ytd')">YTD</button>
+
+  <button class="range-btn" onclick="setRange('5y')">5 Years</button>
+
+  <button class="range-btn" onclick="setRange('10y')">10 Years</button>
+
+  <button class="range-btn" onclick="setRange('max')">Max</button>
+
 </div>
+
+
 
 <div id="stock-container">
-<div id="chart-container">
-<canvas id="priceChart"></canvas>
+
+  <div id="chart-container">
+
+    <canvas id="priceChart"></canvas>
+
+  </div>
+
+  <div id="info"></div>
+
 </div>
-<div id="info"></div>
-</div>
+
+
 
 <script>
+
 const apiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
+
 let chart, allPrices = [], currentTicker = "", currentRange = "5y";
 
+
+
 function filterDataByRange(range) {
-const now = new Date();
-let fromDate;
-switch (range) {
-case 'ytd': fromDate = new Date(now.getFullYear(), 0, 1); break;
-case '5y': fromDate = new Date(); fromDate.setFullYear(now.getFullYear() - 5); break;
-case '10y': fromDate = new Date(); fromDate.setFullYear(now.getFullYear() - 10); break;
-default: return allPrices;
+
+  const now = new Date();
+
+  let fromDate;
+
+  switch (range) {
+
+    case 'ytd': fromDate = new Date(now.getFullYear(), 0, 1); break;
+
+    case '5y': fromDate = new Date(); fromDate.setFullYear(now.getFullYear() - 5); break;
+
+    case '10y': fromDate = new Date(); fromDate.setFullYear(now.getFullYear() - 10); break;
+
+    default: return allPrices;
+
+  }
+
+  return allPrices.filter(d => new Date(d.date) >= fromDate);
+
 }
-return allPrices.filter(d => new Date(d.date) >= fromDate);
-}
+
+
 
 function calculateReturns(data, range) {
-if (data.length < 2) return { total: "N/A", annual: "" };
-const start = data[0].close;
-const end = data[data.length - 1].close;
-const totalReturn = ((end - start) / start) * 100;
-const days = (new Date(data[data.length - 1].date) - new Date(data[0].date)) / (1000 * 60 * 60 * 24);
-const annualized = ((1 + totalReturn / 100) ** (365 / days) - 1) * 100;
-return {
-total: totalReturn.toFixed(2) + '%',
-annual: ['5y', '10y', 'ytd', 'max'].includes(range) ? annualized.toFixed(2) + '%' : ""
-};
+
+  if (data.length < 2) return { total: "N/A", annual: "" };
+
+  const start = data[0].close;
+
+  const end = data[data.length - 1].close;
+
+  const totalReturn = ((end - start) / start) * 100;
+
+  const days = (new Date(data[data.length - 1].date) - new Date(data[0].date)) / (1000 * 60 * 60 * 24);
+
+  const annualized = ((1 + totalReturn / 100) ** (365 / days) - 1) * 100;
+
+  return {
+
+    total: totalReturn.toFixed(2) + '%',
+
+    annual: ['5y', '10y', 'ytd', 'max'].includes(range) ? annualized.toFixed(2) + '%' : ""
+
+  };
+
 }
+
+
 
 function setRange(range) {
-currentRange = range;
-document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
-document.querySelector(`.range-btn[onclick*="${range}"]`).classList.add('active');
-const filtered = filterDataByRange(range);
-const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
-const labels = sorted.map(d => d.date);
-const data = sorted.map(d => d.close);
-const returns = calculateReturns(sorted, range);
 
-if (chart) chart.destroy();
-chart = new Chart(document.getElementById("priceChart"), {
-type: 'line',
-data: { labels, datasets: [{ data, fill: false, borderColor: 'blue' }] },
-options: {
-plugins: { legend: { display: false } },
-responsive: true,
-scales: { x: { display: true }, y: { display: true } }
-}
-});
+  currentRange = range;
 
-document.getElementById("info").querySelector("#returns")?.remove();
-const div = document.createElement("div");
-div.id = "returns";
-div.innerHTML = `<p><strong>Total return:</strong> ${returns.total}</p>` +
-(returns.annual ? `<p><strong>Annualized return:</strong> ${returns.annual}</p>` : "");
-document.getElementById("info").appendChild(div);
+  document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
+
+  document.querySelector(`.range-btn[onclick*="${range}"]`).classList.add('active');
+
+  const filtered = filterDataByRange(range);
+
+  const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  const labels = sorted.map(d => d.date);
+
+  const data = sorted.map(d => d.close);
+
+  const returns = calculateReturns(sorted, range);
+
+
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(document.getElementById("priceChart"), {
+
+    type: 'line',
+
+    data: { labels, datasets: [{ data, fill: false, borderColor: 'blue' }] },
+
+    options: {
+
+      plugins: { legend: { display: false } },
+
+      responsive: true,
+
+      scales: { x: { display: true }, y: { display: true } }
+
+    }
+
+  });
+
+
+
+  document.getElementById("info").querySelector("#returns")?.remove();
+
+  const div = document.createElement("div");
+
+  div.id = "returns";
+
+  div.innerHTML = `<p><strong>Total return:</strong> ${returns.total}</p>` +
+
+                  (returns.annual ? `<p><strong>Annualized return:</strong> ${returns.annual}</p>` : "");
+
+  document.getElementById("info").appendChild(div);
+
 }
+
+
 
 async function loadData() {
-const ticker = document.getElementById("tickerInput").value.toUpperCase();
-if (!ticker) return;
-currentTicker = ticker;
 
-const [profileData, historyData, balanceSheetData, estimatesData, ratiosData] = await Promise.all([
-fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${ticker}?serietype=line&apikey=${apiKey}`).then(r => r.json()),
-fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json()),
-fetch(`https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json())
-]);
+  const ticker = document.getElementById("tickerInput").value.toUpperCase();
 
-const profile = profileData[0];
-allPrices = historyData.historical || [];
-const balance = balanceSheetData[0];
-const ratios = ratiosData[0];
-const currentYear = new Date().getFullYear();
-const nextYearEstimate = estimatesData.find(est => new Date(est.date).getFullYear() === currentYear + 1);
-const estimatedEpsAvg = nextYearEstimate?.estimatedEpsAvg;
+  if (!ticker) return;
 
-const allowedCurrencies = ["USD", "CAD"];
-const currency = profile.currency || "N/A";
-
-const forwardPE = (allowedCurrencies.includes(currency) && estimatedEpsAvg && profile.price)
-? (profile.price / estimatedEpsAvg).toFixed(1)
-: "N/A";
-
-const dividendYield = (allowedCurrencies.includes(currency) && typeof profile.lastDiv === 'number' && profile.price)
-? ((profile.lastDiv / profile.price) * 100).toFixed(2) + '%'
-: "N/A";
+  currentTicker = ticker;
 
 
 
-const peRatioRaw = profile.pe || ratios?.peRatioTTM || "N/A";
-const peRatio = typeof peRatioRaw === 'number' ? peRatioRaw.toFixed(1) : peRatioRaw;
-const equityToLiabilities = balance?.totalStockholdersEquity && balance?.totalLiabilities
-? ((balance.totalStockholdersEquity / balance.totalLiabilities) * 100).toFixed(1) + '%'
-: "N/A";
+  const [profileData, historyData, balanceSheetData, estimatesData, ratiosData] = await Promise.all([
 
-if (!profile || allPrices.length === 0) {
-document.getElementById("info").innerHTML = `<p>Not found.</p>`;
-document.getElementById("currentPrice").textContent = "";
-document.getElementById("companyName").textContent = "";
-return;
-}
+    fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${apiKey}`).then(r => r.json()),
+
+    fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${ticker}?serietype=line&apikey=${apiKey}`).then(r => r.json()),
+
+    fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json()),
+
+    fetch(`https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}`).then(r => r.json()),
+
+    fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json())
+
+  ]);
+
+
+
+  const profile = profileData[0];
+
+  allPrices = historyData.historical || [];
+
+  const balance = balanceSheetData[0];
+
+  const ratios = ratiosData[0];
+
+  const currentYear = new Date().getFullYear();
+
+  const nextYearEstimate = estimatesData.find(est => new Date(est.date).getFullYear() === currentYear + 1);
+
+  const estimatedEpsAvg = nextYearEstimate?.estimatedEpsAvg;
+
+
+
+  const allowedCurrencies = ["USD", "CAD"];
+
+  const currency = profile.currency || "N/A";
+
+
+
+  const forwardPE = (allowedCurrencies.includes(currency) && estimatedEpsAvg && profile.price)
+
+    ? (profile.price / estimatedEpsAvg).toFixed(1)
+
+    : "N/A";
+
+
+
+  const dividendYield = (allowedCurrencies.includes(currency) && typeof profile.lastDiv === 'number' && profile.price)
+
+    ? ((profile.lastDiv / profile.price) * 100).toFixed(2) + '%'
+
+    : "N/A";
+
+
+
+
+
+
+
+  const peRatioRaw = profile.pe || ratios?.peRatioTTM || "N/A";
+
+  const peRatio = typeof peRatioRaw === 'number' ? peRatioRaw.toFixed(1) : peRatioRaw;
+
+  const equityToLiabilities = balance?.totalStockholdersEquity && balance?.totalLiabilities
+
+    ? ((balance.totalStockholdersEquity / balance.totalLiabilities) * 100).toFixed(1) + '%'
+
+    : "N/A";
+
+
+
+  if (!profile || allPrices.length === 0) {
+
+    document.getElementById("info").innerHTML = `<p>Not found.</p>`;
+
+    document.getElementById("currentPrice").textContent = "";
+
+    document.getElementById("companyName").textContent = "";
+
+    return;
+
+  }
+
+
+
 
   document.getElementById("info").innerHTML = `
+
+
     <h3><strong>${profile.companyName} (${profile.symbol})</strong></h3>
+
+
 document.getElementById("info").innerHTML = `
+
+
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+
+
       <img src="${profile.image}" alt="${profile.companyName} Logo" style="height: 36px; max-width: 60px;">
+
+
       <h3 style="margin: 0;"><strong>${profile.companyName} (${profile.symbol})</strong></h3>
+
+
     </div>
-   <p><strong>Exchange:</strong> ${profile.exchange}</p>
-   <p><strong>Currency:</strong> ${profile.currency || 'N/A'}</p>
-   <p style="margin-top: 8px;"><strong>Market Cap:</strong> $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
-   <p>P/E Ratio: ${peRatio}</p>
-   <p>Forward P/E: ${forwardPE}</p>
-   <p>Equity / Total Liabilities: ${equityToLiabilities}</p>
-   <p>Dividend Yield: ${dividendYield}</p>
-   <p>Industry: ${profile.industry}</p>
-   <p style="margin-top: 12px; margin-bottom: 12px;">
-     <a href="${profile.website}" target="_blank" style="color: #0056b3; font-weight: bold;">Website</a>
-   </p>
- `;
 
-document.getElementById("currentPrice").textContent = `$${Number(profile.price).toFixed(2)}`;
-document.getElementById("companyName").textContent = profile.companyName;
-setRange(currentRange);
+    <p><strong>Exchange:</strong> ${profile.exchange}</p>
 
-fetch("https://pqzw0hq6g4.execute-api.us-east-1.amazonaws.com/default/generateTickerNews", {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ ticker }) // ✅ dynamic value
-})
-.then(res => res.text())
-.then(html => {
-const iframe = document.getElementById("news-frame");
-const blob = new Blob([html], { type: "text/html" });
-iframe.src = URL.createObjectURL(blob);
-});
+    <p><strong>Currency:</strong> ${profile.currency || 'N/A'}</p>
+
+    <p style="margin-top: 8px;"><strong>Market Cap:</strong> $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
+
+    <p>P/E Ratio: ${peRatio}</p>
+
+    <p>Forward P/E: ${forwardPE}</p>
+
+    <p>Equity / Total Liabilities: ${equityToLiabilities}</p>
+
+    <p>Dividend Yield: ${dividendYield}</p>
+
+    <p>Industry: ${profile.industry}</p>
+
+    <p style="margin-top: 12px; margin-bottom: 12px;">
+
+      <a href="${profile.website}" target="_blank" style="color: #0056b3; font-weight: bold;">Website</a>
+
+    </p>
+
+  `;
+
+
+
+  document.getElementById("currentPrice").textContent = `$${Number(profile.price).toFixed(2)}`;
+
+  document.getElementById("companyName").textContent = profile.companyName;
+
+  setRange(currentRange);
+
+
+
+  fetch("https://pqzw0hq6g4.execute-api.us-east-1.amazonaws.com/default/generateTickerNews", {
+
+    method: "POST",
+
+    headers: { "Content-Type": "application/json" },
+
+    body: JSON.stringify({ ticker }) // ✅ dynamic value
+
+  })
+
+  .then(res => res.text())
+
+  .then(html => {
+
+    const iframe = document.getElementById("news-frame");
+
+    const blob = new Blob([html], { type: "text/html" });
+
+    iframe.src = URL.createObjectURL(blob);
+
+  });
+
+
 
 }
+
+
 
 let selectedSuggestionIndex = -1;
+
 let currentSuggestions = [];
 
+
+
 async function handleInput() {
-const input = document.getElementById("tickerInput").value.trim();
-const suggestionBox = document.getElementById("suggestions");
-if (input.length < 1) {
-suggestionBox.style.display = "none";
-return;
+
+  const input = document.getElementById("tickerInput").value.trim();
+
+  const suggestionBox = document.getElementById("suggestions");
+
+  if (input.length < 1) {
+
+    suggestionBox.style.display = "none";
+
+    return;
+
+  }
+
+
+
+  let results = [];
+
+
+
+  // Try search-ticker first
+
+  try {
+
+    const res1 = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
+
+    results = await res1.json();
+
+
+
+    // Fallback to /search if no results
+
+    if (!results.length) {
+
+      const res2 = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`);
+
+      results = await res2.json();
+
+    }
+
+  } catch (err) {
+
+    console.error("Search error:", err);
+
+  }
+
+
+
+  currentSuggestions = results;
+
+  selectedSuggestionIndex = -1;
+
+  suggestionBox.innerHTML = "";
+
+
+
+  if (results.length > 0) {
+
+    results.forEach((item, index) => {
+
+      const li = document.createElement("li");
+
+      li.textContent = `${item.name} (${item.symbol})`;
+
+      li.style.padding = "8px";
+
+      li.style.cursor = "pointer";
+
+      li.addEventListener("click", () => {
+
+        document.getElementById("tickerInput").value = item.symbol;
+
+        suggestionBox.style.display = "none";
+
+        loadData();
+
+      });
+
+      suggestionBox.appendChild(li);
+
+    });
+
+    suggestionBox.style.display = "block";
+
+  } else {
+
+    suggestionBox.style.display = "none";
+
+  }
+
 }
 
-let results = [];
 
-// Try search-ticker first
-try {
-const res1 = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
-results = await res1.json();
 
-// Fallback to /search if no results
-if (!results.length) {
-const res2 = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`);
-results = await res2.json();
-}
-} catch (err) {
-console.error("Search error:", err);
-}
-
-currentSuggestions = results;
-selectedSuggestionIndex = -1;
-suggestionBox.innerHTML = "";
-
-if (results.length > 0) {
-results.forEach((item, index) => {
-const li = document.createElement("li");
-li.textContent = `${item.name} (${item.symbol})`;
-li.style.padding = "8px";
-li.style.cursor = "pointer";
-li.addEventListener("click", () => {
-document.getElementById("tickerInput").value = item.symbol;
-suggestionBox.style.display = "none";
-loadData();
-});
-suggestionBox.appendChild(li);
-});
-suggestionBox.style.display = "block";
-} else {
-suggestionBox.style.display = "none";
-}
-}
 
 
 function handleKeyDown(event) {
-const suggestionBox = document.getElementById("suggestions");
-const items = suggestionBox.querySelectorAll("li");
 
-if (event.key === "ArrowDown") {
-if (!items.length) return;
-selectedSuggestionIndex = (selectedSuggestionIndex + 1) % items.length;
-updateActiveSuggestion(items);
-event.preventDefault();
-} else if (event.key === "ArrowUp") {
-if (!items.length) return;
-selectedSuggestionIndex = (selectedSuggestionIndex - 1 + items.length) % items.length;
-updateActiveSuggestion(items);
-event.preventDefault();
-} else if (event.key === "Enter") {
-event.preventDefault();
-if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < currentSuggestions.length) {
-// If suggestion selected, use it
-document.getElementById("tickerInput").value = currentSuggestions[selectedSuggestionIndex].symbol;
+  const suggestionBox = document.getElementById("suggestions");
+
+  const items = suggestionBox.querySelectorAll("li");
+
+
+
+  if (event.key === "ArrowDown") {
+
+    if (!items.length) return;
+
+    selectedSuggestionIndex = (selectedSuggestionIndex + 1) % items.length;
+
+    updateActiveSuggestion(items);
+
+    event.preventDefault();
+
+  } else if (event.key === "ArrowUp") {
+
+    if (!items.length) return;
+
+    selectedSuggestionIndex = (selectedSuggestionIndex - 1 + items.length) % items.length;
+
+    updateActiveSuggestion(items);
+
+    event.preventDefault();
+
+  } else if (event.key === "Enter") {
+
+    event.preventDefault();
+
+    if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < currentSuggestions.length) {
+
+      // If suggestion selected, use it
+
+      document.getElementById("tickerInput").value = currentSuggestions[selectedSuggestionIndex].symbol;
+
+    }
+
+    // Either way, trigger search with current value
+
+    document.getElementById("suggestions").style.display = "none";
+
+    loadData();
+
+  }
+
 }
-// Either way, trigger search with current value
-document.getElementById("suggestions").style.display = "none";
-loadData();
-}
-}
+
+
+
 
 
 function updateActiveSuggestion(items) {
-items.forEach((item, i) => {
-item.style.background = i === selectedSuggestionIndex ? "#eee" : "white";
-});
+
+  items.forEach((item, i) => {
+
+    item.style.background = i === selectedSuggestionIndex ? "#eee" : "white";
+
+  });
+
 }
+
+
+
 
 
 window.addEventListener("DOMContentLoaded", () => {
-const params = new URLSearchParams(window.location.search);
-const ticker = params.get("ticker");
-if (ticker) {
-const input = document.getElementById("tickerInput");
-input.value = ticker;
-input.dispatchEvent(new Event('input')); // triggers name autofill
-setTimeout(loadData, 500); // simulate Enter after short delay
-}
+
+  const params = new URLSearchParams(window.location.search);
+
+  const ticker = params.get("ticker");
+
+  if (ticker) {
+
+    const input = document.getElementById("tickerInput");
+
+    input.value = ticker;
+
+    input.dispatchEvent(new Event('input')); // triggers name autofill
+
+    setTimeout(loadData, 500); // simulate Enter after short delay
+
+  }
+
 });
 
 
+
+
+
 </script>
+
+
+
 
 
 <iframe id="news-frame" style="width:100%; height:600px; border:none;"></iframe>
@@ -708,118 +1418,239 @@ setTimeout(loadData, 500); // simulate Enter after short delay
 
 
 
+
+
+
+
+
+
+
 <br><br>
+
 <iframe src="news2.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+
+
+
+
 
 
 
 </div>
 
+
+
 </main>
+
 <footer>
+
 This information is provided for informational purposes only. This is not for advice.
+
 <br><br>
+
 Please let us know if you have any suggestions, including data series or metrics we could add to Real CPI.
+
 <br><br>
+
 View S&P 500 Calculator:<br><br>
+
 <a href="/sp-calculator">
+
 <img src="/static/images/sp_calculator.png" alt="Real CPI Logo" height="25" />
+
 </a>
+
 <br><br>
+
 Copyright © 2024
+
 &nbsp;
+
 &nbsp;
+
 &nbsp;
+
 &nbsp;
+
 <a href="mailto:contact@realcpi.org">contact@realcpi.org</a>
+
 </footer>
 
+
+
 <script>
+
+
 
 function toggleMenu() {
-var menu = document.getElementById("menu-items");
-menu.classList.toggle("show");
+
+    var menu = document.getElementById("menu-items");
+
+    menu.classList.toggle("show");
+
 }
 
+
+
 </script>
+
+
 
 </body>
+
 <script>
+
 function formatNumber(value) {
-return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 }
+
+
 
 async function loadTickerBar() {
-const apiKey = 'y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj'; // Replace with your actual API key
-const symbols = [
-'^GSPC',       // S&P 500
-'^IXIC',       // NASDAQ
-'^RUT',        // Russell 2000
-'^GSPTSE',     // TSX
-'URTH',        // MSCI World ETF
-'CLUSD',        // Crude Oil
-'^TNX',        // 10-Year Treasury
-'BTCUSD',     // Bitcoin
-'CADUSD'     // CAD/USD
-];
 
-const displayNames = {
-'^GSPC': 'S&P 500',
-'^IXIC': 'NASDAQ',
-'^RUT': 'Russell 2000',
-'^GSPTSE': 'S&P/TSX',
-'URTH': 'MSCI World',
-'CLUSD': 'Crude Oil',
-'^TNX': '10-Year',
-'BTCUSD': 'Bitcoin',
-'CADUSD': 'CAD/USD'
-};
+  const apiKey = 'y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj'; // Replace with your actual API key
 
-try {
-const url = `https://financialmodelingprep.com/api/v3/quote/${symbols.join(',')}?apikey=${apiKey}`;
-const res = await fetch(url);
-const data = await res.json();
+  const symbols = [
 
-const bar = document.getElementById("ticker-bar");
-bar.innerHTML = "";
+    '^GSPC',       // S&P 500
 
-data.forEach(item => {
-const changeClass = item.changesPercentage >= 0 ? "green" : "red";
-const display = displayNames[item.symbol] || item.symbol;
-const span = document.createElement("span");
-const tickerMap = {
-'^GSPC': 'VOO',
-'^IXIC': 'QQQ',
-'^RUT': 'IWM',
-'^GSPTSE': 'XIC.to',
-'URTH': 'URTH',
-'CLUSD': 'CLUSD',
-'^TNX': 'IEF',
-'BTCUSD': 'BTCUSD',
-'CADUSD': 'CADUSD'
-};
+    '^IXIC',       // NASDAQ
 
-const targetTicker = tickerMap[item.symbol] || item.symbol;
+    '^RUT',        // Russell 2000
 
-span.innerHTML = `
-       <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
-         <div class="blue">${display}</div>
-         <div>${formatNumber(item.price)}</div>
-         <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
-       </a>
-     `;
+    '^GSPTSE',     // TSX
 
-// ✅ Append the span to the ticker bar
-bar.appendChild(span);
+    'URTH',        // MSCI World ETF
 
-});
-} catch (error) {
-document.getElementById("ticker-bar").textContent = "Unable to load market data.";
-console.error("Ticker fetch error:", error);
+    'CLUSD',        // Crude Oil
+
+    '^TNX',        // 10-Year Treasury
+
+    'BTCUSD',     // Bitcoin
+
+    'CADUSD'     // CAD/USD
+
+  ];
+
+
+
+  const displayNames = {
+
+    '^GSPC': 'S&P 500',
+
+    '^IXIC': 'NASDAQ',
+
+    '^RUT': 'Russell 2000',
+
+    '^GSPTSE': 'S&P/TSX',
+
+    'URTH': 'MSCI World',
+
+    'CLUSD': 'Crude Oil',
+
+    '^TNX': '10-Year',
+
+    'BTCUSD': 'Bitcoin',
+
+    'CADUSD': 'CAD/USD'
+
+  };
+
+
+
+  try {
+
+    const url = `https://financialmodelingprep.com/api/v3/quote/${symbols.join(',')}?apikey=${apiKey}`;
+
+    const res = await fetch(url);
+
+    const data = await res.json();
+
+
+
+    const bar = document.getElementById("ticker-bar");
+
+    bar.innerHTML = "";
+
+
+
+    data.forEach(item => {
+
+      const changeClass = item.changesPercentage >= 0 ? "green" : "red";
+
+      const display = displayNames[item.symbol] || item.symbol;
+
+      const span = document.createElement("span");
+
+      const tickerMap = {
+
+        '^GSPC': 'VOO',
+
+        '^IXIC': 'QQQ',
+
+        '^RUT': 'IWM',
+
+        '^GSPTSE': 'XIC.to',
+
+        'URTH': 'URTH',
+
+        'CLUSD': 'CLUSD',
+
+        '^TNX': 'IEF',
+
+        'BTCUSD': 'BTCUSD',
+
+        'CADUSD': 'CADUSD'
+
+      };
+
+
+
+      const targetTicker = tickerMap[item.symbol] || item.symbol;
+
+
+
+      span.innerHTML = `
+
+        <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
+
+          <div class="blue">${display}</div>
+
+          <div>${formatNumber(item.price)}</div>
+
+          <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
+
+        </a>
+
+      `;
+
+
+
+      // ✅ Append the span to the ticker bar
+
+      bar.appendChild(span);
+
+
+
+    });
+
+  } catch (error) {
+
+    document.getElementById("ticker-bar").textContent = "Unable to load market data.";
+
+    console.error("Ticker fetch error:", error);
+
+  }
+
 }
-}
+
+
 
 loadTickerBar();
+
 setInterval(loadTickerBar, 30000); // Refresh every 30 seconds
+
 </script>
+
 </html>
