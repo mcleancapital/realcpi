@@ -319,14 +319,31 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <link rel="canonical" href="https://www.realcpi.org/"/>
 
 <style>
-#tickerInput2 {
+
+/* Default: Desktop - 25% width */
+#tickerInput2-container {
+  position: relative;
   width: 25%;
-  padding: 8px;
+  min-width: 180px;
+  margin-bottom: 20px;
+}
+
+#tickerInput2 {
+  width: 100%;
+  padding: 8px 36px 8px 8px;
   font-size: 16px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
+
+/* Mobile: Full width on small screens */
+@media (max-width: 729px) {
+  #tickerInput2-container {
+    width: 100%;
+  }
+}
+	
 </style>
 	
 </head>
@@ -415,15 +432,14 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     	<button class="hamburger-menu" onclick="toggleMenu()">☰</button>
 </div>
 
-<div style="position: relative; width: 25%; min-width: 180px; margin-bottom: 20px;">
+<div id="tickerInput2-container">
   <input id="tickerInput2"
          type="text"
          placeholder="Type ticker or company name..."
          oninput="handleInput2()"
-         onkeydown="handleKeyDown2(event)"
-         style="width: 100%; padding: 8px 36px 8px 8px; font-size: 16px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;" />
+         onkeydown="handleKeyDown2(event)" />
 
-  <!-- Magnifying Glass Button -->
+  <!-- Magnifying Glass Button inside -->
   <button onclick="submitSearch()" style="
     position: absolute;
     right: 8px;
@@ -433,15 +449,15 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     background: transparent;
     cursor: pointer;
     padding: 0;">
-    <img src="/static/images/search-icon.png" alt="Search" style="height: 24px;" />
+    <img src="/static/images/search-icon.png" alt="Search" style="height: 20px;" />
   </button>
-
 
   <ul id="suggestions2" style="position: absolute; top: 100%; left: 0; right: 0;
     z-index: 1000; background: white; border: 1px solid #ccc; list-style: none;
     padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;">
   </ul>
 </div>
+
 
 	    
 <div class="center-text" style="margin-top: 20px;">Daily Data</div>
