@@ -78,36 +78,23 @@
 async function fetchFxRate(fromCurrency) {
   if (fromCurrency === baseCurrency) return 1;
 
-  const directPair = `${fromCurrency}${baseCurrency}`;
-  const reversePair = `${baseCurrency}${fromCurrency}`;
-
+  const fxUrl = `https://financialmodelingprep.com/api/v3/quotes/forex?apikey=${fmpApiKey}`;
   try {
-    const urlDirect = `https://financialmodelingprep.com/api/v3/fx/real-time-price/${directPair}?apikey=${fmpApiKey}`;
-    const resDirect = await fetch(urlDirect);
-    const dataDirect = await resDirect.json();
-
-    if (dataDirect && dataDirect.price && dataDirect.price !== 0) {
-      console.log(`FX ${directPair}: ${dataDirect.price}`);
-      return parseFloat(dataDirect.price);
+    const res = await fetch(fxUrl);
+    const data = await res.json();
+    const pair = `${fromCurrency}${baseCurrency}`;
+    const match = data.find(item => item.symbol === pair);
+    if (!match) {
+      console.warn(`FX pair ${pair} not found in full FX list.`);
+      return 1;
     }
-
-    // If direct fails, try reverse and invert
-    const urlReverse = `https://financialmodelingprep.com/api/v3/fx/real-time-price/${reversePair}?apikey=${fmpApiKey}`;
-    const resReverse = await fetch(urlReverse);
-    const dataReverse = await resReverse.json();
-
-    if (dataReverse && dataReverse.price && dataReverse.price !== 0) {
-      console.log(`FX ${reversePair} (inverted): ${1 / dataReverse.price}`);
-      return 1 / parseFloat(dataReverse.price);
-    }
-
-    console.warn(`FX fetch failed for ${fromCurrency} → ${baseCurrency}`);
+    return parseFloat(match.price) || 1;
   } catch (e) {
-    console.error(`FX error for ${fromCurrency} → ${baseCurrency}:`, e);
+    console.error(`FX error for pair ${fromCurrency} to ${baseCurrency}`, e);
+    return 1;
   }
-
-  return 1;  // fallback
 }
+
 
     async function loadPortfolio() {
       const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
