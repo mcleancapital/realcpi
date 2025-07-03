@@ -4,10 +4,22 @@
   <meta charset="UTF-8">
   <title>My Portfolio</title>
   <style>
+    body {
+      font-family: sans-serif;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #currencyDisplay {
+      font-size: 14px;
+      font-weight: bold;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     th, td {
       padding: 8px 12px;
@@ -20,7 +32,10 @@
   </style>
 </head>
 <body>
-  <h2>My Portfolio</h2>
+  <div class="header">
+    <h2>My Portfolio</h2>
+    <div id="currencyDisplay">Loading currency...</div>
+  </div>
 
   <table>
     <thead>
@@ -31,7 +46,6 @@
         <th>Currency</th>
         <th>FX Rate</th>
         <th>Purchase Date</th>
-        <th>Notes</th>
         <th>Live Price</th>
         <th>Market Value</th>
         <th>Gain/Loss</th>
@@ -43,8 +57,21 @@
   </table>
 
   <script>
+    const userId = "ianmclean@mcleancapital.ca";
+    const currencyApi = `https://YOUR_API_URL/getUserCurrency?user_id=${encodeURIComponent(userId)}`;
+
+    async function fetchBaseCurrency() {
+      try {
+        const res = await fetch(currencyApi);
+        const data = await res.json();
+        const baseCurrency = data.base_currency || "USD";
+        document.getElementById("currencyDisplay").innerText = `Base Currency: ${baseCurrency}`;
+      } catch (e) {
+        document.getElementById("currencyDisplay").innerText = `Base Currency: Unknown`;
+      }
+    }
+
     async function loadPortfolio() {
-      const userId = "ianmclean@mcleancapital.ca";
       const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
       const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
 
@@ -60,7 +87,6 @@
           return;
         }
 
-        // Clean and collect unique tickers
         const cleanedTickers = holdings
           .map(item => (item.ticker || "").trim().toUpperCase())
           .filter(t => !!t);
@@ -69,13 +95,10 @@
 
         const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote-short/${tickers}?apikey=${fmpApiKey}`);
         const prices = await priceRes.json();
-        console.log("Short quote response:", prices);
-
         const priceMap = Array.isArray(prices)
           ? Object.fromEntries(prices.map(p => [p.symbol.toUpperCase(), p.price]))
           : {};
 
-        // Build table rows
         holdings.forEach(item => {
           const ticker = (item.ticker || "").trim().toUpperCase();
           const livePrice = parseFloat(priceMap[ticker] || 0);
@@ -92,7 +115,6 @@
             <td>${item.currency || ""}</td>
             <td>${item.fx_rate || ""}</td>
             <td>${item.purchase_date || ""}</td>
-            <td>${item.notes || ""}</td>
             <td>${livePrice.toFixed(2)}</td>
             <td>${marketValue.toFixed(2)}</td>
             <td style="color:${gainLoss >= 0 ? 'green' : 'red'}">
@@ -108,8 +130,10 @@
       }
     }
 
+    // Run both
+    fetchBaseCurrency();
     loadPortfolio();
-    setInterval(loadPortfolio, 30000);  // Refresh every 30 seconds
+    setInterval(loadPortfolio, 30000);
   </script>
 </body>
 </html>
