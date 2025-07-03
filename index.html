@@ -419,11 +419,8 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   <input id="tickerInput2" type="text" placeholder="Type ticker or company name..." oninput="handleInput2()" onkeydown="handleKeyDown2(event)">
   <ul id="suggestions2" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;"></ul>
 </div>
-<br>
 	    
-<div class="center-text">Daily Data
-
-</div>
+<div class="center-text" style="margin-top: 20px;">Daily Data</div>
 
 <br>
 
@@ -559,6 +556,8 @@ function toggleMenu() {
 let selectedSuggestionIndex2 = -1;
 let currentSuggestions2 = [];
 
+const apiKey = 'y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj';
+	
 async function handleInput2() {
   const input = document.getElementById("tickerInput2").value.trim();
   const suggestionBox = document.getElementById("suggestions2");
