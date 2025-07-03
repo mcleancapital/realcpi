@@ -253,23 +253,14 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
             }
 
             .mobile-menu button {
-
                 flex: 1;
-
                 padding: 0px;
-
                 font-size: 48px;
-
 		top: 0;
-
                 border: none;
-
                 background-color: #fff;
-
                 cursor: pointer;
-
                 transition: background-color 0.3s ease;
-
             }
 
 
@@ -314,10 +305,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
         display: none; /* Hide the logo on mobile */
 
-
-
   }
-
                 }
 
 
@@ -327,63 +315,38 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 .center-text {
 
             display: flex;
-
             justify-content: center; /* Center horizontally */
-
             align-items: center;     /* Center vertically */
-
             width: 100%;             /* Full width of the page */
-
             height: 5vh;           /* Take full viewport height */
-
             font-size: 35px;         /* Make the font larger */
-
             font-weight: bold;       /* Bold text */
-
             text-align: center;      /* Text alignment */
-
    	    border: 0.5px solid black; /* Add a border around the box */
-
     	    background-color: #e8e8e8; /* Light gray background for the box */
-
     	    padding: 10px;           /* Space between text and border */
-
     	    box-sizing: border-box;  /* Include padding and border in width/height */
-
 }
 
 
 
 .center-text2 {
-
             display: flex;
-
             justify-content: center; /* Center horizontally */
-
             align-items: center;     /* Center vertically */
-
             width: 100%;             /* Full width of the page */
-
             height: 5vh;           /* Take full viewport height */
-
             font-size: 25px;         /* Make the font larger */
-
             font-weight: bold;       /* Bold text */
-
             text-align: center;      /* Text alignment */
-
 }
 
 
 
 .small-centered-text {
-
     font-size: 12px;
-
     text-align: center;
-
     padding: 1px;
-
 }
 
 
@@ -393,29 +356,17 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 @media (max-width: 729px) {
 
     .menu-bar ul {
-
         display: none;
-
         flex-direction: column;
-
         background-color: white;
-
         position: fixed; * Now stays visible while scrolling */
-
         top: 120px; /* Adjust so it appears below the hamburger */
-
         left: 0;
-
         width: 100%;
-
 	z-index: 3000; /* <-- Add this */
-
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-
         text-align: center;
-
         padding: 0;
-
     }
 
 
@@ -429,47 +380,29 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     }
 
 
-
     /* Style menu items in mobile mode */
 
     .menu-bar ul li {
-
         display: block;
-
         width: 100%;
-
         padding: 10px 0;
-
         border-bottom: 1px solid #ddd;
-
     }
 
 
 
     /* Style hamburger button */
-
     .hamburger-menu {
-
         display: block;
-
         font-size: 48px;
-
         background: none;
-
         border: none;
-
         cursor: pointer;
-
         padding: 10px;
-
         margin-left: auto;
-
 	position: relative;  /* Required for z-index to take effect */
-
         z-index: 2001;        /* 👈 Make sure it floats above the ticker bar and input */
-
     }
-
 }
 
 
@@ -481,13 +414,9 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <meta name="viewport" content="initial-scale=1" />
 
 
-
 <title>Real CPI</title>
-
 <meta property="og:site_name" content="Real CPI" />
-
 <link rel="icon" type="image/png" href="/static/images/favicon.png">
-
 <script type="application/ld+json">
 
 {
@@ -542,9 +471,6 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 </div> -->
 
-
-
-
 </header>
 
 
@@ -573,30 +499,20 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 }
 
 #ticker-bar span {
-
   display: inline-block;
   min-width: 90px;
-
 }
-
 .green {
   color: #55a232;
 }
-
 .red {
   color: #cc3314;
 }
-
 .blue {
-
   color: #0056b3;
   font-weight: bold;
-
 }
-
 </style>
-
-
 
 
 
@@ -1092,45 +1008,25 @@ function handleKeyDown(event) {
 
 
   if (event.key === "ArrowDown") {
-
     if (!items.length) return;
-
     selectedSuggestionIndex = (selectedSuggestionIndex + 1) % items.length;
-
     updateActiveSuggestion(items);
-
     event.preventDefault();
-
   } else if (event.key === "ArrowUp") {
-
     if (!items.length) return;
-
     selectedSuggestionIndex = (selectedSuggestionIndex - 1 + items.length) % items.length;
-
     updateActiveSuggestion(items);
-
     event.preventDefault();
-
   } else if (event.key === "Enter") {
-
     event.preventDefault();
-
     if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < currentSuggestions.length) {
-
       // If suggestion selected, use it
-
       document.getElementById("tickerInput").value = currentSuggestions[selectedSuggestionIndex].symbol;
-
     }
-
     // Either way, trigger search with current value
-
     document.getElementById("suggestions").style.display = "none";
-
     loadData();
-
   }
-
 }
 
 
@@ -1140,9 +1036,7 @@ function handleKeyDown(event) {
 function updateActiveSuggestion(items) {
 
   items.forEach((item, i) => {
-
     item.style.background = i === selectedSuggestionIndex ? "#eee" : "white";
-
   });
 
 }
@@ -1155,24 +1049,15 @@ function updateActiveSuggestion(items) {
 window.addEventListener("DOMContentLoaded", () => {
 
   const params = new URLSearchParams(window.location.search);
-
   const ticker = params.get("ticker");
-
   if (ticker) {
-
     const input = document.getElementById("tickerInput");
-
     input.value = ticker;
-
     input.dispatchEvent(new Event('input')); // triggers name autofill
-
     setTimeout(loadData, 500); // simulate Enter after short delay
-
   }
 
 });
-
-
 
 
 
@@ -1180,31 +1065,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
 <iframe id="news-frame" style="width:100%; height:600px; border:none;"></iframe>
-
-
-
-
-
-
-
-
-
-
-
 
 
 <br><br>
 
 <iframe src="news2.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
-
-
-
-
-
-
 
 </div>
 
@@ -1221,25 +1087,18 @@ This information is provided for informational purposes only. This is not for ad
 Please let us know if you have any suggestions, including data series or metrics we could add to Real CPI.
 
 <br><br>
-
 View S&P 500 Calculator:<br><br>
 
 <a href="/sp-calculator">
-
 <img src="/static/images/sp_calculator.png" alt="Real CPI Logo" height="25" />
-
 </a>
-
 <br><br>
 
 Copyright © 2024
 
 &nbsp;
-
 &nbsp;
-
 &nbsp;
-
 &nbsp;
 
 <a href="mailto:contact@realcpi.org">contact@realcpi.org</a>
