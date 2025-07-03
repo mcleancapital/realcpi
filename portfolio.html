@@ -47,6 +47,7 @@
         <th>Purchase Date</th>
         <th>Live Price</th>
         <th>Market Value</th>
+        <th>FX</th>
         <th>Market Value (Base)</th>
         <th>Gain/Loss (Base)</th>
       </tr>
@@ -61,7 +62,7 @@
     const currencyApi = `https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserCurrency?user_id=${encodeURIComponent(userId)}`;
     const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
 
-    let baseCurrency = "USD";  // Default
+    let baseCurrency = "USD";
 
     async function fetchBaseCurrency() {
       try {
@@ -76,12 +77,14 @@
 
     async function fetchFxRate(fromCurrency) {
       if (fromCurrency === baseCurrency) return 1;
-      const fxUrl = `https://financialmodelingprep.com/api/v3/fx/real-time-price/${fromCurrency}${baseCurrency}?apikey=${fmpApiKey}`;
+      const pair = `${fromCurrency}${baseCurrency}`;
+      const fxUrl = `https://financialmodelingprep.com/api/v3/fx/real-time-price/${pair}?apikey=${fmpApiKey}`;
       try {
         const res = await fetch(fxUrl);
         const data = await res.json();
         return parseFloat(data.price) || 1;
-      } catch {
+      } catch (e) {
+        console.error(`Failed to fetch FX rate for ${pair}`, e);
         return 1;
       }
     }
@@ -97,7 +100,7 @@
         tbody.innerHTML = "";
 
         if (!Array.isArray(holdings)) {
-          tbody.innerHTML = "<tr><td colspan='9'>Invalid server response</td></tr>";
+          tbody.innerHTML = "<tr><td colspan='10'>Invalid server response</td></tr>";
           return;
         }
 
@@ -111,7 +114,6 @@
           ? Object.fromEntries(prices.map(p => [p.symbol.toUpperCase(), p.price]))
           : {};
 
-        // Cache FX rates to avoid duplicate calls
         const fxRateCache = {};
 
         for (const item of holdings) {
@@ -124,10 +126,10 @@
           const livePrice = parseFloat(priceMap[ticker]) || 0;
           const marketValue = quantity * livePrice;
 
-          // Fetch FX rate only once per currency
           if (!fxRateCache[currency]) {
             fxRateCache[currency] = await fetchFxRate(currency);
           }
+
           const fxRate = fxRateCache[currency];
           const marketValueBase = marketValue * fxRate;
           const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
@@ -141,6 +143,7 @@
             <td>${purchaseDate}</td>
             <td>${livePrice.toFixed(2)}</td>
             <td>${marketValue.toFixed(2)}</td>
+            <td>${fxRate.toFixed(4)}</td>
             <td>${marketValueBase.toFixed(2)}</td>
             <td style="color:${gainLossBase >= 0 ? 'green' : 'red'}">
               ${gainLossBase >= 0 ? "+" : ""}${gainLossBase.toFixed(2)}
@@ -151,11 +154,10 @@
 
       } catch (error) {
         document.getElementById("portfolioBody").innerHTML =
-          `<tr><td colspan='9'>Error loading portfolio: ${error}</td></tr>`;
+          `<tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>`;
       }
     }
 
-    // Load both base currency and portfolio
     async function main() {
       await fetchBaseCurrency();
       await loadPortfolio();
@@ -163,7 +165,6 @@
     }
 
     main();
-
   </script>
 </body>
 </html>
