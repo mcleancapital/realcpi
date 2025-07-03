@@ -43,69 +43,73 @@
   </table>
 
   <script>
-async function loadPortfolio() {
-  const userId = "ianmclean@mcleancapital.ca";
-  const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
-  const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";  // ⬅️ Replace this with your actual FMP key
+    async function loadPortfolio() {
+      const userId = "ianmclean@mcleancapital.ca";
+      const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
+      const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
 
-  try {
-    const res = await fetch(portfolioUrl);
-    const holdings = await res.json();
+      try {
+        const res = await fetch(portfolioUrl);
+        const holdings = await res.json();
 
-    const tbody = document.getElementById("portfolioBody");
-    tbody.innerHTML = "";
+        const tbody = document.getElementById("portfolioBody");
+        tbody.innerHTML = "";
 
-    if (!Array.isArray(holdings)) {
-      tbody.innerHTML = "<tr><td colspan='10'>Invalid server response</td></tr>";
-      return;
+        if (!Array.isArray(holdings)) {
+          tbody.innerHTML = "<tr><td colspan='10'>Invalid server response</td></tr>";
+          return;
+        }
+
+        // Clean and collect unique tickers
+        const cleanedTickers = holdings
+          .map(item => (item.ticker || "").trim().toUpperCase())
+          .filter(t => !!t);
+
+        const tickers = [...new Set(cleanedTickers)].join(",");
+
+        const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote-short/${tickers}?apikey=${fmpApiKey}`);
+        const prices = await priceRes.json();
+        console.log("Short quote response:", prices);
+
+        const priceMap = Array.isArray(prices)
+          ? Object.fromEntries(prices.map(p => [p.symbol.toUpperCase(), p.price]))
+          : {};
+
+        // Build table rows
+        holdings.forEach(item => {
+          const ticker = (item.ticker || "").trim().toUpperCase();
+          const livePrice = parseFloat(priceMap[ticker] || 0);
+          const quantity = parseFloat(item.quantity) || 0;
+          const purchasePrice = parseFloat(item.purchase_price) || 0;
+          const marketValue = quantity * livePrice;
+          const gainLoss = (livePrice - purchasePrice) * quantity;
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${ticker}</td>
+            <td>${quantity}</td>
+            <td>${purchasePrice.toFixed(2)}</td>
+            <td>${item.currency || ""}</td>
+            <td>${item.fx_rate || ""}</td>
+            <td>${item.purchase_date || ""}</td>
+            <td>${item.notes || ""}</td>
+            <td>${livePrice.toFixed(2)}</td>
+            <td>${marketValue.toFixed(2)}</td>
+            <td style="color:${gainLoss >= 0 ? 'green' : 'red'}">
+              ${gainLoss >= 0 ? "+" : ""}${gainLoss.toFixed(2)}
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+
+      } catch (error) {
+        document.getElementById("portfolioBody").innerHTML =
+          `<tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>`;
+      }
     }
 
-    // Step 1: Get all unique tickers
-    const tickers = [...new Set(holdings.map(item => item.ticker))].join(",");
-    const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote-short/${tickers}?apikey=${fmpApiKey}`);
-    const prices = await priceRes.json();
-    console.log("Short quote response:", prices);
-
-    const priceMap = Array.isArray(prices)
-      ? Object.fromEntries(prices.map(p => [p.symbol, p.price]))
-      : {};
-
-
-    // Step 2: Display each row
-    holdings.forEach(item => {
-      const livePrice = priceMap[item.ticker] || 0;
-      const quantity = parseFloat(item.quantity) || 0;
-      const purchasePrice = parseFloat(item.purchase_price) || 0;
-      const marketValue = quantity * livePrice;
-      const gainLoss = (livePrice - purchasePrice) * quantity;
-
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${item.ticker}</td>
-        <td>${quantity}</td>
-        <td>${purchasePrice.toFixed(2)}</td>
-        <td>${item.currency}</td>
-        <td>${item.fx_rate}</td>
-        <td>${item.purchase_date || ""}</td>
-        <td>${item.notes || ""}</td>
-        <td>${livePrice.toFixed(2)}</td>
-        <td>${marketValue.toFixed(2)}</td>
-        <td style="color:${gainLoss >= 0 ? 'green' : 'red'}">
-          ${gainLoss >= 0 ? "+" : ""}${gainLoss.toFixed(2)}
-        </td>
-      `;
-      tbody.appendChild(row);
-    });
-
-  } catch (error) {
-    document.getElementById("portfolioBody").innerHTML =
-      `<tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>`;
-  }
-}
-
-
     loadPortfolio();
-    setInterval(loadPortfolio, 30000);
+    setInterval(loadPortfolio, 30000);  // Refresh every 30 seconds
   </script>
 </body>
 </html>
