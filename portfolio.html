@@ -78,7 +78,7 @@
     async function fetchFxRate(fromCurrency) {
       if (fromCurrency === baseCurrency) return 1;
       const pair = `${fromCurrency}${baseCurrency}`;
-      const fxUrl = `https://financialmodelingprep.com/api/v3/fx/real-time-price/${pair}?apikey=${fmpApiKey}`;
+      const fxUrl = `https://financialmodelingprep.com/api/v3/quote-short/${pair}?apikey=${fmpApiKey}`;
       try {
         const res = await fetch(fxUrl);
         const data = await res.json();
