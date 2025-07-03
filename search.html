@@ -60,14 +60,9 @@
 }
 
 
-
 .menu-bar ul li a:hover {
-
     text-decoration: underline;
-
 }
-
-
 
 .container {
 
@@ -76,23 +71,16 @@
 
 }
 
-
-
 .left-column {
 
   flex: 1; /* Takes up 1/4 of the space */
   background-color: #f9f9f9; /* Optional: Light background for visibility */
   padding: 16px;
-
 }
 
-
-
 .right-column {
-
   flex: 3; /* Takes up 3/4 of the space */
   padding: 16px;
-
 }
 
 
@@ -199,22 +187,14 @@ a.box{padding:8px}
 
 
 footer{
-
 	padding:var(--std_padding);
-
 	box-shadow:rgb(0 0 0 / 8%) 0 -1px 0;
-
 	text-align:center;
-
 	color:#717171;font-size:.75em}
-
 a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.more:hover{text-decoration:none}a.more{text-align:center;display:block;margin:var(--std_padding) auto 0 auto;color:#fff;border:1px solid rgba(0,0,0,.08);border-radius:24px;background-color:#000;padding:14px 19px;width:80px}
 
 
-
         @media (max-width: 729px) {
-
-
 
   #ticker-bar {
 
@@ -457,9 +437,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
             <li><a href="currency.html">Currency Converter</a></li>
             <li><a href="https://tradingeconomics.com/commodities" target="_blank" rel="noopener noreferrer">Commodities</a></li>
         </ul>
-
     </nav>
-
 
 
 <!--
@@ -523,12 +501,6 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <div class="container">
     <!-- Left Column -->
     <div class="left-column">
-
-
-<div style="position: relative; display: inline-block;">
-  <input id="tickerInput2" type="text" placeholder="Type ticker or company name..." oninput="handleInput2()" onkeydown="handleKeyDown2(event)">
-  <ul id="suggestions2" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;"></ul>
-</div>
 
 	    
 
@@ -1121,88 +1093,6 @@ function toggleMenu() {
 
 
 
-</script>
-
-
-<script>
-let selectedSuggestionIndex2 = -1;
-let currentSuggestions2 = [];
-
-async function handleInput2() {
-  const input = document.getElementById("tickerInput2").value.trim();
-  const suggestionBox = document.getElementById("suggestions2");
-
-  if (input.length < 1) {
-    suggestionBox.style.display = "none";
-    return;
-  }
-
-  let results = [];
-
-  try {
-    const res1 = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
-    results = await res1.json();
-
-    if (!results.length) {
-      const res2 = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`);
-      results = await res2.json();
-    }
-  } catch (err) {
-    console.error("Search error:", err);
-  }
-
-  currentSuggestions2 = results;
-  selectedSuggestionIndex2 = -1;
-  suggestionBox.innerHTML = "";
-
-  if (results.length > 0) {
-    results.forEach((item, index) => {
-      const li = document.createElement("li");
-      li.textContent = `${item.name} (${item.symbol})`;
-      li.style.padding = "8px";
-      li.style.cursor = "pointer";
-      li.addEventListener("click", () => {
-        document.getElementById("tickerInput2").value = item.symbol;
-        suggestionBox.style.display = "none";
-        window.location.href = `/search.html?ticker=${encodeURIComponent(item.symbol)}`; // Reuse your main stock page
-      });
-      suggestionBox.appendChild(li);
-    });
-    suggestionBox.style.display = "block";
-  } else {
-    suggestionBox.style.display = "none";
-  }
-}
-
-function handleKeyDown2(event) {
-  const suggestionBox = document.getElementById("suggestions2");
-  const items = suggestionBox.querySelectorAll("li");
-
-  if (event.key === "ArrowDown") {
-    if (!items.length) return;
-    selectedSuggestionIndex2 = (selectedSuggestionIndex2 + 1) % items.length;
-    updateActiveSuggestion2(items);
-    event.preventDefault();
-  } else if (event.key === "ArrowUp") {
-    if (!items.length) return;
-    selectedSuggestionIndex2 = (selectedSuggestionIndex2 - 1 + items.length) % items.length;
-    updateActiveSuggestion2(items);
-    event.preventDefault();
-  } else if (event.key === "Enter") {
-    event.preventDefault();
-    if (selectedSuggestionIndex2 >= 0 && selectedSuggestionIndex2 < currentSuggestions2.length) {
-      document.getElementById("tickerInput2").value = currentSuggestions2[selectedSuggestionIndex2].symbol;
-    }
-    document.getElementById("suggestions2").style.display = "none";
-    window.location.href = `/search.html?ticker=${encodeURIComponent(document.getElementById("tickerInput2").value)}`;
-  }
-}
-
-function updateActiveSuggestion2(items) {
-  items.forEach((item, i) => {
-    item.style.background = i === selectedSuggestionIndex2 ? "#eee" : "white";
-  });
-}
 </script>
 	
 
