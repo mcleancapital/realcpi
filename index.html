@@ -320,7 +320,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 <style>
 #tickerInput2 {
-  width: 150%;
+  width: 100%;
   padding: 8px;
   font-size: 16px;
   box-sizing: border-box;
@@ -421,19 +421,18 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
          style="padding-right: 40px;" />
   
   <!-- Magnifying Glass Button -->
-  <button onclick="submitSearch()"
-          style="
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 20px;
-            color: #666;">
-    🔍
+  <button onclick="submitSearch()" style="
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;">
+    <img src="/static/images/search-icon.png" alt="Search" style="height: 24px;" />
   </button>
+
 
   <ul id="suggestions2" style="position: absolute; top: 100%; left: 0; right: 0;
     z-index: 1000; background: white; border: 1px solid #ccc; list-style: none;
