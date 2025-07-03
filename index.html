@@ -415,10 +415,32 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     	<button class="hamburger-menu" onclick="toggleMenu()">☰</button>
 </div>
 
-<div style="position: relative; display: inline-block;">
-  <input id="tickerInput2" type="text" placeholder="Type ticker or company name..." oninput="handleInput2()" onkeydown="handleKeyDown2(event)">
-  <ul id="suggestions2" style="position: absolute; top: 100%; left: 0; right: 0; z-index: 1000; background: white; border: 1px solid #ccc; list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;"></ul>
+<div style="position: relative; display: block; width: 100%;">
+  <input id="tickerInput2" type="text" placeholder="Type ticker or company name..."
+         oninput="handleInput2()" onkeydown="handleKeyDown2(event)"
+         style="padding-right: 40px;" />
+  
+  <!-- Magnifying Glass Button -->
+  <button onclick="submitSearch()"
+          style="
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 20px;
+            color: #666;">
+    🔍
+  </button>
+
+  <ul id="suggestions2" style="position: absolute; top: 100%; left: 0; right: 0;
+    z-index: 1000; background: white; border: 1px solid #ccc; list-style: none;
+    padding: 0; margin: 0; max-height: 200px; overflow-y: auto; display: none;">
+  </ul>
 </div>
+
 	    
 <div class="center-text" style="margin-top: 20px;">Daily Data</div>
 
@@ -636,6 +658,14 @@ function updateActiveSuggestion2(items) {
 </script>
 
 
+<script>
+function submitSearch() {
+  const input = document.getElementById("tickerInput2").value.trim();
+  if (input) {
+    window.location.href = `/search.html?ticker=${encodeURIComponent(input)}`;
+  }
+}
+</script>
 
 	
 </body>
