@@ -1281,6 +1281,86 @@ function updateActiveSuggestion(items) {
 }
 
 
+<script>
+let selectedSuggestionIndex2 = -1;
+let currentSuggestions2 = [];
+
+async function handleInput2() {
+  const input = document.getElementById("tickerInput2").value.trim();
+  const suggestionBox = document.getElementById("suggestions2");
+
+  if (input.length < 1) {
+    suggestionBox.style.display = "none";
+    return;
+  }
+
+  let results = [];
+
+  try {
+    const res1 = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
+    results = await res1.json();
+
+    if (!results.length) {
+      const res2 = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`);
+      results = await res2.json();
+    }
+  } catch (err) {
+    console.error("Search error:", err);
+  }
+
+  currentSuggestions2 = results;
+  selectedSuggestionIndex2 = -1;
+  suggestionBox.innerHTML = "";
+
+  if (results.length > 0) {
+    results.forEach((item, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${item.name} (${item.symbol})`;
+      li.style.padding = "8px";
+      li.style.cursor = "pointer";
+      li.addEventListener("click", () => {
+        document.getElementById("tickerInput2").value = item.symbol;
+        suggestionBox.style.display = "none";
+        window.location.href = `/search.html?ticker=${encodeURIComponent(item.symbol)}`; // Reuse your main stock page
+      });
+      suggestionBox.appendChild(li);
+    });
+    suggestionBox.style.display = "block";
+  } else {
+    suggestionBox.style.display = "none";
+  }
+}
+
+function handleKeyDown2(event) {
+  const suggestionBox = document.getElementById("suggestions2");
+  const items = suggestionBox.querySelectorAll("li");
+
+  if (event.key === "ArrowDown") {
+    if (!items.length) return;
+    selectedSuggestionIndex2 = (selectedSuggestionIndex2 + 1) % items.length;
+    updateActiveSuggestion2(items);
+    event.preventDefault();
+  } else if (event.key === "ArrowUp") {
+    if (!items.length) return;
+    selectedSuggestionIndex2 = (selectedSuggestionIndex2 - 1 + items.length) % items.length;
+    updateActiveSuggestion2(items);
+    event.preventDefault();
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    if (selectedSuggestionIndex2 >= 0 && selectedSuggestionIndex2 < currentSuggestions2.length) {
+      document.getElementById("tickerInput2").value = currentSuggestions2[selectedSuggestionIndex2].symbol;
+    }
+    document.getElementById("suggestions2").style.display = "none";
+    window.location.href = `/search.html?ticker=${encodeURIComponent(document.getElementById("tickerInput2").value)}`;
+  }
+}
+
+function updateActiveSuggestion2(items) {
+  items.forEach((item, i) => {
+    item.style.background = i === selectedSuggestionIndex2 ? "#eee" : "white";
+  });
+}
+</script>
 
 
 
