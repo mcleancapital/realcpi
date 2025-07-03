@@ -62,9 +62,14 @@ async function loadPortfolio() {
 
     // Step 1: Get all unique tickers
     const tickers = [...new Set(holdings.map(item => item.ticker))].join(",");
-    const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
+    const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote-short/${tickers}?apikey=${fmpApiKey}`);
     const prices = await priceRes.json();
-    const priceMap = Object.fromEntries(prices.map(p => [p.symbol, p.price]));
+    console.log("Short quote response:", prices);
+
+    const priceMap = Array.isArray(prices)
+      ? Object.fromEntries(prices.map(p => [p.symbol, p.price]))
+      : {};
+
 
     // Step 2: Display each row
     holdings.forEach(item => {
