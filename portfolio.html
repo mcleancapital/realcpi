@@ -52,6 +52,7 @@
   <thead>
     <tr>
       <th>Ticker</th>
+      <th>Name</th>
       <th>Quantity</th>
       <th>Purchase Price</th>
       <th>Currency</th>
@@ -61,6 +62,7 @@
       <th>FX</th>
       <th>Market Value (Base)</th>
       <th>Gain/Loss (Base)</th>
+      <th>Modify</th>
     </tr>
   </thead>
   <tbody id="portfolioBody"></tbody>
@@ -174,9 +176,16 @@ async function renderTable(selectedPortfolio) {
   }
 
   const tickers = [...new Set(filtered.map(i => (i.ticker || "").trim().toUpperCase()))].join(",");
-  const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote-short/${tickers}?apikey=${fmpApiKey}`);
+  const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
   const prices = await priceRes.json();
-  const priceMap = Object.fromEntries(prices.map(p => [p.symbol.toUpperCase(), p.price]));
+  const priceMap = {};
+  const nameMap = {};
+  prices.forEach(p => {
+    const symbol = p.symbol.toUpperCase();
+    priceMap[symbol] = p.price;
+    nameMap[symbol] = p.name;
+  });
+
 
   const fxRateCache = {};
   let totalMV = 0, totalMVBase = 0, totalGainLossBase = 0;
@@ -203,8 +212,15 @@ async function renderTable(selectedPortfolio) {
     totalGainLossBase += gainLossBase;
 
     const row = document.createElement("tr");
+    const companyName = nameMap[ticker] || ticker;
+    const logoUrl = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
+
     row.innerHTML = `
       <td>${ticker}</td>
+      <td style="display: flex; align-items: center; gap: 8px;">
+        <img src="${logoUrl}" alt="${ticker}" style="width: 24px; height: 24px;" />
+        ${companyName}
+      </td>
       <td>${quantity}</td>
       <td>${formatCurrency(purchasePrice, currency)}</td>
       <td>${currency}</td>
@@ -216,7 +232,11 @@ async function renderTable(selectedPortfolio) {
       <td style="color:${gainLossBase >= 0 ? 'green' : 'red'}">
         ${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}
       </td>
+      <td>
+        <button onclick='modifyHolding(${JSON.stringify(item)})' style="cursor:pointer;">✏️</button>
+      </td>
     `;
+
     tbody.appendChild(row);
   }
 
@@ -226,6 +246,14 @@ async function renderTable(selectedPortfolio) {
     (totalGainLossBase >= 0 ? "+" : "-") + formatCurrency(Math.abs(totalGainLossBase), baseCurrency);
 }
 
+function modifyHolding(item) {
+  alert(`Modify clicked for ${item.ticker} in portfolio "${item.portfolio}"`);
+
+  // Example: open a modal or redirect
+  // You could also call an API to update the DynamoDB table
+  // fetch('/update-holding', { method: 'POST', body: JSON.stringify({...}) })
+}
+  
 async function main() {
   await fetchBaseCurrency();
   await loadHoldings(true); // Initial load with dropdown
