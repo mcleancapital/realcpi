@@ -38,13 +38,21 @@
 <body>
 
 <div class="header">
-  <div>
-    <h2>My Portfolio</h2>
-    <label for="portfolioSelect">Select Portfolio:</label>
-    <select id="portfolioSelect">
-      <option value="">Loading...</option>
-    </select>
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <div>
+      <h2>My Portfolio</h2>
+      <label for="portfolioSelect">Select Portfolio:</label>
+      <select id="portfolioSelect">
+        <option value="">Loading...</option>
+      </select>
+    </div>
+    <div style="margin-top: 24px;">
+      <button onclick="window.open('new_portfolio.html', '_blank')" style="padding: 6px 12px; font-size: 14px; cursor: pointer;">
+        ➕ Create Portfolio
+      </button>
+    </div>
   </div>
+  
   <div id="currencyDisplay">Loading currency...</div>
 </div>
 
