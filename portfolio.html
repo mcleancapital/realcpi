@@ -126,22 +126,23 @@ function populatePortfolioDropdown(portfolios) {
   // Only populate once
   if (dropdown.dataset.initialized) return;
 
-  // Count CAD vs USD for each portfolio
-  const currencyBias = {};
-  for (const portfolio of portfolios) {
+  // Build a map of portfolio -> { cad: count, usd: count }
+  const biasMap = {};
+  portfolios.forEach(portfolio => {
     const holdings = allHoldings.filter(h => h.portfolio === portfolio);
-    const cadCount = holdings.filter(h => (h.currency || "").toUpperCase() === "CAD").length;
-    const usdCount = holdings.filter(h => (h.currency || "").toUpperCase() === "USD").length;
-    currencyBias[portfolio] = cadCount - usdCount; // positive = CAD-leaning
-  }
-
-  // Sort portfolios: CAD-leaning first, then USD-leaning
-  portfolios.sort((a, b) => {
-    const biasA = currencyBias[a] || 0;
-    const biasB = currencyBias[b] || 0;
-    return biasB - biasA;
+    let cad = 0, usd = 0;
+    holdings.forEach(h => {
+      const cur = (h.currency || "").toUpperCase();
+      if (cur === "CAD") cad++;
+      else if (cur === "USD") usd++;
+    });
+    biasMap[portfolio] = cad - usd;  // positive = CAD-heavy
   });
 
+  // Sort by CAD-bias descending
+  portfolios.sort((a, b) => (biasMap[b] || 0) - (biasMap[a] || 0));
+
+  // Fill the dropdown
   dropdown.innerHTML = portfolios.map(p => `<option value="${p}">${p}</option>`).join("");
   dropdown.value = portfolios[0];
 
