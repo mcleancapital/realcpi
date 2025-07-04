@@ -213,13 +213,14 @@ async function renderTable(selectedPortfolio) {
 
     const fxRate = fxRateCache[currency];
     const marketValueBase = marketValue * fxRate;
-    const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
     const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
 
     totalMV += marketValue;
     totalMVBase += marketValueBase;
     totalGainLossBase += gainLossBase;
 
+    const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
+    
     const today = new Date();
     let purchaseDateObj = new Date(purchaseDate); // fallback
     if (/^\d{8}$/.test(purchaseDate)) {
