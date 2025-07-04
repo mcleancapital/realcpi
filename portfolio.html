@@ -221,9 +221,16 @@ for (const item of filtered) {
   const quantity = parseFloat(item.quantity) || 0;
   const purchasePrice = parseFloat(item.purchase_price) || 0;
   const purchaseDate = item.purchase_date || "";
-  const livePrice = item.is_private === true && item.custom_price
-    ? parseFloat(item.custom_price)
-    : parseFloat(priceMap[ticker]) || 0;
+  let livePrice = 0;
+  if (item.is_private === true && typeof item.custom_price === "number" && !isNaN(item.custom_price)) {
+    livePrice = item.custom_price;
+  } else if (priceMap[ticker] !== undefined && priceMap[ticker] !== null) {
+    livePrice = parseFloat(priceMap[ticker]) || 0;
+  }
+
+  console.log(ticker, "is_private:", item.is_private, "custom_price:", item.custom_price, "→ livePrice:", livePrice);
+
+  
   const marketValue = quantity * livePrice;
 
   if (!fxRateCache[currency]) {
