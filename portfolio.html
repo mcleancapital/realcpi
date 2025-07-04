@@ -7,11 +7,13 @@
     body {
       font-family: sans-serif;
     }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* <-- changed from center to top-align */
+  gap: 20px; /* optional spacing */
+  flex-wrap: wrap; /* optional for small screens */
+}
     #currencyDisplay {
       font-size: 14px;
       font-weight: bold;
@@ -49,8 +51,8 @@
     </div>
   </div>
 
-<!-- Right: Base Currency and Create/Delete Buttons side by side -->
-<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+<!-- Right: Base Currency and Buttons side by side -->
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
   <div id="currencyDisplay">Loading currency...</div>
   <div style="display: flex; gap: 8px;">
     <button onclick="window.location.href = 'new_portfolio.html'" 
