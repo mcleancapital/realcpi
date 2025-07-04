@@ -134,7 +134,7 @@ function populatePortfolioDropdown(portfolios) {
 }
 
 
-async function loadHoldings() {
+async function loadHoldings(initial = false) {
   try {
     const res = await fetch(portfolioUrl);
     allHoldings = await res.json();
@@ -142,9 +142,12 @@ async function loadHoldings() {
     if (!Array.isArray(allHoldings)) throw new Error("Invalid response format");
 
     const portfolios = [...new Set(allHoldings.map(i => i.portfolio).filter(Boolean))];
-    populatePortfolioDropdown(portfolios);
 
-    renderTable(portfolios[0]);  // Default to first one
+    if (initial) {
+      populatePortfolioDropdown(portfolios);
+      renderTable(portfolios[0]);  // Initial render only
+    }
+
   } catch (error) {
     document.getElementById("portfolioBody").innerHTML =
       `<tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>`;
@@ -216,11 +219,11 @@ async function renderTable(selectedPortfolio) {
 
 async function main() {
   await fetchBaseCurrency();
-  await loadHoldings();
+  await loadHoldings(true); // Initial load with dropdown
   setInterval(async () => {
     const selected = document.getElementById("portfolioSelect").value;
-    await loadHoldings();  // Refresh holdings and dropdown if needed
-    renderTable(selected); // Re-render current portfolio
+    await loadHoldings(false); // Refresh holdings only
+    renderTable(selected);
   }, 30000);
 }
 
