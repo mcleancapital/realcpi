@@ -36,7 +36,7 @@
 
   <h2>Create New Portfolio</h2>
   <label for="portfolioName">Portfolio Name:</label>
-  <input type="text" id="portfolioName" placeholder="e.g. MyPortfolio" required />
+  <input type="text" id="portfolioName" placeholder="e.g. MyPortfolio" required style="width: 25%;" />
 
 <table id="holdingsTable">
   <thead>
@@ -63,7 +63,7 @@
       <td><input type="number" step="any" /></td>
       <td><input type="number" step="any" /></td>
       <td><input type="text" /></td>
-      <td><input type="checkbox" checked /></td>
+      <td><input type="checkbox" /></td>
       <td><button class="delete-btn" onclick="deleteRow(this)">−</button></td>
     </tr>
   </tbody>
@@ -81,7 +81,7 @@ function addRow() {
     <td><input type="number" step="any" /></td>
     <td><input type="number" step="any" /></td>
     <td><input type="text" /></td>
-    <td><input type="checkbox" checked /></td>
+    <td><input type="checkbox" /></td>
     <td><button class="delete-btn" onclick="deleteRow(this)">−</button></td>
   `;
   tbody.appendChild(row);
