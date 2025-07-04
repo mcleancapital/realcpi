@@ -36,11 +36,19 @@
   </style>
 </head>
 <body>
-  <div class="header">
-    <h2>My Portfolio</h2>
-    <div id="currencyDisplay">Loading currency...</div>
-  </div>
 
+<div class="header">
+  <div>
+    <h2>My Portfolio</h2>
+    <label for="portfolioSelect">Select Portfolio:</label>
+    <select id="portfolioSelect">
+      <option value="">Loading...</option>
+    </select>
+  </div>
+  <div id="currencyDisplay">Loading currency...</div>
+</div>
+
+  
   <table>
     <thead>
       <tr>
@@ -69,134 +77,146 @@
   </table>
 
   <script>
-    const userId = "ianmclean@mcleancapital.ca";
-    const currencyApi = `https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserCurrency?user_id=${encodeURIComponent(userId)}`;
-    const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
-    let baseCurrency = "USD";
+let baseCurrency = "USD";
+const userId = "ianmclean@mcleancapital.ca";
+const currencyApi = `https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserCurrency?user_id=${encodeURIComponent(userId)}`;
+const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
+const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
 
-    function formatCurrency(value, currency) {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-      }).format(value);
+let allHoldings = [];
+
+async function fetchBaseCurrency() {
+  try {
+    const res = await fetch(currencyApi);
+    const data = await res.json();
+    baseCurrency = data.base_currency || "USD";
+    document.getElementById("currencyDisplay").innerText = `Base Currency: ${baseCurrency}`;
+  } catch (e) {
+    document.getElementById("currencyDisplay").innerText = `Base Currency: Unknown`;
+  }
+}
+
+async function fetchFxRate(fromCurrency) {
+  if (fromCurrency === baseCurrency) return 1;
+  const fxUrl = `https://financialmodelingprep.com/api/v3/quotes/forex?apikey=${fmpApiKey}`;
+  try {
+    const res = await fetch(fxUrl);
+    const data = await res.json();
+    const pair = `${fromCurrency}${baseCurrency}`;
+    const match = data.find(item => item.symbol === pair);
+    return match ? parseFloat(match.price) || 1 : 1;
+  } catch (e) {
+    console.error(`FX fetch error for ${fromCurrency} to ${baseCurrency}`, e);
+    return 1;
+  }
+}
+
+function formatCurrency(value, currency) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(value);
+}
+
+function populatePortfolioDropdown(portfolios) {
+  const dropdown = document.getElementById("portfolioSelect");
+  dropdown.innerHTML = portfolios.map(p => `<option value="${p}">${p}</option>`).join("");
+  dropdown.addEventListener("change", () => renderTable(dropdown.value));
+}
+
+async function loadHoldings() {
+  try {
+    const res = await fetch(portfolioUrl);
+    allHoldings = await res.json();
+
+    if (!Array.isArray(allHoldings)) throw new Error("Invalid response format");
+
+    const portfolios = [...new Set(allHoldings.map(i => i.portfolio).filter(Boolean))];
+    populatePortfolioDropdown(portfolios);
+
+    renderTable(portfolios[0]);  // Default to first one
+  } catch (error) {
+    document.getElementById("portfolioBody").innerHTML =
+      `<tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>`;
+  }
+}
+
+async function renderTable(selectedPortfolio) {
+  const tbody = document.getElementById("portfolioBody");
+  tbody.innerHTML = "";
+
+  const filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio);
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan='10'>No data for selected portfolio</td></tr>`;
+    return;
+  }
+
+  const tickers = [...new Set(filtered.map(i => (i.ticker || "").trim().toUpperCase()))].join(",");
+  const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote-short/${tickers}?apikey=${fmpApiKey}`);
+  const prices = await priceRes.json();
+  const priceMap = Object.fromEntries(prices.map(p => [p.symbol.toUpperCase(), p.price]));
+
+  const fxRateCache = {};
+  let totalMV = 0, totalMVBase = 0, totalGainLossBase = 0;
+
+  for (const item of filtered) {
+    const ticker = (item.ticker || "").trim().toUpperCase();
+    const currency = (item.currency || "USD").toUpperCase();
+    const quantity = parseFloat(item.quantity) || 0;
+    const purchasePrice = parseFloat(item.purchase_price) || 0;
+    const purchaseDate = item.purchase_date || "";
+    const livePrice = parseFloat(priceMap[ticker]) || 0;
+    const marketValue = quantity * livePrice;
+
+    if (!fxRateCache[currency]) {
+      fxRateCache[currency] = await fetchFxRate(currency);
     }
 
-    async function fetchBaseCurrency() {
-      try {
-        const res = await fetch(currencyApi);
-        const data = await res.json();
-        baseCurrency = data.base_currency || "USD";
-        document.getElementById("currencyDisplay").innerText = `Base Currency: ${baseCurrency}`;
-      } catch (e) {
-        document.getElementById("currencyDisplay").innerText = `Base Currency: Unknown`;
-      }
-    }
+    const fxRate = fxRateCache[currency];
+    const marketValueBase = marketValue * fxRate;
+    const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
 
-    async function fetchFxRate(fromCurrency) {
-      if (fromCurrency === baseCurrency) return 1;
-      const fxUrl = `https://financialmodelingprep.com/api/v3/quotes/forex?apikey=${fmpApiKey}`;
-      try {
-        const res = await fetch(fxUrl);
-        const data = await res.json();
-        const pair = `${fromCurrency}${baseCurrency}`;
-        const match = data.find(item => item.symbol === pair);
-        if (!match) {
-          console.warn(`FX pair ${pair} not found.`);
-          return 1;
-        }
-        return parseFloat(match.price) || 1;
-      } catch (e) {
-        console.error(`FX fetch error for ${fromCurrency} to ${baseCurrency}`, e);
-        return 1;
-      }
-    }
+    totalMV += marketValue;
+    totalMVBase += marketValueBase;
+    totalGainLossBase += gainLossBase;
 
-    async function loadPortfolio() {
-      const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${ticker}</td>
+      <td>${quantity}</td>
+      <td>${formatCurrency(purchasePrice, currency)}</td>
+      <td>${currency}</td>
+      <td>${purchaseDate}</td>
+      <td>${formatCurrency(livePrice, currency)}</td>
+      <td>${formatCurrency(marketValue, currency)}</td>
+      <td>${fxRate.toFixed(4)}</td>
+      <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
+      <td style="color:${gainLossBase >= 0 ? 'green' : 'red'}">
+        ${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}
+      </td>
+    `;
+    tbody.appendChild(row);
+  }
 
-      try {
-        const res = await fetch(portfolioUrl);
-        const holdings = await res.json();
-        const tbody = document.getElementById("portfolioBody");
-        tbody.innerHTML = "";
+  document.getElementById("totalMV").innerText = formatCurrency(totalMV, baseCurrency);
+  document.getElementById("totalMVBase").innerText = formatCurrency(totalMVBase, baseCurrency);
+  document.getElementById("totalGainLossBase").innerText =
+    (totalGainLossBase >= 0 ? "+" : "-") + formatCurrency(Math.abs(totalGainLossBase), baseCurrency);
+}
 
-        if (!Array.isArray(holdings)) {
-          tbody.innerHTML = "<tr><td colspan='10'>Invalid server response</td></tr>";
-          return;
-        }
+async function main() {
+  await fetchBaseCurrency();
+  await loadHoldings();
+  setInterval(async () => {
+    const selected = document.getElementById("portfolioSelect").value;
+    await loadHoldings();  // Refresh holdings and dropdown if needed
+    renderTable(selected); // Re-render current portfolio
+  }, 30000);
+}
 
-        const tickers = [...new Set(holdings.map(i => (i.ticker || "").trim().toUpperCase()))].join(",");
-        const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote-short/${tickers}?apikey=${fmpApiKey}`);
-        const prices = await priceRes.json();
-        const priceMap = Array.isArray(prices)
-          ? Object.fromEntries(prices.map(p => [p.symbol.toUpperCase(), p.price]))
-          : {};
-
-        const fxRateCache = {};
-        let totalMV = 0;
-        let totalMVBase = 0;
-        let totalGainLossBase = 0;
-
-        for (const item of holdings) {
-          const ticker = (item.ticker || "").trim().toUpperCase();
-          const currency = (item.currency || "USD").toUpperCase();
-          const quantity = parseFloat(item.quantity) || 0;
-          const purchasePrice = parseFloat(item.purchase_price) || 0;
-          const purchaseDate = item.purchase_date || "";
-          const livePrice = parseFloat(priceMap[ticker]) || 0;
-          const marketValue = quantity * livePrice;
-
-          if (!fxRateCache[currency]) {
-            fxRateCache[currency] = await fetchFxRate(currency);
-          }
-
-          const fxRate = fxRateCache[currency];
-          const marketValueBase = marketValue * fxRate;
-          const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
-
-          totalMV += marketValue;
-          totalMVBase += marketValueBase;
-          totalGainLossBase += gainLossBase;
-
-          const row = document.createElement("tr");
-          row.innerHTML = `
-            <td>${ticker}</td>
-            <td>${quantity}</td>
-            <td>${formatCurrency(purchasePrice, currency)}</td>
-            <td>${currency}</td>
-            <td>${purchaseDate}</td>
-            <td>${formatCurrency(livePrice, currency)}</td>
-            <td>${formatCurrency(marketValue, currency)}</td>
-            <td>${fxRate.toFixed(4)}</td>
-            <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
-            <td style="color:${gainLossBase >= 0 ? 'green' : 'red'}">
-              ${gainLossBase >= 0 ? "+" : ""}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}
-            </td>
-          `;
-          tbody.appendChild(row);
-        }
-
-        // Update totals in tfoot
-        document.getElementById("totalMV").innerText = formatCurrency(totalMV, baseCurrency);
-        document.getElementById("totalMVBase").innerText = formatCurrency(totalMVBase, baseCurrency);
-        document.getElementById("totalGainLossBase").innerText =
-          (totalGainLossBase >= 0 ? "+" : "-") + formatCurrency(Math.abs(totalGainLossBase), baseCurrency);
-
-      } catch (error) {
-        document.getElementById("portfolioBody").innerHTML =
-          `<tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>`;
-      }
-    }
-
-    async function main() {
-      await fetchBaseCurrency();
-      await loadPortfolio();
-      setInterval(loadPortfolio, 30000);
-    }
-
-    main();
+main();
   </script>
 </body>
 </html>
