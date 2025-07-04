@@ -84,6 +84,12 @@
   * The Quantity and the Purchase Price do not get adjusted for splits or reverse splits over time.
   You must adjust these yourself.
 </p>
+
+<div style="margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+  <div style="width: 16px; height: 16px; background-color: #007BFF;"></div>
+  <span style="color: #333;">Private Investment</span>
+</div>
+
   
 <script>
 let baseCurrency = "USD";
@@ -166,17 +172,25 @@ async function renderTable(selectedPortfolio) {
   const tbody = document.getElementById("portfolioBody");
   tbody.innerHTML = "";
 
-  const filtered = allHoldings
-    .filter(i => i.portfolio === selectedPortfolio)
-    .sort((a, b) => {
-      const getPriority = (c) => {
-        const cur = (c || "").toUpperCase();
-        if (cur === "CAD") return 0;
-        if (cur === "USD") return 1;
-        return 2;
-      };
-      return getPriority(a.currency) - getPriority(b.currency);
-    });
+const filtered = allHoldings
+  .filter(i => i.portfolio === selectedPortfolio)
+  .sort((a, b) => {
+    // Private investments first
+    const aPrivate = String(a.is_private).toLowerCase() === "true";
+    const bPrivate = String(b.is_private).toLowerCase() === "true";
+    if (aPrivate && !bPrivate) return -1;
+    if (!aPrivate && bPrivate) return 1;
+
+    // Then by currency
+    const getPriority = (c) => {
+      const cur = (c || "").toUpperCase();
+      if (cur === "CAD") return 0;
+      if (cur === "USD") return 1;
+      return 2;
+    };
+    return getPriority(a.currency) - getPriority(b.currency);
+  });
+
 
   if (filtered.length === 0) {
     tbody.innerHTML = `<tr><td colspan='10'>No data for selected portfolio</td></tr>`;
