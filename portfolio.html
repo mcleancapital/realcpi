@@ -53,14 +53,15 @@
     <tr>
       <th>Ticker</th>
       <th>Name</th>
-      <th>Quantity</th>
-      <th>Purchase Price</th>
+      <th>Quantity*</th>
+      <th>Purchase Price*</th>
       <th>Currency</th>
       <th>Purchase Date</th>
       <th>Live Price</th>
       <th>Market Value</th>
       <th>FX</th>
       <th>Market Value (Base)</th>
+      <th>Annualized Return</th>
       <th>Gain/Loss (Base)</th>
       <th>Modify</th>
     </tr>
@@ -77,6 +78,11 @@
   </tfoot>
 </table>
 
+<p style="font-size: 12px; color: #555; margin-top: 8px;">
+  * The Quantity and the Purchase Price do not get adjusted for splits or reverse splits over time.
+  You must adjust these yourself.
+</p>
+  
 <script>
 let baseCurrency = "USD";
 const userId = "ianmclean@mcleancapital.ca";
@@ -211,6 +217,18 @@ async function renderTable(selectedPortfolio) {
     totalMVBase += marketValueBase;
     totalGainLossBase += gainLossBase;
 
+    const today = new Date();
+    const purchaseDateObj = new Date(purchaseDate);
+    let yearsHeld = (today - purchaseDateObj) / (1000 * 60 * 60 * 24 * 365.25); // in years
+    if (yearsHeld < 0.01 || !isFinite(yearsHeld)) yearsHeld = 0.01; // avoid divide by zero or invalid
+
+    let annualizedReturn = 0;
+    if (purchasePrice > 0 && livePrice > 0) {
+      annualizedReturn = Math.pow(livePrice / purchasePrice, 1 / yearsHeld) - 1;
+    }
+
+
+    
     const row = document.createElement("tr");
     const companyName = nameMap[ticker] || ticker;
     const logoUrl = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
@@ -229,6 +247,9 @@ async function renderTable(selectedPortfolio) {
       <td>${formatCurrency(marketValue, currency)}</td>
       <td>${fxRate.toFixed(4)}</td>
       <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
+      <td style="color:${annualizedReturn >= 0 ? 'green' : 'red'}">
+        ${(annualizedReturn * 100).toFixed(1)}%
+      </td>
       <td style="color:${gainLossBase >= 0 ? 'green' : 'red'}">
         ${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}
       </td>
