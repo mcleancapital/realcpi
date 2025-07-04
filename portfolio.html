@@ -174,22 +174,29 @@ async function renderTable(selectedPortfolio) {
 
 const filtered = allHoldings
   .filter(i => i.portfolio === selectedPortfolio)
-  .sort((a, b) => {
-    // Private investments first
-    const aPrivate = String(a.is_private).toLowerCase() === "true";
-    const bPrivate = String(b.is_private).toLowerCase() === "true";
-    if (aPrivate && !bPrivate) return -1;
-    if (!aPrivate && bPrivate) return 1;
+.sort((a, b) => {
+  const tickerA = (a.ticker || "").toUpperCase();
+  const tickerB = (b.ticker || "").toUpperCase();
 
-    // Then by currency
-    const getPriority = (c) => {
-      const cur = (c || "").toUpperCase();
-      if (cur === "CAD") return 0;
-      if (cur === "USD") return 1;
-      return 2;
-    };
-    return getPriority(a.currency) - getPriority(b.currency);
-  });
+  // 🔵 First: always put "CASH" first
+  if (tickerA === "CASH") return -1;
+  if (tickerB === "CASH") return 1;
+
+  // 🔵 Then: private investments first
+  const aPrivate = String(a.is_private).toLowerCase() === "true";
+  const bPrivate = String(b.is_private).toLowerCase() === "true";
+  if (aPrivate && !bPrivate) return -1;
+  if (!aPrivate && bPrivate) return 1;
+
+  // 🔵 Finally: sort by currency priority
+  const getPriority = (c) => {
+    const cur = (c || "").toUpperCase();
+    if (cur === "CAD") return 0;
+    if (cur === "USD") return 1;
+    return 2;
+  };
+  return getPriority(a.currency) - getPriority(b.currency);
+});
 
 
   if (filtered.length === 0) {
