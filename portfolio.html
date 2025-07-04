@@ -218,7 +218,14 @@ async function renderTable(selectedPortfolio) {
     totalGainLossBase += gainLossBase;
 
     const today = new Date();
-    const purchaseDateObj = new Date(purchaseDate);
+    let purchaseDateObj = new Date(purchaseDate); // fallback
+    if (/^\d{8}$/.test(purchaseDate)) {
+      purchaseDateObj = new Date(
+        parseInt(purchaseDate.slice(0, 4)),
+        parseInt(purchaseDate.slice(4, 6)) - 1,
+        parseInt(purchaseDate.slice(6, 8))
+      );
+    }
     let yearsHeld = (today - purchaseDateObj) / (1000 * 60 * 60 * 24 * 365.25); // in years
     if (yearsHeld < 0.01 || !isFinite(yearsHeld)) yearsHeld = 0.01; // avoid divide by zero or invalid
 
@@ -240,7 +247,7 @@ async function renderTable(selectedPortfolio) {
         ${companyName}
       </td>
       <td>${quantity}</td>
-      <td>${formatCurrency(purchasePrice, currency)}</td>
+      <td>${formatCurrency(purchasePrice, currency, 2)}</td>
       <td>${currency}</td>
       <td>${purchaseDate}</td>
       <td>${formatCurrency(livePrice, currency, 2)}</td>
