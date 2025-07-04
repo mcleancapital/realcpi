@@ -69,7 +69,9 @@
       <th>Purchase Price*</th>
       <th>Currency</th>
       <th>Purchase Date</th>
+      <th>Last Close</th>
       <th>Live Price</th>
+      <th>Daily Move</th>
       <th>Market Value</th>
       <th>FX</th>
       <th>Market Value (Base)</th>
@@ -220,13 +222,15 @@ const filtered = allHoldings
   const prices = await priceRes.json();
   const priceMap = {};
   const nameMap = {};
-
+  const closeMap = {};
 
   prices.forEach(p => {
-    const symbol = (p.symbol || "").trim().toUpperCase(); // ✅ enforce uppercase
+    const symbol = (p.symbol || "").trim().toUpperCase();
     priceMap[symbol] = p.price;
     nameMap[symbol] = p.name;
+    closeMap[symbol] = p.previousClose;
   });
+
   
   for (const item of filtered) {
     const ticker = (item.ticker || "").trim().toUpperCase();  // ✅ enforce uppercase
@@ -254,13 +258,16 @@ for (const item of filtered) {
   const purchasePrice = parseFloat(item.purchase_price) || 0;
   const purchaseDate = item.purchase_date || "";
   let livePrice = 0;
+  let lastClose = 0;
+
   if (item.is_private === true && typeof item.custom_price === "number" && !isNaN(item.custom_price)) {
     livePrice = item.custom_price;
   } else if (priceMap[ticker] !== undefined && priceMap[ticker] !== null) {
     livePrice = parseFloat(priceMap[ticker]) || 0;
+    lastClose = parseFloat(closeMap[ticker]) || 0;
   }
 
-  console.log(ticker, "is_private:", item.is_private, "custom_price:", item.custom_price, "→ livePrice:", livePrice);
+  const dailyMove = (lastClose > 0) ? (livePrice / lastClose - 1) : 0;
 
   
   const marketValue = quantity * livePrice;
