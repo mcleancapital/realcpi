@@ -189,16 +189,16 @@ async function renderTable(selectedPortfolio) {
   const priceMap = {};
   const nameMap = {};
   prices.forEach(p => {
-    const symbol = p.symbol.toUpperCase();
+    const symbol = (p.symbol || "").trim().toUpperCase(); // ✅ enforce uppercase
     priceMap[symbol] = p.price;
     nameMap[symbol] = p.name;
   });
 
 for (const item of filtered) {
-  const ticker = (item.ticker || "").trim().toUpperCase();
+  const ticker = (item.ticker || "").trim().toUpperCase();  // ✅ enforce uppercase
   if (item.is_private === true && item.custom_price) {
-    priceMap[ticker] = parseFloat(item.custom_price);
-    nameMap[ticker] = item.name || ticker;
+    priceMap[ticker] = parseFloat(item.custom_price);       // ✅ override price
+    nameMap[ticker] = item.name || ticker;                  // ✅ override name
   }
 }
 
