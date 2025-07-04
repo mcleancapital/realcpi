@@ -280,16 +280,16 @@ for (const rowData of cachedRows) {
 
   const row = document.createElement("tr");
   const companyName = nameMap[ticker] || item.name || ticker;
-  const logoUrl = item.is_private
-    ? `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`
-    : `https://financialmodelingprep.com/image-stock/${ticker}.png`;
+  const logoGitHub = `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`;
+  const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
+
 
 
 
   row.innerHTML = `
-    <td>${ticker}</td>
+    <td style="color: ${item.is_private ? 'blue' : 'inherit'}">${ticker}</td>
     <td style="display: flex; align-items: center; gap: 8px;">
-      <img src="${logoUrl}" alt="${ticker}" style="width: 24px; height: 24px;" onerror="this.style.display='none'" />
+      <img src="${logoGitHub}" alt="${ticker}" style="width: 24px; height: 24px;" onerror="this.onerror=null; this.src='${logoFMP}'" />
       ${companyName}
     </td>
     <td>${(weight * 100).toFixed(1)}%</td>
