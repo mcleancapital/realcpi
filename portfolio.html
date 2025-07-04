@@ -221,7 +221,9 @@ for (const item of filtered) {
   const quantity = parseFloat(item.quantity) || 0;
   const purchasePrice = parseFloat(item.purchase_price) || 0;
   const purchaseDate = item.purchase_date || "";
-  const livePrice = parseFloat(priceMap[ticker]) || 0;
+  const livePrice = item.is_private === true && item.custom_price
+    ? parseFloat(item.custom_price)
+    : parseFloat(priceMap[ticker]) || 0;
   const marketValue = quantity * livePrice;
 
   if (!fxRateCache[currency]) {
