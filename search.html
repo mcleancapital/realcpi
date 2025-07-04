@@ -729,7 +729,7 @@ function setRange(range) {
 
   div.innerHTML = `<p><strong>Total return:</strong> ${returns.total}</p>` +
 
-                  (returns.annual ? `<p><strong>Annualized return:</strong> ${returns.annual}</p>` : "");
+                  (returns.annual ? `<p><strong>Annualized return (excl. div.):</strong> ${returns.annual}</p>` : "");
 
   document.getElementById("info").appendChild(div);
 
