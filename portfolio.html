@@ -79,8 +79,8 @@
   <script>
 let baseCurrency = "USD";
 const userId = "ianmclean@mcleancapital.ca";
-const currencyApi = `https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserCurrency?user_id=${encodeURIComponent(userId)}`;
-const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
+const currencyApi = https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserCurrency?user_id=${encodeURIComponent(userId)};
+const portfolioUrl = https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)};
 const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
 
 let allHoldings = [];
@@ -90,23 +90,23 @@ async function fetchBaseCurrency() {
     const res = await fetch(currencyApi);
     const data = await res.json();
     baseCurrency = data.base_currency || "USD";
-    document.getElementById("currencyDisplay").innerText = `Base Currency: ${baseCurrency}`;
+    document.getElementById("currencyDisplay").innerText = Base Currency: ${baseCurrency};
   } catch (e) {
-    document.getElementById("currencyDisplay").innerText = `Base Currency: Unknown`;
+    document.getElementById("currencyDisplay").innerText = Base Currency: Unknown;
   }
 }
 
 async function fetchFxRate(fromCurrency) {
   if (fromCurrency === baseCurrency) return 1;
-  const fxUrl = `https://financialmodelingprep.com/api/v3/quotes/forex?apikey=${fmpApiKey}`;
+  const fxUrl = https://financialmodelingprep.com/api/v3/quotes/forex?apikey=${fmpApiKey};
   try {
     const res = await fetch(fxUrl);
     const data = await res.json();
-    const pair = `${fromCurrency}${baseCurrency}`;
+    const pair = ${fromCurrency}${baseCurrency};
     const match = data.find(item => item.symbol === pair);
     return match ? parseFloat(match.price) || 1 : 1;
   } catch (e) {
-    console.error(`FX fetch error for ${fromCurrency} to ${baseCurrency}`, e);
+    console.error(FX fetch error for ${fromCurrency} to ${baseCurrency}, e);
     return 1;
   }
 }
@@ -126,28 +126,11 @@ function populatePortfolioDropdown(portfolios) {
   // Only populate once
   if (dropdown.dataset.initialized) return;
 
-  // Build a map of portfolio -> { cad: count, usd: count }
-  const biasMap = {};
-  portfolios.forEach(portfolio => {
-    const holdings = allHoldings.filter(h => h.portfolio === portfolio);
-    let cad = 0, usd = 0;
-    holdings.forEach(h => {
-      const cur = (h.currency || "").toUpperCase();
-      if (cur === "CAD") cad++;
-      else if (cur === "USD") usd++;
-    });
-    biasMap[portfolio] = cad - usd;  // positive = CAD-heavy
-  });
-
-  // Sort by CAD-bias descending
-  portfolios.sort((a, b) => (biasMap[b] || 0) - (biasMap[a] || 0));
-
-  // Fill the dropdown
-  dropdown.innerHTML = portfolios.map(p => `<option value="${p}">${p}</option>`).join("");
-  dropdown.value = portfolios[0];
+  dropdown.innerHTML = portfolios.map(p => <option value="${p}">${p}</option>).join("");
+  dropdown.value = portfolios[0]; // default selected
 
   dropdown.addEventListener("change", () => renderTable(dropdown.value));
-  dropdown.dataset.initialized = "true";
+  dropdown.dataset.initialized = "true"; // prevent rebinding
 }
 
 
@@ -167,7 +150,7 @@ async function loadHoldings(initial = false) {
 
   } catch (error) {
     document.getElementById("portfolioBody").innerHTML =
-      `<tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>`;
+      <tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>;
   }
 }
 
@@ -175,14 +158,25 @@ async function renderTable(selectedPortfolio) {
   const tbody = document.getElementById("portfolioBody");
   tbody.innerHTML = "";
 
-  const filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio);
+  const filtered = allHoldings
+    .filter(i => i.portfolio === selectedPortfolio)
+   .sort((a, b) => {
+      const getPriority = (c) => {
+        const cur = (c || "").toUpperCase();
+        if (cur === "CAD") return 0;
+        if (cur === "USD") return 1;
+        return 2;
+      };
+      return getPriority(a.currency) - getPriority(b.currency);
+    });
+
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan='10'>No data for selected portfolio</td></tr>`;
+    tbody.innerHTML = <tr><td colspan='10'>No data for selected portfolio</td></tr>;
     return;
   }
 
   const tickers = [...new Set(filtered.map(i => (i.ticker || "").trim().toUpperCase()))].join(",");
-  const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote-short/${tickers}?apikey=${fmpApiKey}`);
+  const priceRes = await fetch(https://financialmodelingprep.com/api/v3/quote-short/${tickers}?apikey=${fmpApiKey});
   const prices = await priceRes.json();
   const priceMap = Object.fromEntries(prices.map(p => [p.symbol.toUpperCase(), p.price]));
 
@@ -211,7 +205,7 @@ async function renderTable(selectedPortfolio) {
     totalGainLossBase += gainLossBase;
 
     const row = document.createElement("tr");
-    row.innerHTML = `
+    row.innerHTML = 
       <td>${ticker}</td>
       <td>${quantity}</td>
       <td>${formatCurrency(purchasePrice, currency)}</td>
@@ -224,7 +218,7 @@ async function renderTable(selectedPortfolio) {
       <td style="color:${gainLossBase >= 0 ? 'green' : 'red'}">
         ${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}
       </td>
-    `;
+    ;
     tbody.appendChild(row);
   }
 
