@@ -286,6 +286,7 @@ for (const item of filtered) {
 
   cachedRows.push({
     item, ticker, currency, quantity, purchasePrice, purchaseDate, livePrice,
+    lastClose, dailyMove,            // ✅ add these
     marketValue, fxRate, marketValueBase, gainLossBase
   });
 }
@@ -336,7 +337,9 @@ for (const rowData of cachedRows) {
     <td>${formatCurrency(purchasePrice, currency, 2)}</td>
     <td>${currency}</td>
     <td>${purchaseDate}</td>
+    <td>${formatCurrency(lastClose, currency, 2)}</td>
     <td>${formatCurrency(livePrice, currency, 2)}</td>
+    <td style="color:${dailyMove >= 0 ? 'green' : 'red'}">${(dailyMove * 100).toFixed(2)}%</td>
     <td>${formatCurrency(marketValue, currency)}</td>
     <td>${fxRate.toFixed(4)}</td>
     <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
