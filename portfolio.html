@@ -49,12 +49,17 @@
     </div>
   </div>
 
-  <!-- Right: Base Currency and Create Button stacked vertically -->
-  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-    <div id="currencyDisplay">Loading currency...</div>
+<!-- Right: Base Currency and Create/Delete Buttons side by side -->
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+  <div id="currencyDisplay">Loading currency...</div>
+  <div style="display: flex; gap: 8px;">
     <button onclick="window.location.href = 'new_portfolio.html'" 
             style="height: 32px; font-size: 14px; padding: 0 12px; cursor: pointer;">
       ➕ Create Portfolio
+    </button>
+    <button onclick="confirmDeletePortfolio()"
+            style="height: 32px; font-size: 14px; padding: 0 12px; cursor: pointer; color: red;">
+      − Delete Portfolio
     </button>
   </div>
 </div>
@@ -387,6 +392,28 @@ async function main() {
   }, 60000);
 }
 
+function confirmDeletePortfolio() {
+  const dropdown = document.getElementById("portfolioSelect");
+  const selected = dropdown?.value;
+  if (!selected) return alert("No portfolio selected.");
+
+  const confirmDelete = confirm(`Are you sure you want to delete the portfolio "${selected}"?`);
+  if (!confirmDelete) return;
+
+  // 🔴 Replace this with your actual DELETE endpoint and logic
+  fetch("https://YOUR_API_ENDPOINT", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user_id: "ianmclean@mcleancapital.ca", portfolio: selected })
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Delete failed");
+    alert(`Portfolio "${selected}" deleted.`);
+    window.location.reload();
+  })
+  .catch(err => alert("Error deleting portfolio: " + err.message));
+}
+  
 main();
 </script>
 </body>
