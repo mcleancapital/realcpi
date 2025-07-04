@@ -194,6 +194,15 @@ async function renderTable(selectedPortfolio) {
     nameMap[symbol] = p.name;
   });
 
+for (const item of filtered) {
+  const ticker = (item.ticker || "").trim().toUpperCase();
+  if (item.is_private === true && item.custom_price) {
+    priceMap[ticker] = parseFloat(item.custom_price);
+    nameMap[ticker] = item.name || ticker;
+  }
+}
+
+  
 
 const fxRateCache = {};
 const cachedRows = [];
@@ -256,7 +265,10 @@ for (const rowData of cachedRows) {
 
   const row = document.createElement("tr");
   const companyName = nameMap[ticker] || ticker;
-  const logoUrl = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
+  const logoUrl = item.is_private
+    ? `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`
+    : `https://financialmodelingprep.com/image-stock/${ticker}.png`;
+
 
   row.innerHTML = `
     <td>${ticker}</td>
