@@ -126,11 +126,27 @@ function populatePortfolioDropdown(portfolios) {
   // Only populate once
   if (dropdown.dataset.initialized) return;
 
+  // Count CAD vs USD for each portfolio
+  const currencyBias = {};
+  for (const portfolio of portfolios) {
+    const holdings = allHoldings.filter(h => h.portfolio === portfolio);
+    const cadCount = holdings.filter(h => (h.currency || "").toUpperCase() === "CAD").length;
+    const usdCount = holdings.filter(h => (h.currency || "").toUpperCase() === "USD").length;
+    currencyBias[portfolio] = cadCount - usdCount; // positive = CAD-leaning
+  }
+
+  // Sort portfolios: CAD-leaning first, then USD-leaning
+  portfolios.sort((a, b) => {
+    const biasA = currencyBias[a] || 0;
+    const biasB = currencyBias[b] || 0;
+    return biasB - biasA;
+  });
+
   dropdown.innerHTML = portfolios.map(p => `<option value="${p}">${p}</option>`).join("");
-  dropdown.value = portfolios[0]; // default selected
+  dropdown.value = portfolios[0];
 
   dropdown.addEventListener("change", () => renderTable(dropdown.value));
-  dropdown.dataset.initialized = "true"; // prevent rebinding
+  dropdown.dataset.initialized = "true";
 }
 
 
