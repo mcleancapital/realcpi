@@ -53,6 +53,7 @@
     <tr>
       <th>Ticker</th>
       <th>Name</th>
+      <th>Weight</th>
       <th>Quantity*</th>
       <th>Purchase Price*</th>
       <th>Currency</th>
@@ -69,10 +70,11 @@
   <tbody id="portfolioBody"></tbody>
   <tfoot>
     <tr>
-      <td colspan="6"></td>
+      <td colspan="8"></td>
       <td id="totalMV"></td>
       <td></td>
       <td id="totalMVBase"></td>
+      <td></td>
       <td id="totalGainLossBase"></td>
     </tr>
   </tfoot>
@@ -211,6 +213,7 @@ async function renderTable(selectedPortfolio) {
 
     const fxRate = fxRateCache[currency];
     const marketValueBase = marketValue * fxRate;
+    const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
     const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
 
     totalMV += marketValue;
@@ -246,6 +249,7 @@ async function renderTable(selectedPortfolio) {
         <img src="${logoUrl}" alt="${ticker}" style="width: 24px; height: 24px;" onerror="this.style.display='none'" />
         ${companyName}
       </td>
+      <td>${(weight * 100).toFixed(1)}%</td>
       <td>${quantity}</td>
       <td>${formatCurrency(purchasePrice, currency, 2)}</td>
       <td>${currency}</td>
