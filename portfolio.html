@@ -158,18 +158,7 @@ async function renderTable(selectedPortfolio) {
   const tbody = document.getElementById("portfolioBody");
   tbody.innerHTML = "";
 
-  const filtered = allHoldings
-    .filter(i => i.portfolio === selectedPortfolio)
-   .sort((a, b) => {
-      const getPriority = (c) => {
-        const cur = (c || "").toUpperCase();
-        if (cur === "CAD") return 0;
-        if (cur === "USD") return 1;
-        return 2;
-      };
-      return getPriority(a.currency) - getPriority(b.currency);
-    });
-
+  const filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio);
   if (filtered.length === 0) {
     tbody.innerHTML = <tr><td colspan='10'>No data for selected portfolio</td></tr>;
     return;
