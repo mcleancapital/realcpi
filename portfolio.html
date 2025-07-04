@@ -260,12 +260,17 @@ for (const item of filtered) {
   let livePrice = 0;
   let lastClose = 0;
 
-  if (item.is_private === true && typeof item.custom_price === "number" && !isNaN(item.custom_price)) {
-    livePrice = item.custom_price;
-  } else if (priceMap[ticker] !== undefined && priceMap[ticker] !== null) {
+  if (ticker === "CASH") {
+    livePrice = 1;
+    lastClose = 1;
+  } else if (item.is_private === true) {
+    livePrice = parseFloat(item.custom_price) || 0;
+   lastClose = livePrice;
+  } else {
     livePrice = parseFloat(priceMap[ticker]) || 0;
     lastClose = parseFloat(closeMap[ticker]) || 0;
   }
+
 
   const dailyMove = (lastClose > 0) ? (livePrice / lastClose - 1) : 0;
 
