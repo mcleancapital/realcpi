@@ -392,14 +392,21 @@ function modifyHolding(item) {
 }
   
 async function main() {
-  await checkLoginStatusAndRenderName();
-  await fetchBaseCurrency();
-  await loadHoldings(true); // Initial load with dropdown
-  setInterval(async () => {
-    const selected = document.getElementById("portfolioSelect").value;
-    await loadHoldings(false); // Refresh holdings only
-    renderTable(selected);
-  }, 60000);
+  try {
+    await checkLoginStatusAndRenderName();  // Will redirect if token is bad
+    await fetchBaseCurrency();
+    await loadHoldings(true); // Initial load with dropdown
+
+    setInterval(async () => {
+      const selected = document.getElementById("portfolioSelect").value;
+      await loadHoldings(false); // Refresh holdings only
+      renderTable(selected);
+    }, 60000);
+    
+  } catch (e) {
+    console.error("Error in main():", e);
+    alert("Something went wrong loading your portfolio.");
+  }
 }
 
 function confirmDeletePortfolio() {
