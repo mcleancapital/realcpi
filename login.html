@@ -417,6 +417,8 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <meta name="description" content="Financial metrics that give you the real data about the market and the economy.">
 <link rel="canonical" href="https://www.realcpi.org/"/>
 
+<script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.2.0/dist/amazon-cognito-identity.min.js"></script>
+	
 
 </head>
 <body>
@@ -528,6 +530,18 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 </div>
 
 
+<div style="max-width: 400px; margin: auto; padding: 20px;">
+  <h2>Login</h2>
+  <input type="email" id="loginEmail" placeholder="Email" style="width: 100%; padding: 10px;"><br><br>
+  <input type="password" id="loginPassword" placeholder="Password" style="width: 100%; padding: 10px;"><br><br>
+  <button onclick="login()">Log In</button>
+  <p id="loginStatus" style="color: green;"></p>
+</div>
+
+
+
+
+	    
 <div id="login-section" style="max-width: 70%; width: 450px; margin: 40px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9; box-sizing: border-box;">
   <h2 style="text-align: center; margin-bottom: 20px;">Log in</h2>
 
@@ -635,7 +649,46 @@ function toggleMenu() {
 
 
 </script>
-	
+
+
+<script>
+const poolData = {
+  UserPoolId: 'us-east-1_sZIT96sDm',  // 🔁 your User Pool ID
+  ClientId: '79qgcld9eku7hppioit9kev7m3'    // 🔁 your App Client ID
+};
+
+const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+function login() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+
+  const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
+    Username: email,
+    Password: password,
+  });
+
+  const user = new AmazonCognitoIdentity.CognitoUser({
+    Username: email,
+    Pool: userPool,
+  });
+
+  user.authenticateUser(authDetails, {
+    onSuccess: function (result) {
+      const idToken = result.getIdToken().getJwtToken();
+      document.getElementById("loginStatus").innerText = "Login successful!";
+      console.log("Token:", idToken);
+      // You can now call your backend with the token
+    },
+    onFailure: function (err) {
+      console.error(err);
+      document.getElementById("loginStatus").innerText = "Login failed: " + err.message;
+    }
+  });
+}
+</script>
+
+	    
 
 </body>
 
