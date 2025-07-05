@@ -1108,6 +1108,20 @@ async function checkLoginStatusAndRenderName() {
 	
 </script>
 
+<script>
+function logout() {
+  // Clear tokens and user info from localStorage
+  localStorage.removeItem("idToken");
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("userEmail");
+
+  // Optionally show a brief message or do cleanup
+
+  // Redirect to homepage or login
+  window.location.href = "/login";  // or use "/" to go to homepage
+}
+</script>
 
 
 	
