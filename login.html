@@ -666,9 +666,16 @@ function login() {
   user.authenticateUser(authDetails, {
     onSuccess: function (result) {
       const idToken = result.getIdToken().getJwtToken();
-      localStorage.setItem("idToken", idToken); // Optional: store the token
-      window.location.href = "/portfolio.html"; // ✅ redirect
-    },
+      const payload = result.getIdToken().decodePayload();
+      const email = payload.email;
+
+      // Save both token and email for later use
+      localStorage.setItem("idToken", idToken);
+      localStorage.setItem("userEmail", email);
+
+      // Redirect to portfolio
+      window.location.href = "/portfolio.html";
+    }
 
     onFailure: function (err) {
       console.error(err);
