@@ -452,18 +452,21 @@ function login() {
 
   user.authenticateUser(authDetails, {
     onSuccess: function (result) {
-      const idToken = result.getIdToken().getJwtToken();
-      const payload = result.getIdToken().decodePayload();
-      const email = payload.email;
+const idToken = result.getIdToken().getJwtToken();
+const accessToken = result.getAccessToken().getJwtToken();
+const refreshToken = result.getRefreshToken().getToken();
+const payload = result.getIdToken().decodePayload();
+const email = payload.email;
 
-      // Save both token and email for later use
-      localStorage.setItem("idToken", data.id_token);
-      localStorage.setItem("accessToken", data.access_token);
-      localStorage.setItem("refreshToken", data.refresh_token);
-      localStorage.setItem("userEmail", email);
+// Save correctly
+localStorage.setItem("idToken", idToken);
+localStorage.setItem("accessToken", accessToken);
+localStorage.setItem("refreshToken", refreshToken);
+localStorage.setItem("userEmail", email);
 
-      // Redirect to portfolio
-      window.location.href = "/portfolio.html";
+// Redirect
+window.location.href = "/portfolio.html";
+
     },
 
     onFailure: function (err) {
