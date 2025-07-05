@@ -959,6 +959,8 @@ async function checkLoginStatusAndRenderName() {
 
     const data = await res.json();
 
+    console.log("User data response:", data);
+	  
     if (data.first_name && data.last_name) {
       userDiv.innerHTML = `
         <div style="font-weight: bold; font-size: 14px;">${data.first_name} ${data.last_name}</div>
