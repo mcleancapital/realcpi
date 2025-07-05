@@ -657,6 +657,7 @@ function login() {
     return res.json();
   })
   .then(data => {
+    console.log("Received from API:", data);  // ✅ Add this	  
     localStorage.setItem("userEmail", email);
     localStorage.setItem("userName", `${data.first_name} ${data.last_name}`);
     localStorage.setItem("baseCurrency", data.base_currency);
