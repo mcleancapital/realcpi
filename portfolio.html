@@ -7,13 +7,13 @@
     body {
       font-family: sans-serif;
     }
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start; /* <-- changed from center to top-align */
-  gap: 20px; /* optional spacing */
-  flex-wrap: wrap; /* optional for small screens */
-}
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
     #currencyDisplay {
       font-size: 14px;
       font-weight: bold;
@@ -40,7 +40,6 @@
 <body>
 
 <div class="header">
-  <!-- Left: Title and Dropdown -->
   <div style="display: flex; align-items: center; gap: 12px;">
     <div>
       <h2>My Portfolio</h2>
@@ -51,112 +50,103 @@
     </div>
   </div>
 
-<!-- Right: Base Currency and Buttons side by side -->
-<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
-  <div id="currencyDisplay">Loading currency...</div>
-  <div style="display: flex; gap: 8px;">
-    <button onclick="window.location.href = 'new_portfolio.html'" 
-            style="height: 32px; font-size: 14px; padding: 0 12px; cursor: pointer;">
-      ➕ Create Portfolio
-    </button>
-    <button onclick="confirmDeletePortfolio()"
-            style="height: 32px; font-size: 14px; padding: 0 12px; cursor: pointer; color: red;">
-      − Delete Portfolio
-    </button>
+  <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+    <div id="currencyDisplay">Loading currency...</div>
+    <div style="display: flex; gap: 8px;">
+      <button onclick="window.location.href = 'new_portfolio.html'" style="height: 32px; font-size: 14px;">➕ Create Portfolio</button>
+      <button onclick="confirmDeletePortfolio()" style="height: 32px; font-size: 14px; color: red;">− Delete Portfolio</button>
+    </div>
   </div>
 </div>
 
-</div>
-  
-<div class="main-content">  
-<table>
-  <thead>
-    <tr>
-      <th>Ticker</th>
-      <th>Name</th>
-      <th>Weight</th>
-      <th>Quantity*</th>
-      <th>Purchase Price*</th>
-      <th>Currency</th>
-      <th>Purchase Date</th>
-      <th>Last Close</th>
-      <th>Live Price</th>
-      <th>Daily Move</th>
-      <th>Market Value</th>
-      <th>FX</th>
-      <th>Market Value (Base)</th>
-      <th>Annualized Return (excl. div.)</th>
-      <th>Gain/Loss (Base)</th>
-      <th>Modify</th>
-    </tr>
-  </thead>
-  <tbody id="portfolioBody"></tbody>
-  <tfoot>
-    <tr>
-      <td colspan="10"></td>
-      <td id="totalMV"></td>
-      <td></td>
-      <td id="totalMVBase"></td>
-      <td></td>
-      <td id="totalGainLossBase"></td>
-    </tr>
-  </tfoot>
-</table>
+<div class="main-content">
+  <table>
+    <thead>
+      <tr>
+        <th>Ticker</th><th>Name</th><th>Weight</th><th>Quantity*</th><th>Purchase Price*</th><th>Currency</th><th>Purchase Date</th>
+        <th>Last Close</th><th>Live Price</th><th>Daily Move</th><th>Market Value</th><th>FX</th>
+        <th>Market Value (Base)</th><th>Annualized Return</th><th>Gain/Loss (Base)</th><th>Modify</th>
+      </tr>
+    </thead>
+    <tbody id="portfolioBody"></tbody>
+    <tfoot>
+      <tr>
+        <td colspan="10"></td>
+        <td id="totalMV"></td>
+        <td></td>
+        <td id="totalMVBase"></td>
+        <td></td>
+        <td id="totalGainLossBase"></td>
+      </tr>
+    </tfoot>
+  </table>
 
-<p style="font-size: 12px; color: #555; margin-top: 8px;">
-  * The Quantity and the Purchase Price do not get adjusted for splits or reverse splits over time.
-  You must adjust these yourself.
-</p>
+  <p style="font-size: 12px; color: #555; margin-top: 8px;">
+    * The Quantity and Purchase Price do not adjust for splits. Please update manually.
+  </p>
 
-<div style="margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
-  <div style="width: 16px; height: 16px; background-color: #007BFF;"></div>
-  <span style="color: #333;">Private Investment</span>
+  <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+    <div style="width: 16px; height: 16px; background-color: #007BFF;"></div>
+    <span style="color: #333;">Private Investment</span>
+  </div>
 </div>
-</div>
-  
+
 <script>
-let baseCurrency = "USD";
 const userId = localStorage.getItem("userEmail");
 if (!userId) {
-  alert("You must be logged in to view your portfolio.");
-  window.location.href = "/login.html"; // or whatever your login page is
+  alert("You must be logged in.");
+  window.location.href = "/login.html";
 }
-const currencyApi = `https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserCurrency?user_id=${encodeURIComponent(userId)}`;
-const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
+
+const baseURL = "https://210jsf4oy1.execute-api.us-east-1.amazonaws.com";
 const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
 
+let baseCurrency = "USD";
 let allHoldings = [];
+
+async function checkLoginStatusAndRenderName() {
+  try {
+    const res = await fetch(`${baseURL}/getUserName`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: userId, password: "__dummy__" })
+    });
+    if (!res.ok) throw new Error("Invalid user");
+    const data = await res.json();
+    console.log(`Welcome ${data.first_name} ${data.last_name}`);
+  } catch (err) {
+    localStorage.clear();
+    alert("Session expired. Please log in again.");
+    window.location.href = "/login.html";
+  }
+}
 
 async function fetchBaseCurrency() {
   try {
-    const res = await fetch(currencyApi);
+    const res = await fetch(`${baseURL}/getUserCurrency?user_id=${encodeURIComponent(userId)}`);
     const data = await res.json();
     baseCurrency = data.base_currency || "USD";
     document.getElementById("currencyDisplay").innerText = `Base Currency: ${baseCurrency}`;
-  } catch (e) {
-    document.getElementById("currencyDisplay").innerText = `Base Currency: Unknown`;
+  } catch {
+    document.getElementById("currencyDisplay").innerText = "Base Currency: Unknown";
   }
 }
 
 async function fetchFxRate(fromCurrency) {
   if (fromCurrency === baseCurrency) return 1;
-  const fxUrl = `https://financialmodelingprep.com/api/v3/quotes/forex?apikey=${fmpApiKey}`;
   try {
-    const res = await fetch(fxUrl);
+    const res = await fetch(`https://financialmodelingprep.com/api/v3/quotes/forex?apikey=${fmpApiKey}`);
     const data = await res.json();
-    const pair = `${fromCurrency}${baseCurrency}`;
-    const match = data.find(item => item.symbol === pair);
-    return match ? parseFloat(match.price) || 1 : 1;
-  } catch (e) {
-    console.error(`FX fetch error for ${fromCurrency} to ${baseCurrency}`, e);
+    const match = data.find(i => i.symbol === `${fromCurrency}${baseCurrency}`);
+    return match?.price || 1;
+  } catch {
     return 1;
   }
 }
 
 function formatCurrency(value, currency, decimals = 0) {
   return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency,
+    style: 'currency', currency,
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals
   }).format(value);
@@ -164,34 +154,25 @@ function formatCurrency(value, currency, decimals = 0) {
 
 function populatePortfolioDropdown(portfolios) {
   const dropdown = document.getElementById("portfolioSelect");
-
-  // Only populate once
   if (dropdown.dataset.initialized) return;
-
   dropdown.innerHTML = portfolios.map(p => `<option value="${p}">${p}</option>`).join("");
-  dropdown.value = portfolios[0]; // default selected
-
+  dropdown.value = portfolios[0];
   dropdown.addEventListener("change", () => renderTable(dropdown.value));
-  dropdown.dataset.initialized = "true"; // prevent rebinding
+  dropdown.dataset.initialized = "true";
 }
 
 async function loadHoldings(initial = false) {
   try {
-    const res = await fetch(portfolioUrl);
+    const res = await fetch(`https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`);
     allHoldings = await res.json();
-
-    if (!Array.isArray(allHoldings)) throw new Error("Invalid response format");
-
+    if (!Array.isArray(allHoldings)) throw new Error("Invalid format");
     const portfolios = [...new Set(allHoldings.map(i => i.portfolio).filter(Boolean))];
-
     if (initial) {
       populatePortfolioDropdown(portfolios);
-      renderTable(portfolios[0]);  // Initial render only
+      renderTable(portfolios[0]);
     }
-
-  } catch (error) {
-    document.getElementById("portfolioBody").innerHTML =
-      `<tr><td colspan='10'>Error loading portfolio: ${error}</td></tr>`;
+  } catch (err) {
+    document.getElementById("portfolioBody").innerHTML = `<tr><td colspan="10">Error loading portfolio: ${err}</td></tr>`;
   }
 }
 
@@ -199,279 +180,132 @@ async function renderTable(selectedPortfolio) {
   const tbody = document.getElementById("portfolioBody");
   tbody.innerHTML = "";
 
-const filtered = allHoldings
-  .filter(i => i.portfolio === selectedPortfolio)
-.sort((a, b) => {
-  const tickerA = (a.ticker || "").toUpperCase();
-  const tickerB = (b.ticker || "").toUpperCase();
-
-  // 🔵 First: always put "CASH" first
-  if (tickerA === "CASH") return -1;
-  if (tickerB === "CASH") return 1;
-
-  // 🔵 Then: private investments first
-  const aPrivate = String(a.is_private).toLowerCase() === "true";
-  const bPrivate = String(b.is_private).toLowerCase() === "true";
-  if (aPrivate && !bPrivate) return -1;
-  if (!aPrivate && bPrivate) return 1;
-
-  // 🔵 Finally: sort by currency priority
-  const getPriority = (c) => {
-    const cur = (c || "").toUpperCase();
-    if (cur === "CAD") return 0;
-    if (cur === "USD") return 1;
-    return 2;
-  };
-  return getPriority(a.currency) - getPriority(b.currency);
-});
-
-
+  const filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio);
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan='10'>No data for selected portfolio</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="10">No holdings in selected portfolio.</td></tr>`;
     return;
   }
 
-  const tickers = [...new Set(filtered.map(i => (i.ticker || "").trim().toUpperCase()))].join(",");
+  const tickers = [...new Set(filtered.map(i => (i.ticker || "").toUpperCase()))].join(",");
   const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
   const prices = await priceRes.json();
-  const priceMap = {};
-  const nameMap = {};
-  const closeMap = {};
+  const priceMap = {}, nameMap = {}, closeMap = {};
 
   prices.forEach(p => {
-    const symbol = (p.symbol || "").trim().toUpperCase();
-    priceMap[symbol] = p.price;
-    nameMap[symbol] = p.name;
-    closeMap[symbol] = p.previousClose;
+    const sym = p.symbol.toUpperCase();
+    priceMap[sym] = p.price;
+    nameMap[sym] = p.name;
+    closeMap[sym] = p.previousClose;
   });
 
-  
+  const fxRates = {};
+  let totalMV = 0, totalMVBase = 0, totalGainLossBase = 0;
+
   for (const item of filtered) {
-    const ticker = (item.ticker || "").trim().toUpperCase();  // ✅ enforce uppercase
-    if (item.is_private === true && item.custom_price) {
-      priceMap[ticker] = parseFloat(item.custom_price);       // ✅ override price
-      nameMap[ticker] = item.name || ticker;                  // ✅ override name
-    }
+    const ticker = (item.ticker || "").toUpperCase();
+    const quantity = parseFloat(item.quantity) || 0;
+    const purchasePrice = parseFloat(item.purchase_price) || 0;
+    const purchaseDate = item.purchase_date;
+    const currency = (item.currency || "USD").toUpperCase();
+    const isPrivate = item.is_private === true;
+
+    const livePrice = ticker === "CASH" ? 1 : isPrivate ? parseFloat(item.custom_price) : parseFloat(priceMap[ticker]) || 0;
+    const lastClose = ticker === "CASH" ? 1 : isPrivate ? livePrice : parseFloat(closeMap[ticker]) || 0;
+
+    if (!fxRates[currency]) fxRates[currency] = await fetchFxRate(currency);
+    const fxRate = fxRates[currency];
+
+    const marketValue = quantity * livePrice;
+    const marketValueBase = marketValue * fxRate;
+    const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
+
+    totalMV += marketValue;
+    totalMVBase += marketValueBase;
+    totalGainLossBase += gainLossBase;
+
+    const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
+    const today = new Date();
+    const purchase = /^\d{8}$/.test(purchaseDate)
+      ? new Date(purchaseDate.slice(0,4), purchaseDate.slice(4,6) - 1, purchaseDate.slice(6))
+      : new Date(purchaseDate);
+
+    const years = Math.max((today - purchase) / (365.25 * 24 * 3600 * 1000), 0.01);
+    const annualReturn = (livePrice > 0 && purchasePrice > 0)
+      ? Math.pow(livePrice / purchasePrice, 1 / years) - 1 : 0;
+
+    const logoGitHub = `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`;
+    const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
+    const name = nameMap[ticker] || item.name || ticker;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td style="color: ${isPrivate ? 'blue' : 'inherit'}">${ticker}</td>
+      <td style="display: flex; align-items: center; gap: 8px;">
+        <img src="${logoGitHub}" onerror="this.onerror=null;this.src='${logoFMP}'" width="24" height="24" />
+        ${name}
+      </td>
+      <td>${(weight * 100).toFixed(1)}%</td>
+      <td>${quantity}</td>
+      <td>${formatCurrency(purchasePrice, currency, 2)}</td>
+      <td>${currency}</td>
+      <td>${purchaseDate}</td>
+      <td>${formatCurrency(lastClose, currency, 2)}</td>
+      <td>${formatCurrency(livePrice, currency, 2)}</td>
+      <td style="color: ${livePrice >= lastClose ? 'green' : 'red'}">${((livePrice / lastClose - 1) * 100).toFixed(2)}%</td>
+      <td>${formatCurrency(marketValue, currency)}</td>
+      <td>${fxRate.toFixed(4)}</td>
+      <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
+      <td style="color: ${annualReturn >= 0 ? 'green' : 'red'}">${(annualReturn * 100).toFixed(1)}%</td>
+      <td style="color: ${gainLossBase >= 0 ? 'green' : 'red'}">${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}</td>
+      <td><button onclick='modifyHolding(${JSON.stringify(item)})'>✏️</button></td>
+    `;
+    tbody.appendChild(row);
   }
-  
-
-
-
-
-  
-
-const fxRateCache = {};
-const cachedRows = [];
-let totalMV = 0, totalMVBase = 0, totalGainLossBase = 0;
-
-// First pass — collect values and compute totals
-for (const item of filtered) {
-  const ticker = (item.ticker || "").trim().toUpperCase();
-  const currency = (item.currency || "USD").toUpperCase();
-  const quantity = parseFloat(item.quantity) || 0;
-  const purchasePrice = parseFloat(item.purchase_price) || 0;
-  const purchaseDate = item.purchase_date || "";
-  let livePrice = 0;
-  let lastClose = 0;
-
-  if (ticker === "CASH") {
-    livePrice = 1;
-    lastClose = 1;
-  } else if (item.is_private === true) {
-    livePrice = parseFloat(item.custom_price) || 0;
-   lastClose = livePrice;
-  } else {
-    livePrice = parseFloat(priceMap[ticker]) || 0;
-    lastClose = parseFloat(closeMap[ticker]) || 0;
-  }
-
-
-  const dailyMove = (lastClose > 0) ? (livePrice / lastClose - 1) : 0;
-
-  
-  const marketValue = quantity * livePrice;
-
-  if (!fxRateCache[currency]) {
-    fxRateCache[currency] = await fetchFxRate(currency);
-  }
-
-  const fxRate = fxRateCache[currency];
-  const marketValueBase = marketValue * fxRate;
-  const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
-
-  totalMV += marketValue;
-  totalMVBase += marketValueBase;
-  totalGainLossBase += gainLossBase;
-
-  cachedRows.push({
-    item, ticker, currency, quantity, purchasePrice, purchaseDate, livePrice,
-    lastClose, dailyMove,            // ✅ add these
-    marketValue, fxRate, marketValueBase, gainLossBase
-  });
-}
-
-
-for (const rowData of cachedRows) {
-  const {
-    item, ticker, currency, quantity, purchasePrice, purchaseDate, livePrice,
-    lastClose, dailyMove,  // ✅ ADD THESE
-    marketValue, fxRate, marketValueBase, gainLossBase
-  } = rowData;
-
-  const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
-
-  const today = new Date();
-  let purchaseDateObj = new Date(purchaseDate);
-  if (/^\d{8}$/.test(purchaseDate)) {
-    purchaseDateObj = new Date(
-      parseInt(purchaseDate.slice(0, 4)),
-      parseInt(purchaseDate.slice(4, 6)) - 1,
-      parseInt(purchaseDate.slice(6, 8))
-    );
-  }
-
-  let yearsHeld = (today - purchaseDateObj) / (1000 * 60 * 60 * 24 * 365.25);
-  if (yearsHeld < 0.01 || !isFinite(yearsHeld)) yearsHeld = 0.01;
-
-  let annualizedReturn = 0;
-  if (purchasePrice > 0 && livePrice > 0) {
-    annualizedReturn = Math.pow(livePrice / purchasePrice, 1 / yearsHeld) - 1;
-  }
-
-  const row = document.createElement("tr");
-  const companyName = nameMap[ticker] || item.name || ticker;
-  const logoGitHub = `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`;
-  const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
-
-
-
-
-  row.innerHTML = `
-    <td style="color: ${item.is_private ? 'blue' : 'inherit'}">${ticker}</td>
-    <td style="display: flex; align-items: center; gap: 8px;">
-      <img src="${logoGitHub}" alt="${ticker}" style="width: 24px; height: 24px;" onerror="this.onerror=null; this.src='${logoFMP}'" />
-      ${companyName}
-    </td>
-    <td>${(weight * 100).toFixed(1)}%</td>
-    <td>${quantity}</td>
-    <td>${formatCurrency(purchasePrice, currency, 2)}</td>
-    <td>${currency}</td>
-    <td>${purchaseDate}</td>
-    <td>${formatCurrency(lastClose, currency, 2)}</td>
-    <td>${formatCurrency(livePrice, currency, 2)}</td>
-    <td style="color:${dailyMove >= 0 ? 'green' : 'red'}">${(dailyMove * 100).toFixed(2)}%</td>
-    <td>${formatCurrency(marketValue, currency)}</td>
-    <td>${fxRate.toFixed(4)}</td>
-    <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
-    <td style="color:${annualizedReturn >= 0 ? 'green' : 'red'}">
-      ${(annualizedReturn * 100).toFixed(1)}%
-    </td>
-    <td style="color:${gainLossBase >= 0 ? 'green' : 'red'}">
-      ${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}
-    </td>
-    <td>
-      <button onclick='modifyHolding(${JSON.stringify(item)})' style="cursor:pointer;">✏️</button>
-    </td>
-  `;
-
-  tbody.appendChild(row);
-}
 
   document.getElementById("totalMV").innerText = formatCurrency(totalMV, baseCurrency);
   document.getElementById("totalMVBase").innerText = formatCurrency(totalMVBase, baseCurrency);
-  document.getElementById("totalGainLossBase").innerText =
-    (totalGainLossBase >= 0 ? "+" : "-") + formatCurrency(Math.abs(totalGainLossBase), baseCurrency);
+  document.getElementById("totalGainLossBase").innerText = `${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)}`;
 }
 
 function modifyHolding(item) {
   alert(`Modify clicked for ${item.ticker} in portfolio "${item.portfolio}"`);
-
-  // Example: open a modal or redirect
-  // You could also call an API to update the DynamoDB table
-  // fetch('/update-holding', { method: 'POST', body: JSON.stringify({...}) })
-}
-  
-async function main() {
-  try {
-    await checkLoginStatusAndRenderName();  // Will redirect if token is bad
-    await fetchBaseCurrency();
-    await loadHoldings(true); // Initial load with dropdown
-
-    setInterval(async () => {
-      const selected = document.getElementById("portfolioSelect").value;
-      await loadHoldings(false); // Refresh holdings only
-      renderTable(selected);
-    }, 60000);
-    
-  } catch (e) {
-    console.error("Error in main():", e);
-    alert("Something went wrong loading your portfolio.");
-  }
 }
 
 function confirmDeletePortfolio() {
-  const dropdown = document.getElementById("portfolioSelect");
-  const selected = dropdown?.value;
+  const selected = document.getElementById("portfolioSelect")?.value;
   if (!selected) return alert("No portfolio selected.");
-
-  const confirmDelete = confirm(`Are you sure you want to delete the portfolio "${selected}"?`);
-  if (!confirmDelete) return;
-
-  // 🔴 Replace this with your actual DELETE endpoint and logic
-  fetch("https://YOUR_API_ENDPOINT", {
+  if (!confirm(`Are you sure you want to delete "${selected}"?`)) return;
+  fetch("https://YOUR_DELETE_ENDPOINT", {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user_id: "ianmclean@mcleancapital.ca", portfolio: selected })
+    body: JSON.stringify({ user_id: userId, portfolio: selected })
   })
   .then(res => {
     if (!res.ok) throw new Error("Delete failed");
-    alert(`Portfolio "${selected}" deleted.`);
+    alert("Portfolio deleted.");
     window.location.reload();
   })
   .catch(err => alert("Error deleting portfolio: " + err.message));
 }
-  
+
+function logout() {
+  localStorage.clear();
+  window.location.href = "/login.html";
+}
+
+async function main() {
+  await checkLoginStatusAndRenderName();
+  await fetchBaseCurrency();
+  await loadHoldings(true);
+  setInterval(async () => {
+    const selected = document.getElementById("portfolioSelect").value;
+    await loadHoldings(false);
+    renderTable(selected);
+  }, 60000);
+}
+
 main();
 </script>
 
-<script>
-async function checkLoginStatusAndRenderName() {
-  const email = localStorage.getItem("userEmail");
-
-  if (!email) {
-    alert("You are not logged in.");
-    window.location.href = "/login.html";
-    return;
-  }
-
-  try {
-    const res = await fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserName", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password: "__dummy__" })  // not actually needed, but API expects it
-    });
-
-    if (!res.ok) throw new Error("Invalid user");
-
-    const data = await res.json();
-
-    // Optional: display user name at top
-    console.log(`Welcome ${data.first_name} ${data.last_name}`);
-  } catch (err) {
-    localStorage.clear();
-    alert("Your session expired. Please log in again.");
-    window.location.href = "/login.html";
-  }
-}
-
-</script>
-
-<script>
-function logout() {
-  localStorage.clear(); // clears all keys including userEmail
-  window.location.href = "/login.html";
-}
-</script>
-  
 </body>
 </html>
