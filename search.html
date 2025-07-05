@@ -439,9 +439,8 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         </ul>
     </nav>
 
-<div id="user-status" style="margin-left: auto; padding: 8px 18px; text-align: right;">
-  <a href="/login" id="login-button" style="font-weight: bold; font-size: 13px; padding: 4px 12px; border: 1px solid #0056b3; color: white; background-color: #0056b3; border-radius: 5px; text-decoration: none;">Log in</a>
-</div>
+<div id="user-status" style="margin-left: auto; padding: 8px 18px; text-align: right;"></div>
+
 
 
 <!--
@@ -1101,44 +1100,49 @@ function toggleMenu() {
 	
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  async function checkLoginStatusAndRenderName() {
-    const token = localStorage.getItem("idToken");
-    const email = localStorage.getItem("userEmail");
+async function checkLoginStatusAndRenderName() {
+  const token = localStorage.getItem("idToken");
+  const email = localStorage.getItem("userEmail");
+  const userDiv = document.getElementById("user-status");
 
-    if (!token || !email) return;
+  if (!token || !email) {
+    userDiv.innerHTML = `<a href="/login" style="font-weight: bold; font-size: 13px; padding: 4px 12px; border: 1px solid #0056b3; color: white; background-color: #0056b3; border-radius: 5px; text-decoration: none;">Log in</a>`;
+    return;
+  }
 
-    try {
-      const res = await fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/getUserName", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": token
-        },
-        body: JSON.stringify({ email })
-      });
+  try {
+    const res = await fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/getUserName", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ email })
+    });
 
-      const data = await res.json();
-      const userDiv = document.getElementById("user-status");
+    const data = await res.json();
 
-      if (data.first_name && data.last_name) {
-        userDiv.innerHTML = `
-          <div style="font-weight: bold; font-size: 14px;">${data.first_name} ${data.last_name}</div>
-          <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
-        `;
-      }
-    } catch (err) {
-      console.error("User fetch failed", err);
+    if (data.first_name && data.last_name) {
+      userDiv.innerHTML = `
+        <div style="font-weight: bold; font-size: 14px;">${data.first_name} ${data.last_name}</div>
+        <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
+      `;
+    } else {
+      // fallback to generic logged-in state
+      userDiv.innerHTML = `
+        <div style="font-weight: bold; font-size: 14px;">Logged in</div>
+        <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
+      `;
     }
+  } catch (err) {
+    console.warn("User fetch failed:", err);
+    userDiv.innerHTML = `
+      <div style="font-weight: bold; font-size: 14px;">Logged in</div>
+      <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
+    `;
   }
+}
 
-  function logout() {
-    localStorage.removeItem("idToken");
-    localStorage.removeItem("userEmail");
-    window.location.href = "/login";
-  }
-
-  checkLoginStatusAndRenderName();
-});
 </script>
 
 
