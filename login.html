@@ -684,9 +684,9 @@ function login() {
   user.authenticateUser(authDetails, {
     onSuccess: function (result) {
       const idToken = result.getIdToken().getJwtToken();
-      document.getElementById("loginStatus").innerText = "Login successful!";
-      console.log("Token:", idToken);
-    },
+      localStorage.setItem("idToken", idToken); // Optional: store the token
+      window.location.href = "/portfolio.html"; // ✅ redirect
+    }
 
     onFailure: function (err) {
       console.error(err);
