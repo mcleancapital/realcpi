@@ -720,31 +720,6 @@ function togglePasswordVisibility() {
 }
 </script>
 
-<script>
-const currentUser = userPool.getCurrentUser();
-
-if (currentUser) {
-  currentUser.getSession((err, session) => {
-    if (err) {
-      console.error("Session error:", err);
-      return;
-    }
-
-    if (session && session.isValid()) {
-      const idToken = session.getIdToken().getJwtToken();
-      const payload = session.getIdToken().decodePayload();
-      const email = payload.email || "User";
-
-      // Example: Show an alert or modify the UI
-      alert("Welcome back, " + email + "! You're already logged in.");
-
-      // Optional: Redirect them automatically
-      // window.location.href = "/portfolio.html";
-    }
-  });
-}
-</script>
-
 	    
 	  
 </body>
