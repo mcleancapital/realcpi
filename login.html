@@ -530,12 +530,20 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 </div>
 
 
-<div style="max-width: 70%; width: 450px; margin: 40px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9; box-sizing: border-box;">
+<div style="max-width: 70%; width: 500px; margin: 40px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9; box-sizing: border-box;">
   <h2 style="text-align: center; margin-bottom: 20px;">Log in</h2>
   <input type="email" id="loginEmail" placeholder="Email" style="width: 100%; padding: 10px;"><br><br>
   <input type="password" id="loginPassword" placeholder="Password" style="width: 100%; padding: 10px;"><br><br>
   <button onclick="login()">Log In</button>
   <p id="loginStatus" style="color: green;"></p>
+
+  <p style="text-align: center; margin-top: 20px;">Not a member? 
+    <button onclick="document.getElementById('signup-section').scrollIntoView({ behavior: 'smooth' })"
+            style="font-size: 14px; padding: 6px 12px; margin-left: 6px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      Sign Up
+    </button>
+  </p>
+
 </div>
 
 
@@ -678,15 +686,26 @@ function login() {
       const idToken = result.getIdToken().getJwtToken();
       document.getElementById("loginStatus").innerText = "Login successful!";
       console.log("Token:", idToken);
-      // You can now call your backend with the token
     },
+
     onFailure: function (err) {
       console.error(err);
       document.getElementById("loginStatus").innerText = "Login failed: " + err.message;
+    },
+
+    newPasswordRequired: function (userAttributes, requiredAttributes) {
+      // Ask the user for a new password
+      const newPassword = prompt("A new password is required. Please enter your new password:");
+
+      // Remove these attributes if they exist
+      delete userAttributes.email_verified;
+      delete userAttributes.phone_number_verified;
+
+      user.completeNewPasswordChallenge(newPassword, userAttributes, this);
     }
   });
 }
-</script>
+
 
 	    
 
@@ -761,23 +780,15 @@ async function loadTickerBar() {
       const span = document.createElement("span");
 
       const tickerMap = {
-
         '^GSPC': 'VOO',
-
         '^IXIC': 'QQQ',
-
         '^RUT': 'IWM',
-
         '^GSPTSE': 'XIC.to',
-
         'URTH': 'URTH',
-
         'CLUSD': 'CLUSD',
-
         '^TNX': 'IEF',
-
         'BTCUSD': 'BTCUSD',
-
+	'XAUUSD': 'XAUUSD',
         'CADUSD': 'CADUSD'
 
       };
