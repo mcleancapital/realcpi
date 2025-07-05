@@ -417,81 +417,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <meta name="description" content="Financial metrics that give you the real data about the market and the economy.">
 <link rel="canonical" href="https://www.realcpi.org/"/>
 
-<script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.2.0/dist/amazon-cognito-identity.min.js"></script>
 
-<script>
-const poolData = {
-  UserPoolId: 'us-east-1_sZIT96sDm',  // 🔁 your User Pool ID
-  ClientId: '19aon1hc8fimbf17k6s7mgdc79'    // 🔁 your App Client ID
-};
-
-const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
-
-const currentUser = userPool.getCurrentUser();
-if (currentUser) {
-  currentUser.getSession((err, session) => {
-    if (session && session.isValid()) {
-      window.location.href = "/portfolio.html"; // auto-redirect logged-in users
-    }
-  });
-}
-	
-function login() {
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
-
-  const authDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-    Username: email,
-    Password: password,
-  });
-
-  const user = new AmazonCognitoIdentity.CognitoUser({
-    Username: email,
-    Pool: userPool,
-  });
-
-  user.authenticateUser(authDetails, {
-    onSuccess: function (result) {
-const idToken = result.getIdToken().getJwtToken();
-const accessToken = result.getAccessToken().getJwtToken();
-const refreshToken = result.getRefreshToken().getToken();
-const payload = result.getIdToken().decodePayload();
-const email = payload.email;
-
-// Save correctly
-localStorage.setItem("idToken", idToken);
-localStorage.setItem("accessToken", accessToken);
-localStorage.setItem("refreshToken", refreshToken);
-localStorage.setItem("userEmail", email);
-
-// Redirect
-window.location.href = "/portfolio.html";
-
-    },
-
-    onFailure: function (err) {
-      console.error(err);
-      document.getElementById("loginStatus").innerText = "Login failed: " + err.message;
-    },
-
-    newPasswordRequired: function (userAttributes, requiredAttributes) {
-      // Ask the user for a new password
-      const newPassword = prompt("A new password is required. Please enter your new password:");
-
-      // Remove these attributes if they exist
-      delete userAttributes.email_verified;
-      delete userAttributes.phone_number_verified;
-
-      delete userAttributes.email;
-      delete userAttributes.email_verified;
-      delete userAttributes.phone_number_verified;
-
-      user.completeNewPasswordChallenge(newPassword, userAttributes, this);
-    }
-  });
-}
-
-</script>
 
 	
 
@@ -700,30 +626,58 @@ Copyright © 2024
 
 
 <script>
-
-
-
 function toggleMenu() {
-
-    var menu = document.getElementById("menu-items");
-
-    menu.classList.toggle("show");
-
+  var menu = document.getElementById("menu-items");
+  menu.classList.toggle("show");
 }
 
-
-
-</script>
-
-
-
-	    
-<script>
 function togglePasswordVisibility() {
   const pw = document.getElementById("loginPassword");
   pw.type = pw.type === "password" ? "text" : "password";
 }
+
+function login() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+
+  fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/rc_users_get_name", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password
+    })
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Invalid login");
+    }
+    return res.json();
+  })
+  .then(data => {
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userName", `${data.first_name} ${data.last_name}`);
+    localStorage.setItem("baseCurrency", data.base_currency);
+    window.location.href = "/portfolio.html";
+  })
+  .catch(err => {
+    console.error(err);
+    document.getElementById("loginStatus").innerText = "Login failed: " + err.message;
+    document.getElementById("loginStatus").style.color = "red";
+  });
+}
+
+// Optional: auto-redirect if already logged in
+window.addEventListener("DOMContentLoaded", () => {
+  const userEmail = localStorage.getItem("userEmail");
+  if (userEmail) {
+    window.location.href = "/portfolio.html";
+  }
+});
 </script>
+
 
 	    
 	  
