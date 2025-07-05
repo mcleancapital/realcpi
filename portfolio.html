@@ -436,54 +436,39 @@ main();
 
 <script>
 async function checkLoginStatusAndRenderName() {
-  const token = localStorage.getItem("idToken");
   const email = localStorage.getItem("userEmail");
 
-  if (!token || !email) {
+  if (!email) {
     alert("You are not logged in.");
     window.location.href = "/login.html";
     return;
   }
 
   try {
-    const res = await fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/getUserName", {
+    const res = await fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/rc_users_get_name", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({ email })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password: "__dummy__" })  // not actually needed, but API expects it
     });
 
-    if (res.status === 401) {
-      throw new Error("Token expired or invalid");
-    }
+    if (!res.ok) throw new Error("Invalid user");
 
     const data = await res.json();
 
-    if (!data.first_name || !data.last_name) {
-      throw new Error("Invalid user info");
-    }
-
-    // Optional: render user's name at top
+    // Optional: display user name at top
     console.log(`Welcome ${data.first_name} ${data.last_name}`);
   } catch (err) {
-    console.warn("Login check failed:", err.message);
     localStorage.clear();
     alert("Your session expired. Please log in again.");
     window.location.href = "/login.html";
   }
 }
+
 </script>
 
 <script>
 function logout() {
-  localStorage.removeItem("idToken");
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
-  localStorage.removeItem("userEmail");
-
-  // Redirect to login page
+  localStorage.clear(); // clears all keys including userEmail
   window.location.href = "/login.html";
 }
 </script>
