@@ -640,7 +640,7 @@ function login() {
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
 
-  fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/rc_users_get_name", {
+  fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/rc_users_get_name", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
