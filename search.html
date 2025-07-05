@@ -591,35 +591,21 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 </div>
 
 <span id="currentPrice"></span>
-
 <span id="companyName"></span>
 
-
-
 <div id="controls">
-
   <button class="range-btn" onclick="setRange('ytd')">YTD</button>
-
   <button class="range-btn" onclick="setRange('5y')">5 Years</button>
-
   <button class="range-btn" onclick="setRange('10y')">10 Years</button>
-
   <button class="range-btn" onclick="setRange('max')">Max</button>
-
 </div>
 
 
-
 <div id="stock-container">
-
   <div id="chart-container">
-
     <canvas id="priceChart"></canvas>
-
   </div>
-
   <div id="info"></div>
-
 </div>
 
 
@@ -627,57 +613,33 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <script>
 
 const apiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
-
 let chart, allPrices = [], currentTicker = "", currentRange = "5y";
 
-
-
 function filterDataByRange(range) {
-
   const now = new Date();
-
   let fromDate;
-
   switch (range) {
-
     case 'ytd': fromDate = new Date(now.getFullYear(), 0, 1); break;
-
     case '5y': fromDate = new Date(); fromDate.setFullYear(now.getFullYear() - 5); break;
-
     case '10y': fromDate = new Date(); fromDate.setFullYear(now.getFullYear() - 10); break;
-
     default: return allPrices;
-
   }
-
   return allPrices.filter(d => new Date(d.date) >= fromDate);
-
 }
 
 
 
 function calculateReturns(data, range) {
-
   if (data.length < 2) return { total: "N/A", annual: "" };
-
   const start = data[0].close;
-
   const end = data[data.length - 1].close;
-
   const totalReturn = ((end - start) / start) * 100;
-
   const days = (new Date(data[data.length - 1].date) - new Date(data[0].date)) / (1000 * 60 * 60 * 24);
-
   const annualized = ((1 + totalReturn / 100) ** (365 / days) - 1) * 100;
-
   return {
-
     total: totalReturn.toFixed(2) + '%',
-
     annual: ['5y', '10y', 'ytd', 'max'].includes(range) ? annualized.toFixed(2) + '%' : ""
-
   };
-
 }
 
 
@@ -685,55 +647,33 @@ function calculateReturns(data, range) {
 function setRange(range) {
 
   currentRange = range;
-
   document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
-
   document.querySelector(`.range-btn[onclick*="${range}"]`).classList.add('active');
 
   const filtered = filterDataByRange(range);
-
   const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
-
   const labels = sorted.map(d => d.date);
-
   const data = sorted.map(d => d.close);
-
   const returns = calculateReturns(sorted, range);
 
-
-
   if (chart) chart.destroy();
-
   chart = new Chart(document.getElementById("priceChart"), {
-
     type: 'line',
-
     data: { labels, datasets: [{ data, fill: false, borderColor: 'blue' }] },
-
     options: {
-
       plugins: { legend: { display: false } },
-
       responsive: true,
-
       scales: { x: { display: true }, y: { display: true } }
-
     }
-
   });
 
 
 
   document.getElementById("info").querySelector("#returns")?.remove();
-
   const div = document.createElement("div");
-
   div.id = "returns";
-
   div.innerHTML = `<p><strong>Total return:</strong> ${returns.total}</p>` +
-
                   (returns.annual ? `<p><strong>Annualized return (excl. div.):</strong> ${returns.annual}</p>` : "");
-
   document.getElementById("info").appendChild(div);
 
 }
@@ -763,61 +703,34 @@ async function loadData() {
   const balance = balanceSheetData[0];
   const ratios = ratiosData[0];
   const currentYear = new Date().getFullYear();
-
   const nextYearEstimate = estimatesData.find(est => new Date(est.date).getFullYear() === currentYear + 1);
-
   const estimatedEpsAvg = nextYearEstimate?.estimatedEpsAvg;
-
-
-
   const allowedCurrencies = ["USD", "CAD"];
-
   const currency = profile.currency || "N/A";
 
-
-
   const forwardPE = (allowedCurrencies.includes(currency) && estimatedEpsAvg && profile.price)
-
     ? (profile.price / estimatedEpsAvg).toFixed(1)
-
     : "N/A";
-
-
 
   const dividendYield = (allowedCurrencies.includes(currency) && typeof profile.lastDiv === 'number' && profile.price)
-
     ? ((profile.lastDiv / profile.price) * 100).toFixed(2) + '%'
-
     : "N/A";
-
-
-
-
-
 
 
   const peRatioRaw = profile.pe || ratios?.peRatioTTM || "N/A";
-
   const peRatio = typeof peRatioRaw === 'number' ? peRatioRaw.toFixed(1) : peRatioRaw;
-
   const equityToLiabilities = balance?.totalStockholdersEquity && balance?.totalLiabilities
 
     ? ((balance.totalStockholdersEquity / balance.totalLiabilities) * 100).toFixed(1) + '%'
-
     : "N/A";
 
 
 
   if (!profile || allPrices.length === 0) {
-
     document.getElementById("info").innerHTML = `<p>Not found.</p>`;
-
     document.getElementById("currentPrice").textContent = "";
-
     document.getElementById("companyName").textContent = "";
-
     return;
-
   }
 
 
@@ -886,8 +799,6 @@ async function handleInput() {
 
   let results = [];
 
-
-
   // Try search-ticker first
   try {
     const res1 = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
@@ -918,30 +829,17 @@ async function handleInput() {
         suggestionBox.style.display = "none";
         loadData();
       });
-
       suggestionBox.appendChild(li);
-
     });
-
     suggestionBox.style.display = "block";
-
   } else {
-
     suggestionBox.style.display = "none";
-
   }
-
 }
-
-
-
-
 
 function handleKeyDown(event) {
   const suggestionBox = document.getElementById("suggestions");
   const items = suggestionBox.querySelectorAll("li");
-
-
 
   if (event.key === "ArrowDown") {
     if (!items.length) return;
@@ -965,20 +863,11 @@ function handleKeyDown(event) {
   }
 }
 
-
-
-
-
 function updateActiveSuggestion(items) {
   items.forEach((item, i) => {
     item.style.background = i === selectedSuggestionIndex ? "#eee" : "white";
   });
 }
-
-
-
-
-
 
 window.addEventListener("DOMContentLoaded", () => {
 
@@ -990,25 +879,14 @@ window.addEventListener("DOMContentLoaded", () => {
     input.dispatchEvent(new Event('input')); // triggers name autofill
     setTimeout(loadData, 500); // simulate Enter after short delay
   }
-
 });
-
-
 
 </script>
 
-
-
 <iframe id="news-frame" style="width:100%; height:600px; border:none;"></iframe>
-
-
 <br><br>
-
 <iframe src="news2.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
-
 </div>
-
-
 
 </main>
 
