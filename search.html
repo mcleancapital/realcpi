@@ -873,25 +873,15 @@ document.getElementById("info").innerHTML = `
 
 
 let selectedSuggestionIndex = -1;
-
 let currentSuggestions = [];
 
-
-
 async function handleInput() {
-
   const input = document.getElementById("tickerInput").value.trim();
-
   const suggestionBox = document.getElementById("suggestions");
-
   if (input.length < 1) {
-
     suggestionBox.style.display = "none";
-
     return;
-
   }
-
 
 
   let results = [];
@@ -899,61 +889,34 @@ async function handleInput() {
 
 
   // Try search-ticker first
-
   try {
-
     const res1 = await fetch(`https://financialmodelingprep.com/api/v3/search-ticker?query=${input}&limit=10&apikey=${apiKey}`);
-
     results = await res1.json();
 
 
-
     // Fallback to /search if no results
-
     if (!results.length) {
-
       const res2 = await fetch(`https://financialmodelingprep.com/api/v3/search?query=${input}&limit=10&apikey=${apiKey}`);
-
       results = await res2.json();
-
     }
-
   } catch (err) {
-
     console.error("Search error:", err);
-
   }
 
-
-
   currentSuggestions = results;
-
   selectedSuggestionIndex = -1;
-
   suggestionBox.innerHTML = "";
 
-
-
   if (results.length > 0) {
-
     results.forEach((item, index) => {
-
       const li = document.createElement("li");
-
       li.textContent = `${item.name} (${item.symbol})`;
-
       li.style.padding = "8px";
-
       li.style.cursor = "pointer";
-
       li.addEventListener("click", () => {
-
         document.getElementById("tickerInput").value = item.symbol;
-
         suggestionBox.style.display = "none";
-
         loadData();
-
       });
 
       suggestionBox.appendChild(li);
@@ -975,9 +938,7 @@ async function handleInput() {
 
 
 function handleKeyDown(event) {
-
   const suggestionBox = document.getElementById("suggestions");
-
   const items = suggestionBox.querySelectorAll("li");
 
 
@@ -1009,11 +970,9 @@ function handleKeyDown(event) {
 
 
 function updateActiveSuggestion(items) {
-
   items.forEach((item, i) => {
     item.style.background = i === selectedSuggestionIndex ? "#eee" : "white";
   });
-
 }
 
 
@@ -1143,6 +1102,10 @@ async function checkLoginStatusAndRenderName() {
   }
 }
 
+  // ✅ Call the function after it's defined
+  checkLoginStatusAndRenderName();
+});
+	
 </script>
 
 
