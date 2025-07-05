@@ -1100,44 +1100,47 @@ function toggleMenu() {
 </script>
 	
 <script>
-async function checkLoginStatusAndRenderName() {
-  const token = localStorage.getItem("idToken");
-  const email = localStorage.getItem("userEmail");
+document.addEventListener("DOMContentLoaded", () => {
+  async function checkLoginStatusAndRenderName() {
+    const token = localStorage.getItem("idToken");
+    const email = localStorage.getItem("userEmail");
 
-  if (!token || !email) return;
+    if (!token || !email) return;
 
-  try {
-    const res = await fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/getUserName", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({ email })
-    });
+    try {
+      const res = await fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/getUserName", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token
+        },
+        body: JSON.stringify({ email })
+      });
 
-    const data = await res.json();
-    const userDiv = document.getElementById("user-status");
+      const data = await res.json();
+      const userDiv = document.getElementById("user-status");
 
-    if (data.first_name && data.last_name) {
-      userDiv.innerHTML = `
-        <div style="font-weight: bold; font-size: 14px;">${data.first_name} ${data.last_name}</div>
-        <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
-      `;
+      if (data.first_name && data.last_name) {
+        userDiv.innerHTML = `
+          <div style="font-weight: bold; font-size: 14px;">${data.first_name} ${data.last_name}</div>
+          <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
+        `;
+      }
+    } catch (err) {
+      console.error("User fetch failed", err);
     }
-  } catch (err) {
-    console.error("User fetch failed", err);
   }
-}
 
-function logout() {
-  localStorage.removeItem("idToken");
-  localStorage.removeItem("userEmail");
-  window.location.href = "/login";
-}
+  function logout() {
+    localStorage.removeItem("idToken");
+    localStorage.removeItem("userEmail");
+    window.location.href = "/login";
+  }
 
-checkLoginStatusAndRenderName();
+  checkLoginStatusAndRenderName();
+});
 </script>
+
 
 
 	
