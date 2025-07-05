@@ -116,7 +116,11 @@
   
 <script>
 let baseCurrency = "USD";
-const userId = "ianmclean@mcleancapital.ca";
+const userId = localStorage.getItem("userEmail");
+if (!userId) {
+  alert("You must be logged in to view your portfolio.");
+  window.location.href = "/login.html"; // or whatever your login page is
+}
 const currencyApi = `https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserCurrency?user_id=${encodeURIComponent(userId)}`;
 const portfolioUrl = `https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`;
 const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
