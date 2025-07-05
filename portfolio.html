@@ -106,12 +106,14 @@ let allHoldings = [];
 
 async function checkLoginStatusAndRenderName() {
   try {
-    const res = await fetch(`${baseURL}/getUserName`, {
+    const res = await fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserName", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: userId, password: "__dummy__" })
     });
+
     if (!res.ok) throw new Error("Invalid user");
+
     const data = await res.json();
     console.log(`Welcome ${data.first_name} ${data.last_name}`);
   } catch (err) {
