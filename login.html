@@ -457,7 +457,9 @@ function login() {
       const email = payload.email;
 
       // Save both token and email for later use
-      localStorage.setItem("idToken", idToken);
+      localStorage.setItem("idToken", data.id_token);
+      localStorage.setItem("accessToken", data.access_token);
+      localStorage.setItem("refreshToken", data.refresh_token);
       localStorage.setItem("userEmail", email);
 
       // Redirect to portfolio
