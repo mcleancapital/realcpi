@@ -582,6 +582,17 @@ function resizeIframe(iframe) {
     console.error("Iframe resize failed:", e);
   }
 }
+
+
+function reportHeightToParent() {
+  const height = document.documentElement.scrollHeight;
+  parent.postMessage({ type: "resize-iframe", height }, "*");
+}
+
+window.addEventListener("load", reportHeightToParent);
+window.addEventListener("resize", reportHeightToParent);
+
+	
 </script>
 
 	
