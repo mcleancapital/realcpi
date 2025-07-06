@@ -535,25 +535,22 @@ function toggleMenu() {
 	
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-async function checkLoginStatusAndRenderName() {
+  // 👇 All logic goes directly here, no need for separate function
   const email = localStorage.getItem("userEmail");
   const name = localStorage.getItem("userName");
   const userDiv = document.getElementById("user-status");
 
   if (!email) {
-    userDiv.innerHTML = `<a href="/login" style="font-weight: bold; font-size: 13px; padding: 4px 12px; border: 1px solid #0056b3; color: white; background-color: #0056b3; border-radius: 5px; text-decoration: none;">Log in</a>`;
+    userDiv.innerHTML = `<a href="/login" ...>Log in</a>`;
     return;
   }
 
   userDiv.innerHTML = `
-    <div style="font-weight: bold; font-size: 14px;">${name || "Logged in"}</div>
-    <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
+    <div>${name || "Logged in"}</div>
+    <a href="#" onclick="logout()">Log out</a>
   `;
 });
 
-  // ✅ Call the function after it's defined
-  checkLoginStatusAndRenderName();
-});
 	
 </script>
 
