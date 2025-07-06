@@ -42,7 +42,6 @@
 <div class="header">
   <div style="display: flex; align-items: center; gap: 12px;">
     <div>
-      <h2>My Portfolio</h2>
       <label for="portfolioSelect">Select Portfolio:</label>
       <select id="portfolioSelect">
         <option value="">Loading...</option>
@@ -105,6 +104,8 @@ let baseCurrency = "USD";
 let allHoldings = [];
 
 async function checkLoginStatusAndRenderName() {
+  if (!userId) return; // prevent early call
+
   try {
     const res = await fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserName", {
       method: "POST",
@@ -112,17 +113,19 @@ async function checkLoginStatusAndRenderName() {
       body: JSON.stringify({ email: userId })
     });
 
-    if (!res.ok) throw new Error("Invalid user");
+    if (!res.ok) {
+      console.warn("getUserName response not OK:", res.status);
+      return;
+    }
 
     const data = await res.json();
     console.log(`Welcome ${data.first_name} ${data.last_name}`);
-    // You could display this name in the header if you want
   } catch (err) {
-    console.error("Failed to fetch user name:", err);
-    // Do not clear localStorage here; just warn
-    alert("Could not load user name. Please refresh or try again later.");
+    console.warn("getUserName fetch error:", err.message);
+    // optional: remove alert to avoid annoying popup
   }
 }
+
 
 
 async function fetchBaseCurrency() {
@@ -185,6 +188,11 @@ async function renderTable(selectedPortfolio) {
   tbody.innerHTML = "";
 
   const filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio);
+
+// Sort so that CAD rows come before USD rows
+const currencyOrder = { CAD: 1, USD: 2 };
+filtered.sort((a, b) => (currencyOrder[a.currency] || 99) - (currencyOrder[b.currency] || 99));
+  
   if (filtered.length === 0) {
     tbody.innerHTML = `<tr><td colspan="10">No holdings in selected portfolio.</td></tr>`;
     return;
@@ -205,19 +213,32 @@ async function renderTable(selectedPortfolio) {
   const fxRates = {};
   let totalMV = 0, totalMVBase = 0, totalGainLossBase = 0;
 
-  for (const item of filtered) {
-    const ticker = (item.ticker || "").toUpperCase();
-    const quantity = parseFloat(item.quantity) || 0;
-    const purchasePrice = parseFloat(item.purchase_price) || 0;
-    const purchaseDate = item.purchase_date;
-    const currency = (item.currency || "USD").toUpperCase();
-    const isPrivate = item.is_private === true;
+for (const item of filtered) {
+  const ticker = (item.ticker || "").toUpperCase();
+  const isPrivate = item.is_private === true;
+  const quantity = parseFloat(item.quantity) || 0;
+  const purchasePrice = parseFloat(item.purchase_price) || 0;
+  const purchaseDate = item.purchase_date;
+  const currency = (item.currency || "USD").toUpperCase();
 
-    const livePrice = ticker === "CASH" ? 1 : isPrivate ? parseFloat(item.custom_price) : parseFloat(priceMap[ticker]) || 0;
-    const lastClose = ticker === "CASH" ? 1 : isPrivate ? livePrice : parseFloat(closeMap[ticker]) || 0;
+  const name = (ticker === "CASH")
+    ? "Cash"
+    : nameMap[ticker] || item.name || ticker;
 
-    if (!fxRates[currency]) fxRates[currency] = await fetchFxRate(currency);
-    const fxRate = fxRates[currency];
+  const livePrice = (ticker === "CASH")
+    ? 1
+    : isPrivate
+      ? parseFloat(item.custom_price)
+      : parseFloat(priceMap[ticker]) || 0;
+
+  const lastClose = (ticker === "CASH")
+    ? 1
+    : isPrivate
+      ? livePrice
+      : parseFloat(closeMap[ticker]) || 0;
+
+  if (!fxRates[currency]) fxRates[currency] = await fetchFxRate(currency);
+  const fxRate = fxRates[currency];
 
     const marketValue = quantity * livePrice;
     const marketValueBase = marketValue * fxRate;
