@@ -260,7 +260,6 @@ for (const item of filtered) {
 
     const logoGitHub = `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`;
     const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
-    const name = nameMap[ticker] || item.name || ticker;
 
     const row = document.createElement("tr");
     row.innerHTML = `
