@@ -58,37 +58,25 @@
     color: #222;
 
 }
-
-
 .menu-bar ul li a:hover {
     text-decoration: underline;
 }
-
 .container {
-
   display: flex; /* Create a flex container */
   gap: 16px; /* Add space between columns */
-
 }
-
 .left-column {
-
   flex: 1; /* Takes up 1/4 of the space */
   background-color: #f9f9f9; /* Optional: Light background for visibility */
   padding: 16px;
 }
-
 .right-column {
   flex: 3; /* Takes up 3/4 of the space */
   padding: 16px;
 }
-
-
-
 a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
 
         @font-face{
-
                 font-family:"Whitney";
                 font-style:normal;
                 font-weight:400;
@@ -133,18 +121,13 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
         #logo{flex:1 0 auto;display:inline-flex;align-items:center;text-align:center;height:64px}#logo svg{height:20px}main{padding:var(--std_padding) 16px}
 
         #grid{display:grid;grid-gap:40px 12px;
-
               grid-template-columns:repeat(var(--grid-columns,1),1fr)}
-
-
 
 @media(min-width:730px){
 
 	.mobile-menu {
         	display: none;
     	}
-
-
 
 	header{display:flex;align-items:center;padding:0 24px}
 	#logo svg{height:32px}
@@ -156,8 +139,6 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
                	 main{padding:var(--std_padding) 16px}
                	 #grid{grid-gap:24px 8px}
 
-
-
 	.hamburger-menu {
        		display: none;
   		}
@@ -166,9 +147,6 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
         	display: flex;
     		}
 	}
-
-
-
 
 
 a.box{padding:8px}
@@ -206,19 +184,12 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
   }
 
-
-
   #ticker-bar span {
-
     flex: 0 0 auto; /* Prevent shrinking */
     min-width: 120px; /* Or more depending on your content */
-
   }               
 
-
-
     .mobile-menu {
-
                 display: flex;
                 justify-content: space-around;
                 position: fixed;
@@ -273,18 +244,12 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     display: none; /* Hide the left column */
   }
 
-
-
   .right-column {
-
     flex: 1; /* Take full width when left column is hidden */
-
   }
 
                 #logo {
-
         display: none; /* Hide the logo on mobile */
-
   }
                 }
 
@@ -349,16 +314,10 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         padding: 0;
     }
 
-
-
     /* Show menu when toggled */
-
     .menu-bar ul.show {
-
         display: flex;
-
     }
-
 
     /* Style menu items in mobile mode */
 
@@ -368,8 +327,6 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         padding: 10px 0;
         border-bottom: 1px solid #ddd;
     }
-
-
 
     /* Style hamburger button */
     .hamburger-menu {
@@ -385,11 +342,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     }
 }
 
-
-
 </style>
-
-
 
 <meta name="viewport" content="initial-scale=1" />
 
@@ -504,13 +457,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <div class="container">
     <!-- Left Column -->
     <div class="left-column">
-
-	    
-
 	<iframe src="news.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
-
-
-
     </div>
 
 
@@ -530,7 +477,8 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 
 
-<iframe src="portfolio.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+<iframe id="portfolio-frame" src="portfolio.html" style="width: 100%; border: none;" onload="resizeIframe(this);"></iframe>
+
 
 <iframe id="news-frame" style="width:100%; height:600px; border:none;"></iframe>
 <br><br>
@@ -653,6 +601,21 @@ function logout() {
 </script>
 
 
+
+<script>
+function resizeIframe(iframe) {
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    if (doc && doc.body) {
+      iframe.style.height = (doc.body.scrollHeight + 50) + 'px';
+    }
+  } catch (e) {
+    console.error("Iframe resize failed:", e);
+  }
+}
+</script>
+
+	
 	
 </body>
 
