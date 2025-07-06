@@ -365,6 +365,23 @@ async function main() {
 }
 
 main();
+
+function reportHeightToParent() {
+  const height = document.documentElement.scrollHeight;
+  parent.postMessage({ type: "resize-iframe", height }, "*");
+}
+
+window.addEventListener("load", reportHeightToParent);
+window.addEventListener("resize", reportHeightToParent);
+
+window.addEventListener("message", function(event) {
+  if (event.data && event.data.type === "get-height") {
+    reportHeightToParent();
+  }
+});
+
+
+  
 </script>
 
 </body>
