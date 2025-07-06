@@ -109,19 +109,21 @@ async function checkLoginStatusAndRenderName() {
     const res = await fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserName", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: userId, password: "__dummy__" })
+      body: JSON.stringify({ email: userId })
     });
 
     if (!res.ok) throw new Error("Invalid user");
 
     const data = await res.json();
     console.log(`Welcome ${data.first_name} ${data.last_name}`);
+    // You could display this name in the header if you want
   } catch (err) {
-    localStorage.clear();
-    alert("Session expired. Please log in again.");
-    window.location.href = "/login.html";
+    console.error("Failed to fetch user name:", err);
+    // Do not clear localStorage here; just warn
+    alert("Could not load user name. Please refresh or try again later.");
   }
 }
+
 
 async function fetchBaseCurrency() {
   try {
