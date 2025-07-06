@@ -656,18 +656,22 @@ function login() {
     }
     return res.json();
   })
-  .then(data => {
-    console.log("Received from API:", data);  // ✅ Add this	  
-    localStorage.setItem("userEmail", email);
-    localStorage.setItem("userName", `${data.first_name} ${data.last_name}`);
-    localStorage.setItem("baseCurrency", data.base_currency);
-document.getElementById("loginStatus").innerText = `Welcome, ${data.first_name} ${data.last_name}`;
-document.getElementById("loginStatus").style.color = "green";
+.then(data => {
+  console.log("Received from API:", data);	  
+  localStorage.setItem("userEmail", email);
+  localStorage.setItem("userName", `${data.first_name} ${data.last_name}`);
+  localStorage.setItem("baseCurrency", data.base_currency);
+  document.getElementById("loginStatus").innerText = `Welcome, ${data.first_name} ${data.last_name}`;
+  document.getElementById("loginStatus").style.color = "green";
 
-// Replace login button with user's name
-updateLoginButton(data.first_name, data.last_name);
+  // Replace login button with user's name
+  updateLoginButton(data.first_name, data.last_name);
 
-  })
+  // ✅ Redirect after 1.5s to portfolio.html
+  setTimeout(() => {
+    window.location.href = "/portfolio.html";
+  }, 1500);
+})
   .catch(err => {
     console.error(err);
     document.getElementById("loginStatus").innerText = "Login failed: " + err.message;
