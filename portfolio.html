@@ -191,7 +191,23 @@ async function renderTable(selectedPortfolio) {
 
 // Sort so that CAD rows come before USD rows
 const currencyOrder = { CAD: 1, USD: 2 };
-filtered.sort((a, b) => (currencyOrder[a.currency] || 99) - (currencyOrder[b.currency] || 99));
+filtered.sort((a, b) => {
+  const aTicker = (a.ticker || "").toUpperCase();
+  const bTicker = (b.ticker || "").toUpperCase();
+
+  if (aTicker === "CASH") return -1;
+  if (bTicker === "CASH") return 1;
+
+  const aPrivate = a.is_private === true ? 1 : 0;
+  const bPrivate = b.is_private === true ? 1 : 0;
+
+  if (aPrivate !== bPrivate) return bPrivate - aPrivate;
+
+  // Fallback: sort by currency (CAD before USD)
+  const order = { CAD: 1, USD: 2 };
+  return (order[a.currency] || 99) - (order[b.currency] || 99);
+});
+
   
   if (filtered.length === 0) {
     tbody.innerHTML = `<tr><td colspan="10">No holdings in selected portfolio.</td></tr>`;
@@ -212,6 +228,8 @@ filtered.sort((a, b) => (currencyOrder[a.currency] || 99) - (currencyOrder[b.cur
 
   const fxRates = {};
   let totalMV = 0, totalMVBase = 0, totalGainLossBase = 0;
+
+const rows = [];
 
 for (const item of filtered) {
   const ticker = (item.ticker || "").toUpperCase();
@@ -240,52 +258,70 @@ for (const item of filtered) {
   if (!fxRates[currency]) fxRates[currency] = await fetchFxRate(currency);
   const fxRate = fxRates[currency];
 
-    const marketValue = quantity * livePrice;
-    const marketValueBase = marketValue * fxRate;
-    const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
+  const marketValue = quantity * livePrice;
+  const marketValueBase = marketValue * fxRate;
+  const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
 
-    totalMV += marketValue;
-    totalMVBase += marketValueBase;
-    totalGainLossBase += gainLossBase;
+  totalMV += marketValue;
+  totalMVBase += marketValueBase;
+  totalGainLossBase += gainLossBase;
 
-    const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
-    const today = new Date();
-    const purchase = /^\d{8}$/.test(purchaseDate)
-      ? new Date(purchaseDate.slice(0,4), purchaseDate.slice(4,6) - 1, purchaseDate.slice(6))
-      : new Date(purchaseDate);
+  rows.push({
+    item, ticker, isPrivate, quantity, purchasePrice, purchaseDate,
+    currency, name, livePrice, lastClose, fxRate, marketValue,
+    marketValueBase, gainLossBase
+  });
+}
 
-    const years = Math.max((today - purchase) / (365.25 * 24 * 3600 * 1000), 0.01);
-    const annualReturn = (livePrice > 0 && purchasePrice > 0)
-      ? Math.pow(livePrice / purchasePrice, 1 / years) - 1 : 0;
+for (const rowData of rows) {
+  const {
+    item, ticker, isPrivate, quantity, purchasePrice, purchaseDate,
+    currency, name, livePrice, lastClose, fxRate, marketValue,
+    marketValueBase, gainLossBase
+  } = rowData;
 
-    const logoGitHub = `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`;
-    const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
+  const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td style="color: ${isPrivate ? 'blue' : 'inherit'}">${ticker}</td>
-      <td style="display: flex; align-items: center; gap: 8px;">
-        <img src="${logoGitHub}" onerror="this.onerror=null;this.src='${logoFMP}'" width="24" height="24" />
-        ${name}
-      </td>
-      <td>${(weight * 100).toFixed(1)}%</td>
-      <td>${quantity}</td>
-      <td>${formatCurrency(purchasePrice, currency, 2)}</td>
-      <td>${currency}</td>
-      <td>${purchaseDate}</td>
-      <td>${formatCurrency(lastClose, currency, 2)}</td>
-      <td>${formatCurrency(livePrice, currency, 2)}</td>
-      <td style="color: ${livePrice >= lastClose ? 'green' : 'red'}">${((livePrice / lastClose - 1) * 100).toFixed(2)}%</td>
-      <td>${formatCurrency(marketValue, currency)}</td>
-      <td>${fxRate.toFixed(4)}</td>
-      <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
-      <td style="color: ${annualReturn >= 0 ? 'green' : 'red'}">${(annualReturn * 100).toFixed(1)}%</td>
-      <td style="color: ${gainLossBase >= 0 ? 'green' : 'red'}">${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}</td>
-      <td><button onclick='modifyHolding(${JSON.stringify(item)})'>✏️</button></td>
-    `;
-    tbody.appendChild(row);
-  }
+  const today = new Date();
+  const purchase = /^\d{8}$/.test(purchaseDate)
+    ? new Date(purchaseDate.slice(0,4), purchaseDate.slice(4,6) - 1, purchaseDate.slice(6))
+    : new Date(purchaseDate);
 
+  const years = Math.max((today - purchase) / (365.25 * 24 * 3600 * 1000), 0.01);
+  const annualReturn = (livePrice > 0 && purchasePrice > 0)
+    ? Math.pow(livePrice / purchasePrice, 1 / years) - 1 : 0;
+
+const logoGitHub = `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`;
+const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
+
+const row = document.createElement("tr");
+row.innerHTML = `
+  <td style="color: ${isPrivate ? 'blue' : 'inherit'}">${ticker}</td>
+  <td style="display: flex; align-items: center; gap: 8px;">
+    <img src="${logoGitHub}" onerror="this.onerror=null;this.src='${logoFMP}'" width="24" height="24" />
+    ${name}
+  </td>
+  <td>${(weight * 100).toFixed(1)}%</td>
+  <td>${quantity}</td>
+  <td>${formatCurrency(purchasePrice, currency, 2)}</td>
+  <td>${currency}</td>
+  <td>${purchaseDate}</td>
+  <td>${formatCurrency(lastClose, currency, 2)}</td>
+  <td>${formatCurrency(livePrice, currency, 2)}</td>
+  <td style="color: ${livePrice >= lastClose ? 'green' : 'red'}">${((livePrice / lastClose - 1) * 100).toFixed(2)}%</td>
+  <td>${formatCurrency(marketValue, currency)}</td>
+  <td>${fxRate.toFixed(4)}</td>
+  <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
+  <td style="color: ${annualReturn >= 0 ? 'green' : 'red'}">${(annualReturn * 100).toFixed(1)}%</td>
+  <td style="color: ${gainLossBase >= 0 ? 'green' : 'red'}">${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}</td>
+  <td><button onclick='modifyHolding(${JSON.stringify(item)})'>✏️</button></td>
+`;
+
+  tbody.appendChild(row);
+}
+
+
+  
   document.getElementById("totalMV").innerText = formatCurrency(totalMV, baseCurrency);
   document.getElementById("totalMVBase").innerText = formatCurrency(totalMVBase, baseCurrency);
   document.getElementById("totalGainLossBase").innerText = `${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)}`;
