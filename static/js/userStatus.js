@@ -1,5 +1,3 @@
-// /static/js/userStatus.js
-
 function logout() {
   localStorage.removeItem("idToken");
   localStorage.removeItem("accessToken");
@@ -7,7 +5,7 @@ function logout() {
   localStorage.removeItem("userEmail");
   localStorage.removeItem("userName");
   localStorage.removeItem("baseCurrency");
-  window.location.href = "/login";
+  window.location.href = "/login"; // Redirect to login
 }
 
 async function checkLoginStatusAndRenderName() {
@@ -15,7 +13,15 @@ async function checkLoginStatusAndRenderName() {
   const email = localStorage.getItem("userEmail");
   const userDiv = document.getElementById("user-status");
 
-  if (!token || !email || !userDiv) return;
+  if (!userDiv) return;
+
+  // Not logged in: show Log in link
+  if (!token || !email) {
+    userDiv.innerHTML = `
+      <a href="/login" style="font-size: 14px; color: #0056b3; text-decoration: underline;">Log in</a>
+    `;
+    return;
+  }
 
   try {
     const res = await fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/getUserName", {
@@ -27,17 +33,23 @@ async function checkLoginStatusAndRenderName() {
       body: JSON.stringify({ email })
     });
 
+    if (!res.ok) throw new Error("Token expired or invalid");
+
     const data = await res.json();
-    const name = data.first_name && data.last_name ? `${data.first_name} ${data.last_name}` : "Logged in";
+    const name = data.first_name && data.last_name
+      ? `${data.first_name} ${data.last_name}`
+      : "Logged in";
 
     userDiv.innerHTML = `
-      <div style="font-weight: bold; font-size: 14px;">${name}</div>
+      <div style="font-weight: bold; font-size: 14px;">👤 ${name}</div>
       <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
     `;
   } catch (err) {
+    console.warn("Login check failed:", err);
+
+    // Show fallback login link if fetch fails (e.g., invalid token)
     userDiv.innerHTML = `
-      <div style="font-weight: bold; font-size: 14px;">Logged in</div>
-      <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
+      <a href="/login" style="font-size: 14px; color: #0056b3; text-decoration: underline;">Log in</a>
     `;
   }
 }
