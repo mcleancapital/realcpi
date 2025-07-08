@@ -322,7 +322,6 @@ row.innerHTML = `
 
 
   
-  document.getElementById("totalMV").innerText = formatCurrency(totalMV, baseCurrency);
   document.getElementById("totalMVBase").innerText = formatCurrency(totalMVBase, baseCurrency);
   document.getElementById("totalGainLossBase").innerText = `${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)}`;
 }
