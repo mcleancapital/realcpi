@@ -674,8 +674,16 @@ document.getElementById("addPrivate").addEventListener("change", function () {
 
 function openCreatePortfolioModal() {
   document.getElementById("newPortfolioName").value = "";
-  document.getElementById("createPortfolioModal").style.display = "block";
+
+  const modal = document.getElementById("createPortfolioModal");
+  const btn = event?.target || document.querySelector("button[onclick='openCreatePortfolioModal()']");
+  const rect = btn.getBoundingClientRect();
+
+  modal.style.display = "block";
+  modal.style.top = `${window.scrollY + rect.top}px`;
+  modal.style.left = `${rect.left - 320}px`; // Adjust left position to shift modal to the left of button
 }
+
 
 function closeCreatePortfolioModal() {
   document.getElementById("createPortfolioModal").style.display = "none";
