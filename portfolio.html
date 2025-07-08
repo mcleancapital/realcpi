@@ -611,6 +611,8 @@ function openAddHoldingModal() {
   const timestamp = today.toISOString();
   const formattedDate = `${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
 
+  document.getElementById("addForm").reset();
+  
   document.getElementById("addPortfolio").value = portfolio;
   document.getElementById("addTimestamp").value = timestamp;
   document.getElementById("addPurchaseDate").value = formattedDate;
@@ -619,7 +621,7 @@ function openAddHoldingModal() {
   document.getElementById("addName").disabled = true;
   document.getElementById("addCustomPrice").disabled = true;
 
-  document.getElementById("addForm").reset();
+
 
   // Positioning the modal
   const btn = event?.target || document.querySelector("button[onclick='openAddHoldingModal()']");
