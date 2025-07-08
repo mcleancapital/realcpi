@@ -59,7 +59,7 @@ table, th, td {
     <div id="currencyDisplay">Loading currency...</div>
     <div style="display: flex; gap: 8px;">
       <button onclick="openAddHoldingModal()" style="height: 32px; font-size: 14px;">➕ Add Holding</button>
-      <button onclick="window.location.href = 'new_portfolio.html'" style="height: 32px; font-size: 14px;">➕ Create Portfolio</button>
+      <button onclick="openCreatePortfolioModal()" style="height: 32px; font-size: 14px;">➕ Create Portfolio</button>
       <button onclick="confirmDeletePortfolio()" style="height: 32px; font-size: 14px; color: red;">− Delete Portfolio</button>
     </div>
   </div>
@@ -135,6 +135,14 @@ table, th, td {
   </form>
 </div>
 
+<div id="createPortfolioModal" style="display:none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+  <h3>Create New Portfolio</h3>
+  <label>Portfolio Name:<br><input type="text" id="newPortfolioName" required /></label><br><br>
+  <button onclick="submitNewPortfolio()">Create</button>
+  <button onclick="closeCreatePortfolioModal()">Cancel</button>
+</div>
+
+  
   
 <script>
 const userId = localStorage.getItem("userEmail");
@@ -649,7 +657,45 @@ document.getElementById("addPrivate").addEventListener("change", function () {
 });
 
 
-  
+function openCreatePortfolioModal() {
+  document.getElementById("newPortfolioName").value = "";
+  document.getElementById("createPortfolioModal").style.display = "block";
+}
+
+function closeCreatePortfolioModal() {
+  document.getElementById("createPortfolioModal").style.display = "none";
+}
+
+async function submitNewPortfolio() {
+  const portfolio = document.getElementById("newPortfolioName").value.trim();
+  if (!portfolio) return alert("Portfolio name is required.");
+
+  const timestamp = new Date().toISOString();
+  const payload = {
+    user_id: userId,
+    portfolio,
+    ticker: "CASH",
+    portfolio_ticker: `${portfolio}#CASH`,
+    quantity: 1,
+    timestamp
+  };
+
+  try {
+    const res = await fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/addHolding", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error("Creation failed");
+    alert("Portfolio created!");
+    closeCreatePortfolioModal();
+    await loadHoldings(true);  // reload and re-render
+  } catch (err) {
+    alert("Error creating portfolio: " + err.message);
+  }
+}
+
   
 </script>
 
