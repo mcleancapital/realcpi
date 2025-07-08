@@ -877,7 +877,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
     <div class="right-column">
-    <iframe src="summary_portfolio.html" style="width: 50%; height: 300%; min-height: 3000px; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+    <div id="summary-portfolio-container" class="right-column">Loading portfolio...</div>
     </div>
 
 
@@ -999,6 +999,30 @@ function logout() {
 }
 </script>
 
+<script>
+async function loadSummaryPortfolio() {
+  try {
+    const response = await fetch('summary_portfolio.html');
+    if (!response.ok) throw new Error('Network error');
+    const html = await response.text();
+
+    // Extract the body content only
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const bodyContent = doc.body.innerHTML;
+
+    // Inject into the container
+    document.getElementById('summary-portfolio-container').innerHTML = bodyContent;
+
+  } catch (error) {
+    document.getElementById('summary-portfolio-container').innerHTML = 'Failed to load portfolio summary.';
+    console.error('Error loading summary portfolio:', error);
+  }
+}
+
+// Call the loader
+document.addEventListener('DOMContentLoaded', loadSummaryPortfolio);
+</script>
 
 	
 </body>
