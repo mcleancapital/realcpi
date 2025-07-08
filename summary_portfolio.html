@@ -101,6 +101,64 @@ async function renderSummary(selectedPortfolio) {
     return;
   }
 
+  const tickers = [...new Set(filtered.map(i => (i.ticker || "").toUpperCase()))].join(",");
+  const res = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
+  const quotes = await res.json();
+
+  const priceMap = {}, moveMap = {}, nameMap = {}, currencyMap = {};
+  quotes.forEach(q => {
+    const sym = q.symbol.toUpperCase();
+    priceMap[sym] = q.price;
+    moveMap[sym] = ((q.price / q.previousClose - 1) * 100).toFixed(2);
+    nameMap[sym] = q.name;
+    currencyMap[sym] = q.currency || "USD";
+  });
+
+  const currencyWeight = {
+    CAD: 1,
+    USD: 2,
+    EUR: 3,
+    JPY: 4,
+    OTHER: 99
+  };
+
+  // Sort: Private first, then by currency
+  filtered.sort((a, b) => {
+    const aPrivate = a.is_private === true;
+    const bPrivate = b.is_private === true;
+
+    if (aPrivate && !bPrivate) return -1;
+    if (!aPrivate && bPrivate) return 1;
+
+    const aCurrency = currencyMap[(a.ticker || "").toUpperCase()] || "OTHER";
+    const bCurrency = currencyMap[(b.ticker || "").toUpperCase()] || "OTHER";
+
+    return (currencyWeight[aCurrency] || 99) - (currencyWeight[bCurrency] || 99);
+  });
+
+  for (const item of filtered) {
+    const ticker = (item.ticker || "").toUpperCase();
+    const isPrivate = item.is_private === true;
+    const name = isPrivate ? (item.name || ticker) : (nameMap[ticker] || ticker);
+    const price = isPrivate ? item.custom_price : priceMap[ticker];
+    const move = isPrivate ? "" : (moveMap[ticker] + "%");
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>
+        <div class="ticker-name" style="color: ${isPrivate ? '#007BFF' : 'inherit'}">${ticker}</div>
+        <div class="name">${name}</div>
+      </td>
+      <td>
+        <div class="price">${price !== undefined ? "$" + parseFloat(price).toFixed(2) : "-"}</div>
+        <div class="move" style="color: ${move.startsWith('-') ? 'red' : 'green'}">${move}</div>
+      </td>
+    `;
+    table.appendChild(row);
+  }
+}
+
+
   // Sort: Private first
 // Build maps
 const priceMap = {}, moveMap = {}, nameMap = {}, currencyMap = {};
