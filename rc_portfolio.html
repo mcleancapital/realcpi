@@ -628,7 +628,7 @@ function showUserSettings() {
   setTimeout(() => {
     const rect = nameSpan.getBoundingClientRect();
     modal.style.top = `${rect.bottom + window.scrollY + 6}px`;
-    modal.style.left = `${rect.right + window.scrollX + 10}px`;
+    modal.style.left = `${rect.right + window.scrollX - 60}px`;
 
     // Now display the modal
     modal.style.display = "block";
