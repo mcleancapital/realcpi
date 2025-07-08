@@ -55,20 +55,23 @@
 </head>
 <body>
 
-<div class="header">
-  <div>
-    <label for="portfolioSelect">Portfolio:</label>
-    <select id="portfolioSelect"><option>Loading...</option></select>
+<!-- ✅ Only inject this part into search.html -->
+<div id="portfolio-summary">
+  <div class="header">
+    <div>
+      <label for="portfolioSelect">Portfolio:</label>
+      <select id="portfolioSelect"><option>Loading...</option></select>
+    </div>
+    <button class="btn-edit" onclick="window.location.href='rc_portfolio.html'" title="Modify Portfolio">✏️</button>
   </div>
-  <button class="btn-edit" onclick="window.location.href='rc_portfolio.html'" title="Modify Portfolio">✏️</button>
-</div>
 
-<table id="summaryTable">
-  <colgroup>
-    <col style="width: 70%">
-    <col style="width: 30%">
-  </colgroup>  
-</table>
+  <table id="summaryTable">
+    <colgroup>
+      <col style="width: 70%">
+      <col style="width: 30%">
+    </colgroup>  
+  </table>
+</div>
 
 <script>
 const userId = localStorage.getItem("userEmail");
