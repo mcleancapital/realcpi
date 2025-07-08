@@ -700,9 +700,10 @@ async function submitNewPortfolio() {
     if (!res.ok) throw new Error("Creation failed");
     alert("Portfolio created!");
     closeCreatePortfolioModal();
-    const dropdown = document.getElementById("portfolioSelect");
-    dropdown.dataset.initialized = "";
-    await loadHoldings(true);  // reload and re-render
+    
+    // 🔁 Full page reload instead of dropdown update
+    window.location.reload();
+    
   } catch (err) {
     alert("Error creating portfolio: " + err.message);
   }
