@@ -245,31 +245,10 @@ async function renderTable(selectedPortfolio) {
 
   const filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio);
 
-// Sort so that CAD rows come before USD rows
-const currencyOrder = { CAD: 1, USD: 2 };
-filtered.sort((a, b) => {
-  const aTicker = (a.ticker || "").toUpperCase();
-  const bTicker = (b.ticker || "").toUpperCase();
-
-  if (aTicker === "CASH") return -1;
-  if (bTicker === "CASH") return 1;
-
-  const aPrivate = a.is_private === true ? 1 : 0;
-  const bPrivate = b.is_private === true ? 1 : 0;
-
-  if (aPrivate !== bPrivate) return bPrivate - aPrivate;
-
-  // Fallback: sort by currency (CAD before USD)
-  const order = { CAD: 1, USD: 2 };
-  return (order[a.currency] || 99) - (order[b.currency] || 99);
-});
-
-  
   if (filtered.length === 0) {
     tbody.innerHTML = `<tr><td colspan="10">No holdings in selected portfolio.</td></tr>`;
     return;
   }
-
   const tickers = [...new Set(filtered.map(i => (i.ticker || "").toUpperCase()))].join(",");
   const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
   const prices = await priceRes.json();
@@ -285,95 +264,97 @@ filtered.sort((a, b) => {
   const fxRates = {};
   let totalMV = 0, totalMVBase = 0, totalGainLossBase = 0;
 
-const rows = [];
+  const rows = [];
 
 for (const item of filtered) {
-  const ticker = (item.ticker || "").toUpperCase();
-  const isPrivate = item.is_private === true;
-  const quantity = parseFloat(item.quantity) || 0;
-  const purchasePrice = parseFloat(item.purchase_price) || 0;
-  const purchaseDate = item.purchase_date;
-  const currency = (item.currency || "USD").toUpperCase();
+    const ticker = (item.ticker || "").toUpperCase();
+    const isPrivate = item.is_private === true;
+    const quantity = parseFloat(item.quantity) || 0;
+    const purchasePrice = parseFloat(item.purchase_price) || 0;
+    const purchaseDate = item.purchase_date;
+    const currency = (item.currency || "USD").toUpperCase();
 
-  const name = (ticker === "CASH")
-    ? "Cash"
-    : nameMap[ticker] || item.name || ticker;
+    const name = (ticker === "CASH") ? "Cash" : nameMap[ticker] || item.name || ticker;
+    const livePrice = (ticker === "CASH") ? 1 : isPrivate ? parseFloat(item.custom_price) : parseFloat(priceMap[ticker]) || 0;
+    const lastClose = (ticker === "CASH") ? 1 : isPrivate ? livePrice : parseFloat(closeMap[ticker]) || 0;
 
-  const livePrice = (ticker === "CASH")
-    ? 1
-    : isPrivate
-      ? parseFloat(item.custom_price)
-      : parseFloat(priceMap[ticker]) || 0;
+    if (!fxRates[currency]) fxRates[currency] = await fetchFxRate(currency);
+    const fxRate = fxRates[currency];
 
-  const lastClose = (ticker === "CASH")
-    ? 1
-    : isPrivate
-      ? livePrice
-      : parseFloat(closeMap[ticker]) || 0;
+    const marketValue = quantity * livePrice;
+    const marketValueBase = marketValue * fxRate;
+    const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
 
-  if (!fxRates[currency]) fxRates[currency] = await fetchFxRate(currency);
-  const fxRate = fxRates[currency];
+    totalMV += marketValue;
+    totalMVBase += marketValueBase;
+    totalGainLossBase += gainLossBase;
 
-  const marketValue = quantity * livePrice;
-  const marketValueBase = marketValue * fxRate;
-  const gainLossBase = ((livePrice - purchasePrice) * quantity) * fxRate;
+    rows.push({
+      item, ticker, isPrivate, quantity, purchasePrice, purchaseDate,
+      currency, name, livePrice, lastClose, fxRate, marketValue,
+      marketValueBase, gainLossBase
+    });
+  }
 
-  totalMV += marketValue;
-  totalMVBase += marketValueBase;
-  totalGainLossBase += gainLossBase;
+  for (const rowData of rows) {
+    const {
+      item, ticker, isPrivate, quantity, purchasePrice, purchaseDate,
+      currency, name, livePrice, lastClose, fxRate, marketValue,
+      marketValueBase, gainLossBase
+    } = rowData;
 
-  rows.push({
-    item, ticker, isPrivate, quantity, purchasePrice, purchaseDate,
-    currency, name, livePrice, lastClose, fxRate, marketValue,
-    marketValueBase, gainLossBase
-  });
-}
+    const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
+    const today = new Date();
+    const purchase = /^\d{8}$/.test(purchaseDate)
+      ? new Date(purchaseDate.slice(0, 4), purchaseDate.slice(4, 6) - 1, purchaseDate.slice(6))
+      : new Date(purchaseDate);
 
-for (const rowData of rows) {
-  const {
-    item, ticker, isPrivate, quantity, purchasePrice, purchaseDate,
-    currency, name, livePrice, lastClose, fxRate, marketValue,
-    marketValueBase, gainLossBase
-  } = rowData;
+    const years = Math.max((today - purchase) / (365.25 * 24 * 3600 * 1000), 0.01);
+    const annualReturn = (livePrice > 0 && purchasePrice > 0)
+      ? Math.pow(livePrice / purchasePrice, 1 / years) - 1 : 0;
 
-  const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
+    const logoGitHub = `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`;
+    const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
 
-  const today = new Date();
-  const purchase = /^\d{8}$/.test(purchaseDate)
-    ? new Date(purchaseDate.slice(0,4), purchaseDate.slice(4,6) - 1, purchaseDate.slice(6))
-    : new Date(purchaseDate);
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td style="color: ${isPrivate ? '#007BFF' : 'inherit'}">${ticker}</td>
+      <td style="display: flex; align-items: center; gap: 8px;">
+        <img src="${logoGitHub}" onerror="this.onerror=null;this.src='${logoFMP}'" width="24" height="24" />
+        ${name}
+      </td>
+      <td>${(weight * 100).toFixed(1)}%</td>
+      <td>${quantity}</td>
+      <td>${formatCurrency(purchasePrice, currency, 2)}</td>
+      <td>${currency}</td>
+      <td>${formatCurrency(livePrice, currency, 2)}</td>
+      <td style="color: ${livePrice >= lastClose ? 'green' : 'red'}">${((livePrice / lastClose - 1) * 100).toFixed(2)}%</td>
+      <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
+      <td style="color: ${annualReturn >= 0 ? 'green' : 'red'}">${(annualReturn * 100).toFixed(1)}%</td>
+      <td style="color: ${gainLossBase >= 0 ? 'green' : 'red'}">${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}</td>
+      <td><button onclick='modifyHolding(${JSON.stringify(item)})'>✏️</button></td>
+    `;
+    tbody.appendChild(row);
 
-  const years = Math.max((today - purchase) / (365.25 * 24 * 3600 * 1000), 0.01);
-  const annualReturn = (livePrice > 0 && purchasePrice > 0)
-    ? Math.pow(livePrice / purchasePrice, 1 / years) - 1 : 0;
+    // Fetch articles for each ticker and display them
+    const articles = await fetchArticles(ticker);
+    const articleContainer = document.createElement("div");
+    articleContainer.innerHTML = `
+      <h3>Latest Articles for ${ticker}</h3>
+      <ul>
+        ${articles.map(article => `
+          <li>
+            <a href="${article.url}" target="_blank" style="color: #0056b3;">
+              <strong>${article.title}</strong>
+            </a>
+            <p>${article.description}</p>
+          </li>
+        `).join('')}
+      </ul>
+    `;
+    document.querySelector(".main-content").appendChild(articleContainer);
+  }
 
-const logoGitHub = `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`;
-const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
-
-const row = document.createElement("tr");
-row.innerHTML = `
-  <td style="color: ${isPrivate ? '#007BFF' : 'inherit'}">${ticker}</td>
-  <td style="display: flex; align-items: center; gap: 8px;">
-    <img src="${logoGitHub}" onerror="this.onerror=null;this.src='${logoFMP}'" width="24" height="24" />
-    ${name}
-  </td>
-  <td>${(weight * 100).toFixed(1)}%</td>
-  <td>${quantity}</td>
-  <td>${formatCurrency(purchasePrice, currency, 2)}</td>
-  <td>${currency}</td>
-  <td>${formatCurrency(livePrice, currency, 2)}</td>
-  <td style="color: ${livePrice >= lastClose ? 'green' : 'red'}">${((livePrice / lastClose - 1) * 100).toFixed(2)}%</td>
-  <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
-  <td style="color: ${annualReturn >= 0 ? 'green' : 'red'}">${(annualReturn * 100).toFixed(1)}%</td>
-  <td style="color: ${gainLossBase >= 0 ? 'green' : 'red'}">${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}</td>
-  <td><button onclick='modifyHolding(${JSON.stringify(item)})'>✏️</button></td>
-`;
-
-  tbody.appendChild(row);
-}
-
-
-  
   document.getElementById("totalMVBase").innerText = formatCurrency(totalMVBase, baseCurrency);
   document.getElementById("totalGainLossBase").innerText = `${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)}`;
 }
@@ -709,6 +690,22 @@ async function submitNewPortfolio() {
   }
 }
 
+
+async function fetchArticles(ticker) {
+  try {
+    const response = await fetch(`https://financialmodelingprep.com/api/v3/stock_news?tickers=${ticker}&limit=2&apikey=${fmpApiKey}`);
+    const data = await response.json();
+    return data; // Returns the latest 2 articles
+  } catch (error) {
+    console.error("Error fetching articles:", error);
+    return [];
+  }
+}
+
+
+
+
+  
   
 </script>
 
