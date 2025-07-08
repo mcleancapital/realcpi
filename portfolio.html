@@ -68,7 +68,7 @@ table, th, td {
   <table>
     <thead>
       <tr>
-        <th>Ticker</th><th>Name</th><th>Weight</th><th>Quantity*</th><th>Purchase Price*</th><th>Currency</th><th>Purchase Date</th>
+        <th>Ticker</th><th>Name</th><th>Weight</th><th>Quantity*</th><th>Purchase Price*</th><th>Currency</th>
         <th>Live Price</th><th>Daily Move</th>
         <th>Market Value (Base Currency)</th><th>Annualized Return</th><th>Gain/Loss (Base Currency)</th><th>Modify</th>
       </tr>
@@ -311,7 +311,6 @@ row.innerHTML = `
   <td>${quantity}</td>
   <td>${formatCurrency(purchasePrice, currency, 2)}</td>
   <td>${currency}</td>
-  <td>${purchaseDate}</td>
   <td>${formatCurrency(livePrice, currency, 2)}</td>
   <td style="color: ${livePrice >= lastClose ? 'green' : 'red'}">${((livePrice / lastClose - 1) * 100).toFixed(2)}%</td>
   <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
