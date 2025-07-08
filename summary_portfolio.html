@@ -122,7 +122,6 @@ async function renderSummary(selectedPortfolio) {
     OTHER: 99
   };
 
-  // Sort: Private first, then by currency
   filtered.sort((a, b) => {
     const aPrivate = a.is_private === true;
     const bPrivate = b.is_private === true;
@@ -157,6 +156,7 @@ async function renderSummary(selectedPortfolio) {
     table.appendChild(row);
   }
 }
+
 
 
   // Sort: Private first
