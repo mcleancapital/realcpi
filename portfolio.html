@@ -350,7 +350,7 @@ let currentModifyItem = null;
 
 function modifyHolding(item) {
   currentModifyItem = item;
-  
+
   document.getElementById("modifyPortfolio").value = item.portfolio;
   document.getElementById("modifyTicker").value = item.ticker;
   document.getElementById("modifyQuantity").value = item.quantity || "";
@@ -365,8 +365,22 @@ function modifyHolding(item) {
     document.getElementById("privateFields").style.display = "none";
   }
 
-  document.getElementById("modifyModal").style.display = "block";
+  const modal = document.getElementById("modifyModal");
+
+  // ⬇️ Position modal near the clicked button
+  const eventTarget = event?.target;
+  if (eventTarget) {
+    const rect = eventTarget.getBoundingClientRect();
+    modal.style.top = window.scrollY + rect.top + "px";
+    modal.style.left = rect.left + "px";
+  } else {
+    modal.style.top = "100px";  // fallback
+    modal.style.left = "100px";
+  }
+
+  modal.style.display = "block";
 }
+
 
 function closeModal() {
   document.getElementById("modifyModal").style.display = "none";
