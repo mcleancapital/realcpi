@@ -62,7 +62,12 @@
   <button class="btn-edit" onclick="window.location.href='rc_portfolio.html'" title="Modify Portfolio">✏️</button>
 </div>
 
-<table id="summaryTable"></table>
+<table id="summaryTable">
+  <colgroup>
+    <col style="width: 70%">
+    <col style="width: 30%">
+  </colgroup>  
+</table>
 
 <script>
 const userId = localStorage.getItem("userEmail");
