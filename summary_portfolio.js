@@ -1,4 +1,3 @@
-<script>
 const userId = localStorage.getItem("userEmail");
 if (!userId) {
   alert("You must be logged in.");
@@ -73,4 +72,3 @@ async function renderSummary(selectedPortfolio) {
 }
 
 loadHoldings();
-</script>
