@@ -587,6 +587,7 @@ document.getElementById("addPrivate").addEventListener("change", function () {
   document.getElementById("addCustomPrice").disabled = !isPrivate;
 });
 
+window.addEventListener("DOMContentLoaded", function () {  
 document.getElementById("addForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -639,7 +640,7 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
     alert("Error adding holding: " + err.message);
   }
 });
-
+});
 
   
   
