@@ -94,6 +94,26 @@ table, th, td {
   </div>
 </div>
 
+<div id="modifyModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+  <h3>Modify Holding</h3>
+  <form id="modifyForm">
+    <input type="hidden" id="modifyPortfolio" />
+    <input type="hidden" id="modifyTicker" />
+
+    <label>Quantity:<br><input type="number" step="any" id="modifyQuantity" required /></label><br><br>
+    <label>Purchase Price:<br><input type="number" step="any" id="modifyPurchasePrice" required /></label><br><br>
+    <label>Purchase Date (YYYYMMDD):<br><input type="text" id="modifyPurchaseDate" required /></label><br><br>
+
+    <div id="privateFields" style="display: none;">
+      <label>Name:<br><input type="text" id="modifyName" /></label><br><br>
+      <label>Custom Price:<br><input type="number" step="any" id="modifyCustomPrice" /></label><br><br>
+    </div>
+
+    <button type="submit">Save</button>
+    <button type="button" onclick="closeModal()">Cancel</button>
+  </form>
+</div>
+  
 <script>
 const userId = localStorage.getItem("userEmail");
 if (!userId) {
@@ -353,6 +373,7 @@ function closeModal() {
   currentModifyItem = null;
 }
 
+window.addEventListener("DOMContentLoaded", function () {  
 document.getElementById("modifyForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
@@ -387,7 +408,8 @@ document.getElementById("modifyForm").addEventListener("submit", async function 
     alert("Error: " + err.message);
   }
 });
-
+});
+  
 function confirmDeletePortfolio() {
   const selected = document.getElementById("portfolioSelect")?.value;
   if (!selected) return alert("No portfolio selected.");
@@ -442,25 +464,7 @@ window.addEventListener("message", function(event) {
 </script>
 
 
-<div id="modifyModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
-  <h3>Modify Holding</h3>
-  <form id="modifyForm">
-    <input type="hidden" id="modifyPortfolio" />
-    <input type="hidden" id="modifyTicker" />
 
-    <label>Quantity:<br><input type="number" step="any" id="modifyQuantity" required /></label><br><br>
-    <label>Purchase Price:<br><input type="number" step="any" id="modifyPurchasePrice" required /></label><br><br>
-    <label>Purchase Date (YYYYMMDD):<br><input type="text" id="modifyPurchaseDate" required /></label><br><br>
-
-    <div id="privateFields" style="display: none;">
-      <label>Name:<br><input type="text" id="modifyName" /></label><br><br>
-      <label>Custom Price:<br><input type="number" step="any" id="modifyCustomPrice" /></label><br><br>
-    </div>
-
-    <button type="submit">Save</button>
-    <button type="button" onclick="closeModal()">Cancel</button>
-  </form>
-</div>
 
 
   
