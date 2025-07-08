@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Summary Portfolio</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    #currencyDisplay {
+      font-size: 14px;
+      font-weight: bold;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      vertical-align: top;
+      font-size: 13px;
+    }
+    .ticker-name {
+      font-weight: bold;
+    }
+    .name {
+      color: #555;
+      font-size: 12px;
+    }
+    .price {
+      font-weight: bold;
+    }
+    .move {
+      font-size: 12px;
+    }
+    .btn-edit {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <div>
+      <label for="portfolioSelect">Select Portfolio:</label>
+      <select id="portfolioSelect">
+        <option value="">Loading...</option>
+      </select>
+    </div>
+  </div>
+
+  <button class="btn-edit" onclick="window.location.href='rc_portfolio.html'">✏️ Modify Portfolio</button>
+</div>
+
+<table id="summaryTable"></table>
+
+<script>
+const userId = localStorage.getItem("userEmail");
+if (!userId) {
+  alert("You must be logged in.");
+  window.location.href = "/login.html";
+}
+
+const baseURL = "https://210jsf4oy1.execute-api.us-east-1.amazonaws.com";
+const fmpApiKey = "y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj";
+
+let allHoldings = [];
+
+function populatePortfolioDropdown(portfolios) {
+  const dropdown = document.getElementById("portfolioSelect");
+  dropdown.innerHTML = portfolios.map(p => `<option value="${p}">${p}</option>`).join("");
+  dropdown.value = portfolios[0];
+  dropdown.addEventListener("change", () => renderSummary(dropdown.value));
+  renderSummary(dropdown.value);
+}
+
+async function loadHoldings() {
+  const res = await fetch(`https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`);
+  allHoldings = await res.json();
+  const portfolios = [...new Set(allHoldings.map(i => i.portfolio).filter(Boolean))];
+  populatePortfolioDropdown(portfolios);
+}
+
+async function renderSummary(selectedPortfolio) {
+  const table = document.getElementById("summaryTable");
+  table.innerHTML = "";
+
+  const filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio);
+  if (filtered.length === 0) {
+    table.innerHTML = `<tr><td colspan="2">No holdings in selected portfolio.</td></tr>`;
+    return;
+  }
+
+  const tickers = [...new Set(filtered.map(i => (i.ticker || "").toUpperCase()))].join(",");
+  const res = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
+  const quotes = await res.json();
+  const priceMap = {}, moveMap = {};
+
+  quotes.forEach(q => {
+    const sym = q.symbol.toUpperCase();
+    priceMap[sym] = q.price;
+    moveMap[sym] = ((q.price / q.previousClose - 1) * 100).toFixed(2);
+  });
+
+  for (const item of filtered) {
+    const ticker = (item.ticker || "").toUpperCase();
+    const name = item.name || ticker;
+    const price = item.is_private ? item.custom_price : priceMap[ticker] || "-";
+    const move = item.is_private ? "" : moveMap[ticker] + "%";
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>
+        <div class="ticker-name">${ticker}</div>
+        <div class="name">${name}</div>
+      </td>
+      <td>
+        <div class="price">$${parseFloat(price).toFixed(2)}</div>
+        <div class="move" style="color: ${move.startsWith('-') ? 'red' : 'green'}">${move}</div>
+      </td>
+    `;
+    table.appendChild(row);
+  }
+}
+
+loadHoldings();
+</script>
+
+</body>
+</html>
