@@ -1014,14 +1014,17 @@ async function loadSummaryPortfolio() {
     // Inject into the container
     document.getElementById('summary-portfolio-container').innerHTML = bodyContent;
 
+    // ✅ After injection, dynamically load and execute the portfolio logic
+    const script = document.createElement("script");
+    script.src = "/static/js/summaryPortfolio.js"; // path to external JS
+    document.body.appendChild(script);
+
   } catch (error) {
     document.getElementById('summary-portfolio-container').innerHTML = 'Failed to load portfolio summary.';
     console.error('Error loading summary portfolio:', error);
   }
 }
 
-// Call the loader
-document.addEventListener('DOMContentLoaded', loadSummaryPortfolio);
 </script>
 
 	
