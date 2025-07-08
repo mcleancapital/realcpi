@@ -326,9 +326,67 @@ row.innerHTML = `
   document.getElementById("totalGainLossBase").innerText = `${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)}`;
 }
 
+let currentModifyItem = null;
+
 function modifyHolding(item) {
-  alert(`Modify clicked for ${item.ticker} in portfolio "${item.portfolio}"`);
+  currentModifyItem = item;
+  
+  document.getElementById("modifyPortfolio").value = item.portfolio;
+  document.getElementById("modifyTicker").value = item.ticker;
+  document.getElementById("modifyQuantity").value = item.quantity || "";
+  document.getElementById("modifyPurchasePrice").value = item.purchase_price || "";
+  document.getElementById("modifyPurchaseDate").value = item.purchase_date || "";
+
+  if (item.is_private) {
+    document.getElementById("privateFields").style.display = "block";
+    document.getElementById("modifyName").value = item.name || "";
+    document.getElementById("modifyCustomPrice").value = item.custom_price || "";
+  } else {
+    document.getElementById("privateFields").style.display = "none";
+  }
+
+  document.getElementById("modifyModal").style.display = "block";
 }
+
+function closeModal() {
+  document.getElementById("modifyModal").style.display = "none";
+  currentModifyItem = null;
+}
+
+document.getElementById("modifyForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const updated = {
+    user_id: userId,
+    portfolio: document.getElementById("modifyPortfolio").value,
+    ticker: document.getElementById("modifyTicker").value,
+    quantity: parseFloat(document.getElementById("modifyQuantity").value),
+    purchase_price: parseFloat(document.getElementById("modifyPurchasePrice").value),
+    purchase_date: document.getElementById("modifyPurchaseDate").value
+  };
+
+  if (currentModifyItem?.is_private) {
+    updated.name = document.getElementById("modifyName").value;
+    updated.custom_price = parseFloat(document.getElementById("modifyCustomPrice").value);
+    updated.is_private = true;
+  }
+
+  try {
+    const res = await fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/updateHolding", {
+      method: "POST",  // or PUT if that's how you designed it
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updated)
+    });
+
+    if (!res.ok) throw new Error("Failed to update holding");
+    alert("Holding updated!");
+    closeModal();
+    await loadHoldings(false);
+    renderTable(updated.portfolio);
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+});
 
 function confirmDeletePortfolio() {
   const selected = document.getElementById("portfolioSelect")?.value;
@@ -383,5 +441,28 @@ window.addEventListener("message", function(event) {
   
 </script>
 
+
+<div id="modifyModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+  <h3>Modify Holding</h3>
+  <form id="modifyForm">
+    <input type="hidden" id="modifyPortfolio" />
+    <input type="hidden" id="modifyTicker" />
+
+    <label>Quantity:<br><input type="number" step="any" id="modifyQuantity" required /></label><br><br>
+    <label>Purchase Price:<br><input type="number" step="any" id="modifyPurchasePrice" required /></label><br><br>
+    <label>Purchase Date (YYYYMMDD):<br><input type="text" id="modifyPurchaseDate" required /></label><br><br>
+
+    <div id="privateFields" style="display: none;">
+      <label>Name:<br><input type="text" id="modifyName" /></label><br><br>
+      <label>Custom Price:<br><input type="number" step="any" id="modifyCustomPrice" /></label><br><br>
+    </div>
+
+    <button type="submit">Save</button>
+    <button type="button" onclick="closeModal()">Cancel</button>
+  </form>
+</div>
+
+
+  
 </body>
 </html>
