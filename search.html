@@ -113,11 +113,74 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
 
         body{
 
-                font-size:17px;
+                font-size:9px;
                 color:#222;
                 line-height:1.43;
                 -webkit-font-smoothing:antialiased;
                 font-family:"Garamond", serif}
+
+	.summary-container {
+  font-size: 10px;
+  background-color: #fcfcfc;
+  padding: 8px;f
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-top: 10px;
+}
+
+.summary-container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.summary-container select {
+  font-size: 10px;
+  padding: 2px 6px;
+}
+
+.summary-container .btn-edit {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.summary-container table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+.summary-container td {
+  padding: 4px 6px;
+  border-bottom: 1px dotted #ccc;
+  vertical-align: top;
+  font-size: 10px;
+}
+
+.summary-container .ticker-name {
+  font-weight: bold;
+}
+
+.summary-container .name {
+  color: #777;
+  font-size: 9px;
+}
+
+.summary-container .price {
+  font-weight: bold;
+}
+
+.summary-container .move {
+  font-size: 9px;
+}
+
 
         @media (min-width:550px){:root{--grid-columns:2}}
         @media (min-width:950px){:root{--grid-columns:3}}
@@ -875,11 +938,11 @@ window.addEventListener("DOMContentLoaded", () => {
 </div>
 
 
-
+<div class="summary-container">
     <div class="right-column">
     <div id="summary-portfolio-container" class="right-column">Loading portfolio...</div>
     </div>
-
+</div>
 
 	
 </div>
