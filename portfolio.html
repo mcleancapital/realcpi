@@ -175,7 +175,7 @@ async function checkLoginStatusAndRenderName() {
     }
 
     const data = await res.json();
-    console.log(Welcome ${data.first_name} ${data.last_name});
+    console.log(`Welcome ${data.first_name} ${data.last_name}`);
   } catch (err) {
     console.warn("getUserName fetch error:", err.message);
     // optional: remove alert to avoid annoying popup
@@ -186,10 +186,10 @@ async function checkLoginStatusAndRenderName() {
 
 async function fetchBaseCurrency() {
   try {
-    const res = await fetch(${baseURL}/getUserCurrency?user_id=${encodeURIComponent(userId)});
+    const res = await fetch(`${baseURL}/getUserCurrency?user_id=${encodeURIComponent(userId)}`);
     const data = await res.json();
     baseCurrency = data.base_currency || "USD";
-    document.getElementById("currencyDisplay").innerText = Base Currency: ${baseCurrency};
+    document.getElementById("currencyDisplay").innerText = `Base Currency: ${baseCurrency}`;
   } catch {
     document.getElementById("currencyDisplay").innerText = "Base Currency: Unknown";
   }
@@ -198,9 +198,9 @@ async function fetchBaseCurrency() {
 async function fetchFxRate(fromCurrency) {
   if (fromCurrency === baseCurrency) return 1;
   try {
-    const res = await fetch(https://financialmodelingprep.com/api/v3/quotes/forex?apikey=${fmpApiKey});
+    const res = await fetch(`https://financialmodelingprep.com/api/v3/quotes/forex?apikey=${fmpApiKey}`);
     const data = await res.json();
-    const match = data.find(i => i.symbol === ${fromCurrency}${baseCurrency});
+    const match = data.find(i => i.symbol === `${fromCurrency}${baseCurrency}`);
     return match?.price || 1;
   } catch {
     return 1;
@@ -218,7 +218,7 @@ function formatCurrency(value, currency, decimals = 0) {
 function populatePortfolioDropdown(portfolios) {
   const dropdown = document.getElementById("portfolioSelect");
   if (dropdown.dataset.initialized) return;
-  dropdown.innerHTML = portfolios.map(p => <option value="${p}">${p}</option>).join("");
+  dropdown.innerHTML = portfolios.map(p => `<option value="${p}">${p}</option>`).join("");
   dropdown.value = portfolios[0];
   dropdown.addEventListener("change", () => renderTable(dropdown.value));
   dropdown.dataset.initialized = "true";
@@ -226,7 +226,7 @@ function populatePortfolioDropdown(portfolios) {
 
 async function loadHoldings(initial = false) {
   try {
-    const res = await fetch(https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)});
+    const res = await fetch(`https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/rcPortfolio?user_id=${encodeURIComponent(userId)}`);
     allHoldings = await res.json();
     if (!Array.isArray(allHoldings)) throw new Error("Invalid format");
     const portfolios = [...new Set(allHoldings.map(i => i.portfolio).filter(Boolean))];
@@ -235,7 +235,7 @@ async function loadHoldings(initial = false) {
       renderTable(portfolios[0]);
     }
   } catch (err) {
-    document.getElementById("portfolioBody").innerHTML = <tr><td colspan="10">Error loading portfolio: ${err}</td></tr>;
+    document.getElementById("portfolioBody").innerHTML = `<tr><td colspan="10">Error loading portfolio: ${err}</td></tr>`;
   }
 }
 
@@ -266,12 +266,12 @@ filtered.sort((a, b) => {
 
   
   if (filtered.length === 0) {
-    tbody.innerHTML = <tr><td colspan="10">No holdings in selected portfolio.</td></tr>;
+    tbody.innerHTML = `<tr><td colspan="10">No holdings in selected portfolio.</td></tr>`;
     return;
   }
 
   const tickers = [...new Set(filtered.map(i => (i.ticker || "").toUpperCase()))].join(",");
-  const priceRes = await fetch(https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey});
+  const priceRes = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
   const prices = await priceRes.json();
   const priceMap = {}, nameMap = {}, closeMap = {};
 
@@ -347,11 +347,11 @@ for (const rowData of rows) {
   const annualReturn = (livePrice > 0 && purchasePrice > 0)
     ? Math.pow(livePrice / purchasePrice, 1 / years) - 1 : 0;
 
-const logoGitHub = https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png;
-const logoFMP = https://financialmodelingprep.com/image-stock/${ticker}.png;
+const logoGitHub = `https://raw.githubusercontent.com/mcleancapital/realcpi/main/static/images/${ticker.toLowerCase()}.png`;
+const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
 
 const row = document.createElement("tr");
-row.innerHTML = 
+row.innerHTML = `
   <td style="color: ${isPrivate ? '#007BFF' : 'inherit'}">${ticker}</td>
   <td style="display: flex; align-items: center; gap: 8px;">
     <img src="${logoGitHub}" onerror="this.onerror=null;this.src='${logoFMP}'" width="24" height="24" />
@@ -367,7 +367,7 @@ row.innerHTML =
   <td style="color: ${annualReturn >= 0 ? 'green' : 'red'}">${(annualReturn * 100).toFixed(1)}%</td>
   <td style="color: ${gainLossBase >= 0 ? 'green' : 'red'}">${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}</td>
   <td><button onclick='modifyHolding(${JSON.stringify(item)})'>✏️</button></td>
-;
+`;
 
   tbody.appendChild(row);
 }
@@ -375,7 +375,7 @@ row.innerHTML =
 
   
   document.getElementById("totalMVBase").innerText = formatCurrency(totalMVBase, baseCurrency);
-  document.getElementById("totalGainLossBase").innerText = ${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)};
+  document.getElementById("totalGainLossBase").innerText = `${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)}`;
 }
 
 let currentModifyItem = null;
@@ -491,7 +491,7 @@ const ticker = document.getElementById("modifyTicker").value;
 document.getElementById("deleteButton").addEventListener("click", async function () {
   if (!currentModifyItem) return;
 
-  const confirmed = confirm(Are you sure you want to delete ${currentModifyItem.ticker} from portfolio "${currentModifyItem.portfolio}"?);
+  const confirmed = confirm(`Are you sure you want to delete ${currentModifyItem.ticker} from portfolio "${currentModifyItem.portfolio}"?`);
   if (!confirmed) return;
 
   try {
@@ -537,7 +537,7 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
     user_id: userId,
     portfolio,
     ticker,
-    portfolio_ticker: ${portfolio}#${ticker},
+    portfolio_ticker: `${portfolio}#${ticker}`,
     timestamp,
     purchase_date,
     purchase_price,
@@ -579,7 +579,7 @@ if (fx_rate !== undefined) {
 function confirmDeletePortfolio() {
   const selected = document.getElementById("portfolioSelect")?.value;
   if (!selected) return alert("No portfolio selected.");
-  if (!confirm(Are you sure you want to delete "${selected}"?)) return;
+  if (!confirm(`Are you sure you want to delete "${selected}"?`)) return;
   fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/deletePortfolio", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -632,7 +632,7 @@ function openAddHoldingModal() {
 
   const today = new Date();
   const timestamp = today.toISOString();
-  const formattedDate = ${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')};
+  const formattedDate = `${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
 
   document.getElementById("addForm").reset();
   
@@ -651,8 +651,8 @@ function openAddHoldingModal() {
   const rect = btn.getBoundingClientRect();
   const modal = document.getElementById("addModal");
   modal.style.display = "block";
-  modal.style.top = ${window.scrollY + rect.top}px;
-  modal.style.left = ${rect.left - 320}px; // ~320px width modal
+  modal.style.top = `${window.scrollY + rect.top}px`;
+  modal.style.left = `${rect.left - 320}px`; // ~320px width modal
 }
 
 
@@ -685,7 +685,7 @@ async function submitNewPortfolio() {
     user_id: userId,
     portfolio,
     ticker: "CASH",
-    portfolio_ticker: ${portfolio}#CASH,
+    portfolio_ticker: `${portfolio}#CASH`,
     quantity: 1,
     timestamp
   };
