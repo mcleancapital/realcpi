@@ -370,7 +370,6 @@ function modifyHolding(item) {
   document.getElementById("modifyPurchasePrice").value = item.purchase_price || "";
   document.getElementById("modifyPurchaseDate").value = item.purchase_date || "";
   document.getElementById("modifyFxRate").value = item.fx_rate || "";
-  
 
   if (item.is_private) {
     document.getElementById("privateFields").style.display = "block";
@@ -381,7 +380,6 @@ function modifyHolding(item) {
   }
 
   const modal = document.getElementById("modifyModal");
-
   const isCash = (item.ticker || "").toUpperCase() === "CASH";
 
   // Disable delete button for CASH
@@ -395,22 +393,27 @@ function modifyHolding(item) {
   document.getElementById("modifyName").disabled = true;
   document.getElementById("modifyCustomPrice").disabled = true;
 
-  
   // ⬇️ Position modal near the clicked button
   const eventTarget = event?.target;
-  if (eventTarget) {
-    const rect = eventTarget.getBoundingClientRect();
-    modal.style.top = window.scrollY + rect.top + "px";
-    const modalWidth = 300; // or whatever your modal width is in px
-    modal.style.left = (rect.left - modalWidth - 5) + "px"; // shift to the left of button
 
-  } else {
-    modal.style.top = "100px";  // fallback
-    modal.style.left = "100px";
+  if (eventTarget) {
+    const rect = eventTarget.getBoundingClientRect(); // Get button's position
+    const modalWidth = 300; // You can adjust this to your modal's width
+    const modalHeight = modal.offsetHeight; // Get modal's height
+
+    // Positioning modal above or below the button based on space
+    const offsetY = window.scrollY + rect.top; // Take scroll into account
+
+    // Position the modal just above the clicked button
+    modal.style.top = `${offsetY - modalHeight - 10}px`; // 10px padding from the button
+
+    // Ensure modal is centered horizontally with respect to the button
+    modal.style.left = `${rect.left + (rect.width / 2) - (modalWidth / 2)}px`;
   }
 
   modal.style.display = "block";
 }
+
 
 
 function closeModal() {
