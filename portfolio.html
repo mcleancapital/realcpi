@@ -35,6 +35,12 @@
       font-weight: bold;
       background-color: #eee;
     }
+
+table, th, td {
+  font-size: 12px; /* or 11px if you want it even tighter */
+}
+
+    
   </style>
 </head>
 <body>
@@ -63,8 +69,8 @@
     <thead>
       <tr>
         <th>Ticker</th><th>Name</th><th>Weight</th><th>Quantity*</th><th>Purchase Price*</th><th>Currency</th><th>Purchase Date</th>
-        <th>Last Close</th><th>Live Price</th><th>Daily Move</th><th>Market Value</th><th>FX</th>
-        <th>Market Value (Base)</th><th>Annualized Return</th><th>Gain/Loss (Base)</th><th>Modify</th>
+        <th>Last Close</th><th>Live Price</th><th>Daily Move</th>
+        <th>Market Value (Base Currency)</th><th>Annualized Return</th><th>Gain/Loss (Base Currency)</th><th>Modify</th>
       </tr>
     </thead>
     <tbody id="portfolioBody"></tbody>
