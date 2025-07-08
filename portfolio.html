@@ -37,7 +37,7 @@
     }
 
 table, th, td {
-  font-size: 12px; /* or 11px if you want it even tighter */
+  font-size: 11px; /* column text size */
 }
 
     
@@ -69,7 +69,7 @@ table, th, td {
     <thead>
       <tr>
         <th>Ticker</th><th>Name</th><th>Weight</th><th>Quantity*</th><th>Purchase Price*</th><th>Currency</th><th>Purchase Date</th>
-        <th>Last Close</th><th>Live Price</th><th>Daily Move</th>
+        <th>Live Price</th><th>Daily Move</th>
         <th>Market Value (Base Currency)</th><th>Annualized Return</th><th>Gain/Loss (Base Currency)</th><th>Modify</th>
       </tr>
     </thead>
@@ -312,11 +312,8 @@ row.innerHTML = `
   <td>${formatCurrency(purchasePrice, currency, 2)}</td>
   <td>${currency}</td>
   <td>${purchaseDate}</td>
-  <td>${formatCurrency(lastClose, currency, 2)}</td>
   <td>${formatCurrency(livePrice, currency, 2)}</td>
   <td style="color: ${livePrice >= lastClose ? 'green' : 'red'}">${((livePrice / lastClose - 1) * 100).toFixed(2)}%</td>
-  <td>${formatCurrency(marketValue, currency)}</td>
-  <td>${fxRate.toFixed(4)}</td>
   <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
   <td style="color: ${annualReturn >= 0 ? 'green' : 'red'}">${(annualReturn * 100).toFixed(1)}%</td>
   <td style="color: ${gainLossBase >= 0 ? 'green' : 'red'}">${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}</td>
