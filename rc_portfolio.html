@@ -621,14 +621,20 @@ function showUserSettings() {
   document.getElementById("last-name-input").value = nameParts[1] || "";
   document.getElementById("currency-input").value = localStorage.getItem("baseCurrency") || "USD";
 
-  // Position modal just below the user name
+  // Ensure modal is hidden before we calculate position
+  modal.style.display = "none";
+
+  // Wait a tick to ensure modal is hidden
   setTimeout(() => {
     const rect = nameSpan.getBoundingClientRect();
     modal.style.top = `${rect.bottom + window.scrollY + 6}px`;
     modal.style.left = `${rect.right + window.scrollX - modal.offsetWidth}px`;
+
+    // Now display the modal
     modal.style.display = "block";
   }, 0);
 }
+
 
 
 
@@ -651,8 +657,38 @@ function saveUserSettings() {
   // Update display name
   document.getElementById("user-name").textContent = `${first} ${last}`;
 
+  // Send the update to the backend (DynamoDB) as well
+  updateUserInDatabase(first, last, currency);
+
   closeUserSettings();
 }
+
+// Send data to the backend to update DynamoDB
+async function updateUserInDatabase(firstName, lastName, currency) {
+  const userEmail = localStorage.getItem("userEmail");
+  
+  const payload = {
+    user_id: userEmail,  // Use userEmail stored in localStorage to identify the user
+    first_name: firstName,
+    last_name: lastName,
+    base_currency: currency
+  };
+
+  try {
+    const res = await fetch("https://your-api-endpoint.com/updateUser", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error("Failed to update user profile in database.");
+    
+    console.log("User profile updated in DynamoDB");
+  } catch (err) {
+    console.error("Error updating user profile:", err.message);
+  }
+}
+
 
 	
 	
