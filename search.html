@@ -999,58 +999,6 @@ function toggleMenu() {
 
 </script>
 	
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-async function checkLoginStatusAndRenderName() {
-  const token = localStorage.getItem("idToken");
-  const email = localStorage.getItem("userEmail");
-  const userDiv = document.getElementById("user-status");
-
-  if (!token || !email) {
-    userDiv.innerHTML = `<a href="/login" style="font-weight: bold; font-size: 13px; padding: 4px 12px; border: 1px solid #0056b3; color: white; background-color: #0056b3; border-radius: 5px; text-decoration: none;">Log in</a>`;
-    return;
-  }
-
-  try {
-    const res = await fetch("https://vx4p0qzss7.execute-api.us-east-1.amazonaws.com/default/getUserName", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": token
-      },
-      body: JSON.stringify({ email })
-    });
-
-    const data = await res.json();
-
-    console.log("User data response:", data);
-	  
-    if (data.first_name && data.last_name) {
-      userDiv.innerHTML = `
-        <div style="font-weight: bold; font-size: 14px;">${data.first_name} ${data.last_name}</div>
-        <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
-      `;
-    } else {
-      // fallback to generic logged-in state
-      userDiv.innerHTML = `
-        <div style="font-weight: bold; font-size: 14px;">Logged in</div>
-        <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
-      `;
-    }
-  } catch (err) {
-    console.warn("User fetch failed:", err);
-    userDiv.innerHTML = `
-      <div style="font-weight: bold; font-size: 14px;">Logged in</div>
-      <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
-    `;
-  }
-}
-
-  // ✅ Call the function after it's defined
-  checkLoginStatusAndRenderName();
-});
-	
-</script>
 
 <script>
 function logout() {
