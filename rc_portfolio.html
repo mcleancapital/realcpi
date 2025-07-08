@@ -675,7 +675,7 @@ async function updateUserInDatabase(firstName, lastName, currency) {
   };
 
   try {
-    const res = await fetch("https://your-api-endpoint.com/updateUser", {
+    const res = await fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/updateUser", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
