@@ -624,7 +624,7 @@ function showUserSettings() {
   // Get position of the name span
   const rect = nameSpan.getBoundingClientRect();
   modal.style.top = `${rect.top + window.scrollY}px`;
-  modal.style.left = `${rect.left - modal.offsetWidth - 10}px`; // 10px left of the name
+  modal.style.left = `${rect.left - modal.offsetWidth - 25}px`; // 25px left of the name
   modal.style.display = "block";
 }
 
