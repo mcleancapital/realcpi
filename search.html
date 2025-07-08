@@ -390,7 +390,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   flex: 1;
   background-color: #f9f9f9;
   padding: 16px;
-  min-width: 300px;
+  min-width: 100px;
 }
 	
 
@@ -896,17 +896,13 @@ window.addEventListener("DOMContentLoaded", () => {
 	
 
 <iframe id="news-frame" style="width:100%; height:600px; border:none;"></iframe>
-    </div>
+	    
+<iframe src="news2.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
 
     <!-- Right Sidebar (summary_portfolio.html) -->
     <div class="right-sidebar">
         <iframe src="summary_portfolio.html" style="width: 100%; height: 100%; min-height: 600px; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
     </div>
-</div>
-	    
-<iframe src="news2.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
-
-
 	
 	
 </main>
