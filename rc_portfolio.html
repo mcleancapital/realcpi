@@ -621,12 +621,15 @@ function showUserSettings() {
   document.getElementById("last-name-input").value = nameParts[1] || "";
   document.getElementById("currency-input").value = localStorage.getItem("baseCurrency") || "USD";
 
-  // Get position of the name span
-  const rect = nameSpan.getBoundingClientRect();
-  modal.style.top = `${rect.top + window.scrollY}px`;
-  modal.style.left = `${rect.left - modal.offsetWidth - 30}px`;
-  modal.style.display = "block";
+  // Position modal just below the user name
+  setTimeout(() => {
+    const rect = nameSpan.getBoundingClientRect();
+    modal.style.top = `${rect.bottom + window.scrollY + 6}px`;
+    modal.style.left = `${rect.right + window.scrollX - modal.offsetWidth}px`;
+    modal.style.display = "block";
+  }, 0);
 }
+
 
 
 
