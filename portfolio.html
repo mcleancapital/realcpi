@@ -111,6 +111,7 @@ table, th, td {
 
     <button type="submit">Save</button>
     <button type="button" onclick="closeModal()">Cancel</button>
+    <button type="button" id="deleteButton" style="color: red;">🗑 Delete</button>
   </form>
 </div>
   
@@ -393,6 +394,35 @@ window.addEventListener("DOMContentLoaded", function () {
 document.getElementById("modifyForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
+
+document.getElementById("deleteButton").addEventListener("click", async function () {
+  if (!currentModifyItem) return;
+
+  const confirmed = confirm(`Are you sure you want to delete ${currentModifyItem.ticker} from portfolio "${currentModifyItem.portfolio}"?`);
+  if (!confirmed) return;
+
+  try {
+    const res = await fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/deleteHolding", {
+      method: "POST", // or DELETE depending on your Lambda setup
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: userId,
+        portfolio: currentModifyItem.portfolio,
+        ticker: currentModifyItem.ticker
+      })
+    });
+
+    if (!res.ok) throw new Error("Delete failed");
+    alert("Holding deleted!");
+    closeModal();
+    await loadHoldings(false);
+    renderTable(currentModifyItem.portfolio);
+  } catch (err) {
+    alert("Error deleting holding: " + err.message);
+  }
+});
+
+  
 const portfolio = document.getElementById("modifyPortfolio").value;
 const ticker = document.getElementById("modifyTicker").value;
 
