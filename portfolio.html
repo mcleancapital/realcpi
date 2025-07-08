@@ -621,6 +621,10 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
   }
 
   try {
+
+console.log("Payload being sent:", JSON.stringify(payload, null, 2));
+
+    
     const res = await fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/addHolding", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
