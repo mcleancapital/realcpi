@@ -622,12 +622,18 @@ function showUserSettings() {
   document.getElementById("last-name-input").value = nameParts[1] || "";
   document.getElementById("currency-input").value = localStorage.getItem("baseCurrency") || "USD";
 
-  // Get position of the name span
-  const rect = nameSpan.getBoundingClientRect();
-  modal.style.top = `${rect.top + window.scrollY}px`;
-  modal.style.left = `${rect.left - modal.offsetWidth - 10}px`; // 10px left of the name
-  modal.style.display = "block";
+  // Wait a tick to ensure modal has dimensions
+  setTimeout(() => {
+    const rect = nameSpan.getBoundingClientRect();
+
+    // Correct top and left positioning
+    modal.style.top = `${rect.top + window.scrollY + 30}px`;  // 30px below the name
+    modal.style.left = `${rect.right + window.scrollX - modal.offsetWidth}px`;  // aligned right edge with name span
+
+    modal.style.display = "block";
+  }, 0);
 }
+
 
 
 function closeUserSettings() {
