@@ -501,9 +501,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     <img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" style="padding: 10px;" />
 </a>
 
-  <div style="margin-left:auto; display:flex; align-items:center; gap:12px;">
-      <div id="user-status"></div>
-  </div>
+
     <nav class="menu-bar">
         <ul id="menu-items">
             <li><a href="/">Daily Data</a></li>
@@ -516,7 +514,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         </ul>
     </nav>
 
-
+<div id="user-status"></div>
 
 
 
@@ -947,11 +945,9 @@ window.addEventListener("DOMContentLoaded", () => {
 </div>
 
 
-<!-- Right Column -->
-<div class="right-column summary-container" style="display: block;"> <!-- Default to block, hidden in script -->
-  <div id="summary-portfolio-container">Loading portfolio...</div>
-</div>
-
+    <div class="right-column summary-container">
+    <div id="summary-portfolio-container" class="right-column">Loading portfolio...</div>
+    </div>
 
 
 	
@@ -1021,38 +1017,30 @@ function logout() {
 </script>
 
 <script>
-<script>
 async function loadSummaryPortfolio() {
-  const token = localStorage.getItem("idToken");
-  const container = document.getElementById('summary-portfolio-container');
-
-  if (!token) {
-    // Hide right-column if not logged in
-    document.querySelector('.right-column.summary-container').style.display = 'none';
-    return;
-  }
-
   try {
     const response = await fetch('summary_portfolio.html');
     if (!response.ok) throw new Error('Network error');
     const html = await response.text();
 
+    // Extract the body content only
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     const bodyContent = doc.body.innerHTML;
 
-    container.innerHTML = bodyContent;
+    // Inject into the container
+    document.getElementById('summary-portfolio-container').innerHTML = bodyContent;
 
+    // ✅ After injection, dynamically load and execute the portfolio logic
     const script = document.createElement("script");
-    script.src = "/static/js/summaryPortfolio.js";
+    script.src = "/static/js/summaryPortfolio.js"; // path to external JS
     document.body.appendChild(script);
+
   } catch (error) {
-    container.innerHTML = 'Failed to load portfolio summary.';
+    document.getElementById('summary-portfolio-container').innerHTML = 'Failed to load portfolio summary.';
     console.error('Error loading summary portfolio:', error);
   }
 }
-</script>
-
 
 </script>
 	
