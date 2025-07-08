@@ -102,39 +102,7 @@ async function renderSummary(selectedPortfolio) {
   }
 
   // Sort: Private first
-// Build maps
-const priceMap = {}, moveMap = {}, nameMap = {}, currencyMap = {};
-quotes.forEach(q => {
-  const sym = q.symbol.toUpperCase();
-  priceMap[sym] = q.price;
-  moveMap[sym] = ((q.price / q.previousClose - 1) * 100).toFixed(2);
-  nameMap[sym] = q.name;
-  currencyMap[sym] = q.currency || "USD";
-});
-
-// Define currency weight (lower = higher priority)
-const currencyWeight = {
-  CAD: 1,
-  USD: 2,
-  EUR: 3,
-  JPY: 4,
-  OTHER: 99
-};
-
-// Sort: Private first, then by currency
-filtered.sort((a, b) => {
-  const aPrivate = a.is_private === true;
-  const bPrivate = b.is_private === true;
-
-  if (aPrivate && !bPrivate) return -1;
-  if (!aPrivate && bPrivate) return 1;
-
-  const aCurrency = currencyMap[(a.ticker || "").toUpperCase()] || "OTHER";
-  const bCurrency = currencyMap[(b.ticker || "").toUpperCase()] || "OTHER";
-
-  return (currencyWeight[aCurrency] || 99) - (currencyWeight[bCurrency] || 99);
-});
-
+  filtered.sort((a, b) => (b.is_private === true ? 1 : 0) - (a.is_private === true ? 1 : 0));
 
   const tickers = [...new Set(filtered.map(i => (i.ticker || "").toUpperCase()))].join(",");
   const res = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
