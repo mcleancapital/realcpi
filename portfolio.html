@@ -266,17 +266,24 @@ async function renderTable(selectedPortfolio) {
 
   const rows = [];
 
-for (const item of filtered) {
+  for (const item of filtered) {
     const ticker = (item.ticker || "").toUpperCase();
     const isPrivate = item.is_private === true;
+
+    // Skip articles for private holdings
+    if (isPrivate) {
+      continue; // Skip this iteration
+    }
+
+    // Proceed to calculate market value and other fields...
     const quantity = parseFloat(item.quantity) || 0;
     const purchasePrice = parseFloat(item.purchase_price) || 0;
     const purchaseDate = item.purchase_date;
     const currency = (item.currency || "USD").toUpperCase();
 
     const name = (ticker === "CASH") ? "Cash" : nameMap[ticker] || item.name || ticker;
-    const livePrice = (ticker === "CASH") ? 1 : isPrivate ? parseFloat(item.custom_price) : parseFloat(priceMap[ticker]) || 0;
-    const lastClose = (ticker === "CASH") ? 1 : isPrivate ? livePrice : parseFloat(closeMap[ticker]) || 0;
+    const livePrice = (ticker === "CASH") ? 1 : parseFloat(priceMap[ticker]) || 0;
+    const lastClose = (ticker === "CASH") ? 1 : parseFloat(closeMap[ticker]) || 0;
 
     if (!fxRates[currency]) fxRates[currency] = await fetchFxRate(currency);
     const fxRate = fxRates[currency];
@@ -359,6 +366,7 @@ for (const item of filtered) {
   document.getElementById("totalGainLossBase").innerText = `${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)}`;
 }
 
+
 let currentModifyItem = null;
 
 function modifyHolding(item) {
@@ -393,7 +401,7 @@ function modifyHolding(item) {
   document.getElementById("modifyName").disabled = true;
   document.getElementById("modifyCustomPrice").disabled = true;
 
-  // ⬇️ Position modal near the clicked button
+  // Position modal based on the clicked button
   const eventTarget = event?.target;
 
   if (eventTarget) {
@@ -401,13 +409,22 @@ function modifyHolding(item) {
     const modalWidth = 300; // You can adjust this to your modal's width
     const modalHeight = modal.offsetHeight; // Get modal's height
 
-    // Positioning modal above or below the button based on space
+    // Ensure modal stays inside iframe (viewport) and is positioned above or below the button
     const offsetY = window.scrollY + rect.top; // Take scroll into account
 
-    // Position the modal just above the clicked button
-    modal.style.top = `${offsetY - modalHeight - 10}px`; // 10px padding from the button
+    // Avoid modal going off-screen (check window height)
+    const spaceBelow = window.innerHeight - (offsetY + rect.height);
+    const spaceAbove = offsetY;
 
-    // Ensure modal is centered horizontally with respect to the button
+    // If there is more space below the button, position the modal there; otherwise, position it above
+    if (spaceBelow >= modalHeight) {
+      modal.style.top = `${offsetY + rect.height + 10}px`; // 10px padding from the button
+    } else if (spaceAbove >= modalHeight) {
+      modal.style.top = `${offsetY - modalHeight - 10}px`; // Position above the button
+    } else {
+      modal.style.top = `${offsetY + rect.height + 10}px`; // Default to below
+    }
+
     modal.style.left = `${rect.left + (rect.width / 2) - (modalWidth / 2)}px`;
   }
 
@@ -694,9 +711,10 @@ async function submitNewPortfolio() {
 }
 
 
-async function fetchArticles(ticker) {
+async function fetchArticles(ticker, name) {
   try {
-    const response = await fetch(`https://financialmodelingprep.com/api/v3/stock_news?tickers=${ticker}&limit=2&apikey=${fmpApiKey}`);
+    const query = `${ticker} ${name}`; // Search both ticker and name
+    const response = await fetch(`https://financialmodelingprep.com/api/v3/stock_news?query=${query}&limit=2&apikey=${fmpApiKey}`);
     const data = await response.json();
     return data; // Returns the latest 2 articles
   } catch (error) {
@@ -704,6 +722,7 @@ async function fetchArticles(ticker) {
     return [];
   }
 }
+
 
 
 
