@@ -112,7 +112,7 @@ table, th, td {
 
     <button type="submit">Save</button>
     <button type="button" onclick="closeModal()">Cancel</button>
-    <button type="button" id="deleteButton" style="color: red;">🗑 Delete</button>
+    <button type="button" id="deleteButton" style="color: red;">🗑 Delete</button>    
   </form>
 </div>
 
@@ -342,7 +342,7 @@ const logoFMP = `https://financialmodelingprep.com/image-stock/${ticker}.png`;
 
 const row = document.createElement("tr");
 row.innerHTML = `
-  <td style="color: ${isPrivate ? 'blue' : 'inherit'}">${ticker}</td>
+  <td style="color: ${isPrivate ? '#007BFF' : 'inherit'}">${ticker}</td>
   <td style="display: flex; align-items: center; gap: 8px;">
     <img src="${logoGitHub}" onerror="this.onerror=null;this.src='${logoFMP}'" width="24" height="24" />
     ${name}
@@ -389,6 +389,20 @@ function modifyHolding(item) {
 
   const modal = document.getElementById("modifyModal");
 
+  const isCash = (item.ticker || "").toUpperCase() === "CASH";
+
+  // Disable delete button for CASH
+  document.getElementById("deleteButton").disabled = isCash;
+  document.getElementById("deleteButton").style.display = isCash ? "none" : "inline";
+
+  // Set field access
+  document.getElementById("modifyQuantity").disabled = false;
+  document.getElementById("modifyPurchasePrice").disabled = isCash;
+  document.getElementById("modifyPurchaseDate").disabled = isCash;
+  document.getElementById("modifyName").disabled = true;
+  document.getElementById("modifyCustomPrice").disabled = true;
+
+  
   // ⬇️ Position modal near the clicked button
   const eventTarget = event?.target;
   if (eventTarget) {
@@ -443,29 +457,33 @@ document.getElementById("deleteButton").addEventListener("click", async function
   }
 });
 
-  
+const isCash = (currentModifyItem?.ticker || "").toUpperCase() === "CASH";  
 const portfolio = document.getElementById("modifyPortfolio").value;
 const ticker = document.getElementById("modifyTicker").value;
 
-const updated = {
-  user_id: userId,
-  portfolio,
-  ticker,
-  quantity: parseFloat(document.getElementById("modifyQuantity").value),
-  purchase_price: parseFloat(document.getElementById("modifyPurchasePrice").value),
-  purchase_date: document.getElementById("modifyPurchaseDate").value
-};
+  const updated = {
+    user_id: userId,
+    portfolio,
+    ticker
+  };
 
+  if (isCash) {
+    updated.quantity = parseFloat(document.getElementById("modifyQuantity").value);
+  } else {
+    updated.quantity = parseFloat(document.getElementById("modifyQuantity").value);
+    updated.purchase_price = parseFloat(document.getElementById("modifyPurchasePrice").value);
+    updated.purchase_date = document.getElementById("modifyPurchaseDate").value;
 
-  if (currentModifyItem?.is_private) {
-    updated.name = document.getElementById("modifyName").value;
-    updated.custom_price = parseFloat(document.getElementById("modifyCustomPrice").value);
-    updated.is_private = true;
+    if (currentModifyItem?.is_private) {
+      updated.name = document.getElementById("modifyName").value;
+      updated.custom_price = parseFloat(document.getElementById("modifyCustomPrice").value);
+      updated.is_private = true;
+    }
   }
 
   try {
     const res = await fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/updateHolding", {
-      method: "POST",  // or PUT if that's how you designed it
+      method: "POST",  // or PUT depending on your setup
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updated)
     });
@@ -534,7 +552,7 @@ window.addEventListener("message", function(event) {
 function openAddHoldingModal() {
   const portfolio = document.getElementById("portfolioSelect").value;
   if (!portfolio) return alert("Please select a portfolio first.");
-  
+
   const today = new Date();
   const timestamp = today.toISOString();
   const formattedDate = `${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
@@ -548,8 +566,16 @@ function openAddHoldingModal() {
   document.getElementById("addCustomPrice").disabled = true;
 
   document.getElementById("addForm").reset();
-  document.getElementById("addModal").style.display = "block";
+
+  // Positioning the modal
+  const btn = event?.target || document.querySelector("button[onclick='openAddHoldingModal()']");
+  const rect = btn.getBoundingClientRect();
+  const modal = document.getElementById("addModal");
+  modal.style.display = "block";
+  modal.style.top = `${window.scrollY + rect.top}px`;
+  modal.style.left = `${rect.left - 320}px`; // ~320px width modal
 }
+
 
 function closeAddModal() {
   document.getElementById("addModal").style.display = "none";
