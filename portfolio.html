@@ -373,7 +373,7 @@ function modifyHolding(item) {
     const rect = eventTarget.getBoundingClientRect();
     modal.style.top = window.scrollY + rect.top + "px";
     const modalWidth = 300; // or whatever your modal width is in px
-    modal.style.left = (rect.left - modalWidth - 10) + "px"; // shift to the left of button
+    modal.style.left = (rect.left - modalWidth - 5) + "px"; // shift to the left of button
 
   } else {
     modal.style.top = "100px";  // fallback
