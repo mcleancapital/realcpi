@@ -51,15 +51,12 @@ async function renderSummary(selectedPortfolio) {
   const currencyOrder = { CAD: 0, USD: 1, EUR: 2, JPY: 3 };
 
   // Sort first by privacy, then by currency priority
-  filtered.sort((a, b) => {
-    const privA = a.is_private === true ? -1 : 0;
-    const privB = b.is_private === true ? -1 : 0;
-    if (privA !== privB) return privA - privB;
+filtered.sort((a, b) => {
+  const privA = a.is_private === true ? 0 : (a.ticker?.includes('.') ? 1 : 2);
+  const privB = b.is_private === true ? 0 : (b.ticker?.includes('.') ? 1 : 2);
+  return privA - privB;
+});
 
-    const curA = currencyOrder[currencyMap[(a.ticker || "").toUpperCase()] || "USD"] ?? 99;
-    const curB = currencyOrder[currencyMap[(b.ticker || "").toUpperCase()] || "USD"] ?? 99;
-    return curA - curB;
-  });
 
   for (const item of filtered) {
     const ticker = (item.ticker || "").toUpperCase();
