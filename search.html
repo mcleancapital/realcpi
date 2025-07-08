@@ -514,8 +514,14 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         </ul>
     </nav>
 
+	
 <div id="user-status"></div>
-
+<script>
+  const script = document.createElement("script");
+  script.src = "/static/js/userStatus.js";
+  script.defer = true;
+  document.body.appendChild(script);
+</script>
 
 
 <!--
@@ -1047,8 +1053,6 @@ async function loadSummaryPortfolio() {
 <script>
   loadSummaryPortfolio();  // ✅ This line was missing
 </script>
-
-<script src="https://cdn.jsdelivr.net/gh/mcleancapital/realcpi-assets@latest/static/js/userStatus.js"></script>
 
 
 	
