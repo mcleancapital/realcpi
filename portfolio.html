@@ -355,7 +355,7 @@ row.innerHTML = `
   <td style="color: ${isPrivate ? '#007BFF' : 'inherit'}">
     ${isPrivate
       ? ticker
-      : `<a href="/search.html?ticker=${encodeURIComponent(ticker)}" style="text-decoration: none; color: inherit;">${ticker}</a>`
+      : `<a href="/search.html?ticker=${encodeURIComponent(ticker)}" target="_top" style="text-decoration: none; color: inherit;">${ticker}</a>`
     }
   </td>
   <td style="display: flex; align-items: center; gap: 8px;">
