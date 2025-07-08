@@ -34,19 +34,31 @@ async function renderSummary(selectedPortfolio) {
     return;
   }
 
-  // Sort: Private first
-  filtered.sort((a, b) => (b.is_private === true ? 1 : 0) - (a.is_private === true ? 1 : 0));
-
   const tickers = [...new Set(filtered.map(i => (i.ticker || "").toUpperCase()))].join(",");
   const res = await fetch(`https://financialmodelingprep.com/api/v3/quote/${tickers}?apikey=${fmpApiKey}`);
   const quotes = await res.json();
 
-  const priceMap = {}, moveMap = {}, nameMap = {};
+  const priceMap = {}, moveMap = {}, nameMap = {}, currencyMap = {};
   quotes.forEach(q => {
     const sym = q.symbol.toUpperCase();
     priceMap[sym] = q.price;
     moveMap[sym] = ((q.price / q.previousClose - 1) * 100).toFixed(2);
     nameMap[sym] = q.name;
+    currencyMap[sym] = q.currency || "USD";  // fallback to USD if missing
+  });
+
+  // Define custom currency priority
+  const currencyOrder = { CAD: 0, USD: 1, EUR: 2, JPY: 3 };
+
+  // Sort first by privacy, then by currency priority
+  filtered.sort((a, b) => {
+    const privA = a.is_private === true ? -1 : 0;
+    const privB = b.is_private === true ? -1 : 0;
+    if (privA !== privB) return privA - privB;
+
+    const curA = currencyOrder[currencyMap[(a.ticker || "").toUpperCase()] || "USD"] ?? 99;
+    const curB = currencyOrder[currencyMap[(b.ticker || "").toUpperCase()] || "USD"] ?? 99;
+    return curA - curB;
   });
 
   for (const item of filtered) {
@@ -70,5 +82,6 @@ async function renderSummary(selectedPortfolio) {
     table.appendChild(row);
   }
 }
+
 
 loadHoldings();
