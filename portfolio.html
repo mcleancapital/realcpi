@@ -104,6 +104,7 @@ table, th, td {
     <label>Quantity:<br><input type="number" step="any" id="modifyQuantity" required /></label><br><br>
     <label>Purchase Price:<br><input type="number" step="any" id="modifyPurchasePrice" required /></label><br><br>
     <label>Purchase Date (YYYYMMDD):<br><input type="text" id="modifyPurchaseDate" required /></label><br><br>
+    <label>FX at Purchase:<br><input type="number" step="any" id="modifyFxRate" /></label><br><br>
 
     <div id="privateFields" style="display: none;">
       <label>Name:<br><input type="text" id="modifyName" /></label><br><br>
@@ -124,6 +125,7 @@ table, th, td {
     <label>Name:<br><input type="text" id="addName" disabled /></label><br><br>
     <label>Custom Price:<br><input type="number" step="any" id="addCustomPrice" disabled /></label><br><br>
     <label>Purchase Price:<br><input type="number" step="any" id="addPurchasePrice" /></label><br><br>
+    <label>FX at Purchase:<br><input type="number" step="any" id="addFxRate" /></label><br><br>
     <label>Quantity:<br><input type="number" step="any" id="addQuantity" /></label><br><br>
     <label>Purchase Date (YYYYMMDD):<br><input type="text" id="addPurchaseDate" value="" /></label><br><br>
     <label>Timestamp:<br><input type="text" id="addTimestamp" disabled /></label><br><br>
@@ -386,6 +388,8 @@ function modifyHolding(item) {
   document.getElementById("modifyQuantity").value = item.quantity || "";
   document.getElementById("modifyPurchasePrice").value = item.purchase_price || "";
   document.getElementById("modifyPurchaseDate").value = item.purchase_date || "";
+  document.getElementById("modifyFxRate").value = item.fx_rate || "";
+  
 
   if (item.is_private) {
     document.getElementById("privateFields").style.display = "block";
@@ -456,6 +460,7 @@ const ticker = document.getElementById("modifyTicker").value;
     updated.quantity = parseFloat(document.getElementById("modifyQuantity").value);
     updated.purchase_price = parseFloat(document.getElementById("modifyPurchasePrice").value);
     updated.purchase_date = document.getElementById("modifyPurchaseDate").value;
+    updated.fx_rate = parseFloat(document.getElementById("modifyFxRate").value) || undefined;
 
     if (currentModifyItem?.is_private) {
       updated.name = document.getElementById("modifyName").value;
@@ -520,6 +525,7 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
   const custom_price = parseFloat(document.getElementById("addCustomPrice").value);
   const portfolio = document.getElementById("addPortfolio").value;
   const purchase_price = parseFloat(document.getElementById("addPurchasePrice").value) || undefined;
+  const fx_rate = parseFloat(document.getElementById("addFxRate").value) || undefined;
   const quantity = parseFloat(document.getElementById("addQuantity").value) || undefined;
   const purchase_date = document.getElementById("addPurchaseDate").value;
   const timestamp = document.getElementById("addTimestamp").value;
@@ -538,6 +544,10 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
     quantity
   };
 
+if (fx_rate !== undefined) {
+  payload.fx_rate = fx_rate;
+}
+  
   if (isPrivate) {
     payload.is_private = true;
     payload.name = name;
@@ -690,6 +700,7 @@ async function submitNewPortfolio() {
     if (!res.ok) throw new Error("Creation failed");
     alert("Portfolio created!");
     closeCreatePortfolioModal();
+    dropdown.dataset.initialized = "";
     await loadHoldings(true);  // reload and re-render
   } catch (err) {
     alert("Error creating portfolio: " + err.message);
