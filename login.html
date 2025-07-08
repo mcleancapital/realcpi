@@ -194,31 +194,21 @@ footer{
 a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.more:hover{text-decoration:none}a.more{text-align:center;display:block;margin:var(--std_padding) auto 0 auto;color:#fff;border:1px solid rgba(0,0,0,.08);border-radius:24px;background-color:#000;padding:14px 19px;width:80px}
 
 
-        @media (max-width: 729px) {
+ @media (max-width: 729px) {
 
   #ticker-bar {
-
     flex-wrap: nowrap;
     overflow-x: auto;
     white-space: nowrap;
     justify-content: flex-start; /* Align items to the left */
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-
   }
-
-
-
   #ticker-bar span {
-
     flex: 0 0 auto; /* Prevent shrinking */
     min-width: 120px; /* Or more depending on your content */
-
   }               
 
-
-
     .mobile-menu {
-
                 display: flex;
                 justify-content: space-around;
                 position: fixed;
@@ -229,7 +219,6 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
                 border-bottom: 1px solid #ccc;
                 z-index: 2000;
                 padding: 5px 0;
-
             }
 
             .mobile-menu button {
@@ -243,8 +232,6 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
                 transition: background-color 0.3s ease;
             }
 
-
-
 .mobile-menu button.hamburger-menu {
 
     flex: 1;
@@ -256,25 +243,16 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     z-index: 2001; /* Ensure above ticker bar and input box */
     position: relative;
 }
-
-
             .mobile-menu button:hover {
                 background-color: #e0e0e0;
-
             }
-
             body {
                 margin-top: 64px; /* Prevent content overlap with the fixed menu */
             }
 
-
-
 .left-column {
     display: none; /* Hide the left column */
   }
-
-
-
   .right-column {
 
     flex: 1; /* Take full width when left column is hidden */
@@ -335,6 +313,26 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 @media (max-width: 729px) {
 
+  .container {
+    flex-direction: column; /* Stack elements vertically */
+  }
+
+  .right-column {
+    padding: 16px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .left-column {
+    display: none;
+  }
+
+  /* Optional: center login/signup boxes */
+  .right-column > div {
+    margin: 0 auto !important;
+  }
+	
     .menu-bar ul {
         display: none;
         flex-direction: column;
