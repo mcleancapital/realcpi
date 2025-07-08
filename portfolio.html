@@ -497,7 +497,61 @@ const ticker = document.getElementById("modifyTicker").value;
     alert("Error: " + err.message);
   }
 });
+
+document.getElementById("addForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const isPrivate = document.getElementById("addPrivate").checked;
+  const ticker = document.getElementById("addTicker").value.trim().toUpperCase();
+  const name = document.getElementById("addName").value.trim();
+  const custom_price = parseFloat(document.getElementById("addCustomPrice").value);
+  const portfolio = document.getElementById("addPortfolio").value;
+  const purchase_price = parseFloat(document.getElementById("addPurchasePrice").value) || undefined;
+  const quantity = parseFloat(document.getElementById("addQuantity").value) || undefined;
+  const purchase_date = document.getElementById("addPurchaseDate").value;
+  const timestamp = document.getElementById("addTimestamp").value;
+
+  if (!ticker) return alert("Ticker is required.");
+  if (isPrivate && (!name || isNaN(custom_price))) return alert("Name and Custom Price are required for private holdings.");
+
+  const payload = {
+    user_id: userId,
+    portfolio,
+    ticker,
+    portfolio_ticker: `${portfolio}#${ticker}`,
+    timestamp,
+    purchase_date,
+    purchase_price,
+    quantity
+  };
+
+  if (isPrivate) {
+    payload.is_private = true;
+    payload.name = name;
+    payload.custom_price = custom_price;
+  }
+
+  // ✅ INSERT THIS LINE RIGHT HERE:
+  console.log("Payload being sent:", JSON.stringify(payload, null, 2));
+
+  try {
+    const res = await fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/addHolding", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error("Add failed");
+    alert("Holding added!");
+    closeAddModal();
+    await loadHoldings(false);
+    renderTable(portfolio);
+  } catch (err) {
+    alert("Error adding holding: " + err.message);
+  }
 });
+});
+
   
 function confirmDeletePortfolio() {
   const selected = document.getElementById("portfolioSelect")?.value;
@@ -587,60 +641,6 @@ document.getElementById("addPrivate").addEventListener("change", function () {
   document.getElementById("addCustomPrice").disabled = !isPrivate;
 });
 
-window.addEventListener("DOMContentLoaded", function () {  
-document.getElementById("addForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
-
-  const isPrivate = document.getElementById("addPrivate").checked;
-  const ticker = document.getElementById("addTicker").value.trim().toUpperCase();
-  const name = document.getElementById("addName").value.trim();
-  const custom_price = parseFloat(document.getElementById("addCustomPrice").value);
-  const portfolio = document.getElementById("addPortfolio").value;
-  const purchase_price = parseFloat(document.getElementById("addPurchasePrice").value) || undefined;
-  const quantity = parseFloat(document.getElementById("addQuantity").value) || undefined;
-  const purchase_date = document.getElementById("addPurchaseDate").value;
-  const timestamp = document.getElementById("addTimestamp").value;
-
-  if (!ticker) return alert("Ticker is required.");
-  if (isPrivate && (!name || isNaN(custom_price))) return alert("Name and Custom Price are required for private holdings.");
-
-  const payload = {
-    user_id: userId,
-    portfolio,
-    ticker,
-    portfolio_ticker: `${portfolio}#${ticker}`,
-    timestamp,
-    purchase_date,
-    purchase_price,
-    quantity
-  };
-
-  if (isPrivate) {
-    payload.is_private = true;
-    payload.name = name;
-    payload.custom_price = custom_price;
-  }
-
-  // ✅ INSERT THIS LINE RIGHT HERE:
-  console.log("Payload being sent:", JSON.stringify(payload, null, 2));
-
-  try {
-    const res = await fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/addHolding", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) throw new Error("Add failed");
-    alert("Holding added!");
-    closeAddModal();
-    await loadHoldings(false);
-    renderTable(portfolio);
-  } catch (err) {
-    alert("Error adding holding: " + err.message);
-  }
-});
-});
 
   
   
