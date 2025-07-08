@@ -547,9 +547,13 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   userDiv.innerHTML = `
-    <div>${name || "Logged in"}</div>
-    <a href="#" onclick="logout()">Log out</a>
+    <div>
+      <span id="user-name" style="font-weight: bold; cursor: pointer;">${name || "Logged in"}</span><br>
+      <a href="#" onclick="logout()">Log out</a>
+    </div>
   `;
+  document.getElementById("user-name").addEventListener("click", showUserSettings);
+
 });
 
 	
@@ -593,9 +597,68 @@ function reportHeightToParent() {
 window.addEventListener("load", reportHeightToParent);
 window.addEventListener("resize", reportHeightToParent);
 
+function showUserSettings() {
+  const modal = document.getElementById("user-settings-modal");
+
+  // Prefill values if available
+  const nameParts = (localStorage.getItem("userName") || "").split(" ");
+  document.getElementById("first-name-input").value = nameParts[0] || "";
+  document.getElementById("last-name-input").value = nameParts[1] || "";
+  document.getElementById("currency-input").value = localStorage.getItem("baseCurrency") || "USD";
+
+  modal.style.display = "block";
+}
+
+function closeUserSettings() {
+  document.getElementById("user-settings-modal").style.display = "none";
+}
+
+function saveUserSettings() {
+  const first = document.getElementById("first-name-input").value.trim();
+  const last = document.getElementById("last-name-input").value.trim();
+  const currency = document.getElementById("currency-input").value;
+
+  // Save to localStorage
+  localStorage.setItem("userName", `${first} ${last}`);
+  localStorage.setItem("baseCurrency", currency);
+
+  // Update display name
+  document.getElementById("user-name").textContent = `${first} ${last}`;
+
+  closeUserSettings();
+}
+
+	
 	
 </script>
 
+<div id="user-settings-modal" style="
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 20px;
+  z-index: 5000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+">
+  <h3>Update Profile</h3>
+  <label>First Name:<br><input type="text" id="first-name-input" /></label><br><br>
+  <label>Last Name:<br><input type="text" id="last-name-input" /></label><br><br>
+  <label>Preferred Currency:<br>
+    <select id="currency-input">
+      <option value="USD">USD</option>
+      <option value="CAD">CAD</option>
+      <option value="EUR">EUR</option>
+      <option value="JPY">JPY</option>
+    </select>
+  </label><br><br>
+  <button onclick="saveUserSettings()">Save</button>
+  <button onclick="closeUserSettings()">Cancel</button>
+</div>
 	
 	
 </body>
