@@ -58,6 +58,7 @@ table, th, td {
   <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
     <div id="currencyDisplay">Loading currency...</div>
     <div style="display: flex; gap: 8px;">
+      <button onclick="openAddHoldingModal()" style="height: 32px; font-size: 14px;">➕ Add Holding</button>
       <button onclick="window.location.href = 'new_portfolio.html'" style="height: 32px; font-size: 14px;">➕ Create Portfolio</button>
       <button onclick="confirmDeletePortfolio()" style="height: 32px; font-size: 14px; color: red;">− Delete Portfolio</button>
     </div>
@@ -114,6 +115,26 @@ table, th, td {
     <button type="button" id="deleteButton" style="color: red;">🗑 Delete</button>
   </form>
 </div>
+
+<div id="addModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+  <h3>Add New Holding</h3>
+  <form id="addForm">
+    <label><input type="checkbox" id="addPrivate"> Private Holding</label><br><br>
+    <label>Ticker (required):<br><input type="text" id="addTicker" required /></label><br><br>
+    <label>Name:<br><input type="text" id="addName" disabled /></label><br><br>
+    <label>Custom Price:<br><input type="number" step="any" id="addCustomPrice" disabled /></label><br><br>
+    <label>Purchase Price:<br><input type="number" step="any" id="addPurchasePrice" /></label><br><br>
+    <label>Quantity:<br><input type="number" step="any" id="addQuantity" /></label><br><br>
+    <label>Purchase Date (YYYYMMDD):<br><input type="text" id="addPurchaseDate" value="" /></label><br><br>
+    <label>Timestamp:<br><input type="text" id="addTimestamp" disabled /></label><br><br>
+
+    <input type="hidden" id="addPortfolio" />
+
+    <button type="submit">Add</button>
+    <button type="button" onclick="closeAddModal()">Cancel</button>
+  </form>
+</div>
+
   
 <script>
 const userId = localStorage.getItem("userEmail");
@@ -510,6 +531,87 @@ window.addEventListener("message", function(event) {
 });
 
 
+function openAddHoldingModal() {
+  const portfolio = document.getElementById("portfolioSelect").value;
+  if (!portfolio) return alert("Please select a portfolio first.");
+  
+  const today = new Date();
+  const timestamp = today.toISOString();
+  const formattedDate = `${today.getFullYear()}${(today.getMonth()+1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
+
+  document.getElementById("addPortfolio").value = portfolio;
+  document.getElementById("addTimestamp").value = timestamp;
+  document.getElementById("addPurchaseDate").value = formattedDate;
+
+  document.getElementById("addPrivate").checked = false;
+  document.getElementById("addName").disabled = true;
+  document.getElementById("addCustomPrice").disabled = true;
+
+  document.getElementById("addForm").reset();
+  document.getElementById("addModal").style.display = "block";
+}
+
+function closeAddModal() {
+  document.getElementById("addModal").style.display = "none";
+}
+
+document.getElementById("addPrivate").addEventListener("change", function () {
+  const isPrivate = this.checked;
+  document.getElementById("addName").disabled = !isPrivate;
+  document.getElementById("addCustomPrice").disabled = !isPrivate;
+});
+
+document.getElementById("addForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const isPrivate = document.getElementById("addPrivate").checked;
+  const ticker = document.getElementById("addTicker").value.trim().toUpperCase();
+  const name = document.getElementById("addName").value.trim();
+  const custom_price = parseFloat(document.getElementById("addCustomPrice").value);
+  const portfolio = document.getElementById("addPortfolio").value;
+  const purchase_price = parseFloat(document.getElementById("addPurchasePrice").value) || undefined;
+  const quantity = parseFloat(document.getElementById("addQuantity").value) || undefined;
+  const purchase_date = document.getElementById("addPurchaseDate").value;
+  const timestamp = document.getElementById("addTimestamp").value;
+
+  if (!ticker) return alert("Ticker is required.");
+  if (isPrivate && (!name || isNaN(custom_price))) return alert("Name and Custom Price are required for private holdings.");
+
+  const payload = {
+    user_id: userId,
+    portfolio,
+    ticker,
+    portfolio_ticker: `${portfolio}#${ticker}`,
+    timestamp,
+    purchase_date,
+    purchase_price,
+    quantity
+  };
+
+  if (isPrivate) {
+    payload.is_private = true;
+    payload.name = name;
+    payload.custom_price = custom_price;
+  }
+
+  try {
+    const res = await fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/addHolding", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error("Add failed");
+    alert("Holding added!");
+    closeAddModal();
+    await loadHoldings(false);
+    renderTable(portfolio);
+  } catch (err) {
+    alert("Error adding holding: " + err.message);
+  }
+});
+
+  
   
 </script>
 
