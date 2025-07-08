@@ -614,7 +614,7 @@ window.addEventListener("resize", reportHeightToParent);
 
 function showUserSettings() {
   const modal = document.getElementById("user-settings-modal");
-  const nameSpan = document.getElementById("user-name");
+  const logoutLink = document.querySelector("#user-status a[href='#']"); // The "Log out" link
 
   // Prefill values
   const nameParts = (localStorage.getItem("userName") || "").split(" ");
@@ -622,17 +622,18 @@ function showUserSettings() {
   document.getElementById("last-name-input").value = nameParts[1] || "";
   document.getElementById("currency-input").value = localStorage.getItem("baseCurrency") || "USD";
 
-  // Wait a tick to ensure modal has dimensions
+  // Wait for layout to complete
   setTimeout(() => {
-    const rect = nameSpan.getBoundingClientRect();
+    const rect = logoutLink.getBoundingClientRect();
 
-    // Correct top and left positioning
-    modal.style.top = `${rect.top + window.scrollY + 30}px`;  // 30px below the name
-    modal.style.left = `${rect.right + window.scrollX - modal.offsetWidth}px`;  // aligned right edge with name span
+    // 👇 Position modal just below "Log out" link
+    modal.style.top = `${rect.bottom + window.scrollY + 5}px`;
+    modal.style.left = `${rect.right + window.scrollX - modal.offsetWidth}px`;
 
     modal.style.display = "block";
   }, 0);
 }
+
 
 
 
