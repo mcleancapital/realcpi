@@ -515,13 +515,9 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     </nav>
 
 	
-<div id="user-status"></div>
-<script>
-  const script = document.createElement("script");
-  script.src = "/static/js/userStatus.js";
-  script.defer = true;
-  document.body.appendChild(script);
-</script>
+<div id="user-status" style="margin-left: auto; padding: 8px 18px; text-align: right;"></div>
+
+
 
 
 <!--
@@ -1054,7 +1050,12 @@ async function loadSummaryPortfolio() {
   loadSummaryPortfolio();  // ✅ This line was missing
 </script>
 
-
+<script>
+  const script = document.createElement("script");
+  script.src = "/static/js/userStatus.js";
+  script.defer = true;
+  document.body.appendChild(script);
+</script>
 	
 </body>
 
