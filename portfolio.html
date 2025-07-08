@@ -377,14 +377,19 @@ window.addEventListener("DOMContentLoaded", function () {
 document.getElementById("modifyForm").addEventListener("submit", async function (e) {
   e.preventDefault();
 
-  const updated = {
-    user_id: userId,
-    portfolio: document.getElementById("modifyPortfolio").value,
-    ticker: document.getElementById("modifyTicker").value,
-    quantity: parseFloat(document.getElementById("modifyQuantity").value),
-    purchase_price: parseFloat(document.getElementById("modifyPurchasePrice").value),
-    purchase_date: document.getElementById("modifyPurchaseDate").value
-  };
+const portfolio = document.getElementById("modifyPortfolio").value;
+const ticker = document.getElementById("modifyTicker").value;
+
+const updated = {
+  user_id: userId,
+  portfolio,
+  ticker,
+  portfolio_ticker: `${portfolio}#${ticker.toLowerCase()}`,
+  quantity: parseFloat(document.getElementById("modifyQuantity").value),
+  purchase_price: parseFloat(document.getElementById("modifyPurchasePrice").value),
+  purchase_date: document.getElementById("modifyPurchaseDate").value
+};
+
 
   if (currentModifyItem?.is_private) {
     updated.name = document.getElementById("modifyName").value;
