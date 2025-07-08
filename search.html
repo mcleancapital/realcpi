@@ -78,8 +78,13 @@
   padding: 16px;
 }
 
+.center-column {
+  flex: 2; /* Takes up 2/4 of the space */
+  padding: 16px;
+}	
+	
 .right-column {
-  flex: 3; /* Takes up 3/4 of the space */
+  flex: 1; /* Takes up 1/4 of the space */
   padding: 16px;
 }
 
@@ -500,6 +505,41 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   color: #0056b3;
   font-weight: bold;
 }
+
+        input { font-size: 18px; padding: 8px; width: 300px; }
+        #currentPrice { font-size: 24px; font-weight: bold; margin-left: 20px; display: inline-block; vertical-align: middle; }
+        #companyName { font-size: 20px; font-weight: bold !important; margin-left: 10px; display: inline-block; vertical-align: middle; }
+        #controls { margin-top: 20px; }
+        button.range-btn {
+          padding: 6px 10px;
+          margin-right: 6px;
+          font-size: 14px;
+          cursor: pointer;
+        }
+
+        button.range-btn.active {
+          background-color: #007bff;
+          color: white;
+        }
+
+        #stock-container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 40px;
+          margin-top: 20px;
+          align-items: flex-start;
+        }
+
+        #chart-container {
+          flex: 2;
+          min-width: 300px;
+        }
+
+        #info {
+          flex: 1;
+          min-width: 250px;
+        }
+	
 </style>
 
 
@@ -511,75 +551,22 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <div class="container">
     <!-- Left Column -->
     <div class="left-column">
-
-	    
-
 	<iframe src="news.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
-
-
-
     </div>
 
 
 
-    <!-- Right Column -->
+    <!-- Center Column -->
+    <div class="center-column">
+	    
+    <div class="mobile-menu">
+        <img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
+	    <!-- Hamburger Button for Mobile -->
+    	    <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
+    </div>
 
-    <div class="right-column">
-
-
-
-<div class="mobile-menu">
-    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
-	<!-- Hamburger Button for Mobile -->
-    	<button class="hamburger-menu" onclick="toggleMenu()">☰</button>
-</div>
-
-
-
-
-
-  <title>Stock Lookup</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    input { font-size: 18px; padding: 8px; width: 300px; }
-    #currentPrice { font-size: 24px; font-weight: bold; margin-left: 20px; display: inline-block; vertical-align: middle; }
-    #companyName { font-size: 20px; font-weight: bold !important; margin-left: 10px; display: inline-block; vertical-align: middle; }
-    #controls { margin-top: 20px; }
-    button.range-btn {
-      padding: 6px 10px;
-      margin-right: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    button.range-btn.active {
-      background-color: #007bff;
-      color: white;
-    }
-
-    #stock-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 40px;
-      margin-top: 20px;
-      align-items: flex-start;
-    }
-
-    #chart-container {
-      flex: 2;
-      min-width: 300px;
-    }
-
-    #info {
-      flex: 1;
-      min-width: 250px;
-    }
-
-  </style>
-
-
-
-
+      <title>Stock Lookup</title>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <h2>🔍 Lookup a Stock</h2>
 
@@ -890,20 +877,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
 </script>
 
-
- 
-
-	
-
 <iframe id="news-frame" style="width:100%; height:600px; border:none;"></iframe>
 	    
 <iframe src="news2.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+	    
+     </div>
+
 
     <!-- Right Sidebar (summary_portfolio.html) -->
-    <div class="right-sidebar">
+    <div class="right-column">
         <iframe src="summary_portfolio.html" style="width: 100%; height: 100%; min-height: 600px; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
     </div>
-	
+</div>
 	
 </main>
 
