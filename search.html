@@ -812,7 +812,6 @@ const [
   const allowedCurrencies = ["USD", "CAD"];
   const currency = profile.currency || "N/A";
   let nextEarningsDate = earningsData.length ? earningsData[0].date : "N/A";
-  let nextEarningsDate = earningsData.length ? earningsData[0].date : "N/A";
 
   const forwardPE = (allowedCurrencies.includes(currency) && estimatedEpsAvg && profile.price)
     ? (profile.price / estimatedEpsAvg).toFixed(1)
