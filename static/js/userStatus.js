@@ -80,14 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const content = email
     ? `
-      <div>
-        <a id="user-name" href="rc_portfolio.html" style="font-weight: bold; color: black; text-decoration: none;">${name || "Logged in"} ⭐</a><br>
-        <a href="#" onclick="logout()" style="font-size: 17px; color: #0056b3;">Log out</a>
+      <div style="text-align: right;">
+        <div style="font-weight: bold; font-size: 13px;">${name}</div>
+        <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3;">Log out</a>
       </div>
     `
     : `
-      <a href="/login" style="font-size: 14px; color: #0056b3; text-decoration: underline;">Log in</a>
+      <a href="/login" id="login-button" style="font-weight: bold; font-size: 13px; padding: 4px 12px; border: 1px solid #0056b3; color: white; background-color: #0056b3; border-radius: 5px; text-decoration: none;">Log in</a>
     `;
+
 
   const desktopDiv = document.getElementById("user-status-desktop");
   const mobileDiv = document.getElementById("user-status-mobile");
