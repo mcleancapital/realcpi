@@ -1,13 +1,10 @@
 function logout() {
-  // Clear all relevant user info from localStorage
   localStorage.removeItem("idToken");
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
   localStorage.removeItem("userEmail");
   localStorage.removeItem("userName");
   localStorage.removeItem("baseCurrency");
-
-  // Redirect to login page
   window.location.href = "/login";
 }
 
@@ -15,13 +12,11 @@ function showUserSettings() {
   const modal = document.getElementById("user-settings-modal");
   const nameSpan = document.getElementById("user-name");
 
-  // Prefill form fields from localStorage
   const nameParts = (localStorage.getItem("userName") || "").split(" ");
   document.getElementById("first-name-input").value = nameParts[0] || "";
   document.getElementById("last-name-input").value = nameParts[1] || "";
   document.getElementById("currency-input").value = localStorage.getItem("baseCurrency") || "USD";
 
-  // Position the modal below the name element
   modal.style.display = "none";
   setTimeout(() => {
     const rect = nameSpan.getBoundingClientRect();
@@ -44,13 +39,10 @@ function saveUserSettings() {
   localStorage.setItem("userName", fullName);
   localStorage.setItem("baseCurrency", currency);
 
-  // Update UI
   const nameSpan = document.getElementById("user-name");
   if (nameSpan) nameSpan.textContent = fullName;
 
-  // Optionally update in backend if needed
   updateUserInDatabase(first, last, currency);
-
   closeUserSettings();
 }
 
@@ -82,35 +74,27 @@ async function updateUserInDatabase(firstName, lastName, currency) {
 document.addEventListener("DOMContentLoaded", () => {
   const email = localStorage.getItem("userEmail");
   const name = localStorage.getItem("userName");
-  const userDiv = document.getElementById("user-status");
 
   const summarySection = document.querySelector(".summary-container");
   const centerColumn = document.querySelector(".center-column");
 
-  if (!userDiv) return;
-
-  if (!email) {
-    // Not logged in
-    userDiv.innerHTML = `
+  const content = email
+    ? `
+      <div>
+        <a id="user-name" href="rc_portfolio.html" style="font-weight: bold; color: black; text-decoration: none;">⭐ ${name || "Logged in"}</a><br>
+        <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
+      </div>
+    `
+    : `
       <a href="/login" style="font-size: 14px; color: #0056b3; text-decoration: underline;">Log in</a>
     `;
 
-    // Hide portfolio and expand center column
+  document.querySelectorAll(".user-status").forEach(div => {
+    div.innerHTML = content;
+  });
+
+  if (!email) {
     if (summarySection) summarySection.style.display = "none";
     if (centerColumn) centerColumn.style.flex = "3";
-
-    return;
   }
-
-  // Logged in
-  userDiv.innerHTML = `
-    <div>
-      <a id="user-name" href="rc_portfolio.html" style="font-weight: bold; color: black; text-decoration: none;">⭐ ${name || "Logged in"}</a><br>
-      <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
-    </div>
-  `;
-
-
-  
 });
-
