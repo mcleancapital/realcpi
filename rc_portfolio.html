@@ -563,7 +563,7 @@ document.addEventListener("DOMContentLoaded", () => {
   userDiv.innerHTML = `
     <div>
       <span id="user-name" style="font-weight: bold; cursor: pointer;">${name || "Logged in"} <span title="Settings">⚙️</span></span><br>
-      <a href="#" onclick="logout()">Log out</a>
+      <a href="#" onclick="logout()" style="color: #0056b3;">Log out</a>
     </div>
   `;
   document.getElementById("user-name").addEventListener("click", showUserSettings);
