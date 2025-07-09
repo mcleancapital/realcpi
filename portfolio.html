@@ -124,6 +124,7 @@ table, th, td {
     <label>Ticker (required):<br><input type="text" id="addTicker" required /></label><br><br>
     <label>Name:<br><input type="text" id="addName" disabled /></label><br><br>
     <label>Custom Price:<br><input type="number" step="any" id="addCustomPrice" disabled /></label><br><br>
+    <label>Currency:<br><input type="text" id="addCurrency" disabled /></label><br><br>
     <label>Purchase Price:<br><input type="number" step="any" id="addPurchasePrice" /></label><br><br>
     <label>FX at Purchase:<br><input type="number" step="any" id="addFxRate" /></label><br><br>
     <label>Quantity:<br><input type="number" step="any" id="addQuantity" /></label><br><br>
@@ -525,6 +526,7 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
   e.preventDefault();
 
   const isPrivate = document.getElementById("addPrivate").checked;
+  const currency = document.getElementById("addCurrency").value.trim().toUpperCase();
   const ticker = document.getElementById("addTicker").value.trim().toUpperCase();
   const name = document.getElementById("addName").value.trim();
   const custom_price = parseFloat(document.getElementById("addCustomPrice").value);
@@ -538,6 +540,22 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
   if (!ticker) return alert("Ticker is required.");
   if (isPrivate && (!name || isNaN(custom_price))) return alert("Name and Custom Price are required for private holdings.");
 
+  let currency = "USD"; // fallback
+
+  if (!isPrivate) {
+    try {
+      const res = await fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${fmpApiKey}`);
+      const data = await res.json();
+      currency = (data[0]?.currency || "USD").toUpperCase();
+    } catch {
+      console.warn("Could not fetch currency from FMP, defaulting to USD");
+    }
+  } else {
+    currency = document.getElementById("addCurrency").value.trim().toUpperCase();
+  }
+
+
+  
   const payload = {
     user_id: userId,
     portfolio,
@@ -546,7 +564,8 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
     timestamp,
     purchase_date,
     purchase_price,
-    quantity
+    quantity,
+    currency
   };
 
 if (fx_rate !== undefined) {
@@ -669,6 +688,7 @@ document.getElementById("addPrivate").addEventListener("change", function () {
   const isPrivate = this.checked;
   document.getElementById("addName").disabled = !isPrivate;
   document.getElementById("addCustomPrice").disabled = !isPrivate;
+  document.getElementById("addCurrency").disabled = !isPrivate;
 });
 
 
@@ -694,13 +714,28 @@ async function submitNewPortfolio() {
   if (!portfolio) return alert("Portfolio name is required.");
 
   const timestamp = new Date().toISOString();
+
+  // 🔁 Fetch user's base currency
+  let currency = "USD";
+  try {
+    const res = await fetch(`${baseURL}/getUserCurrency?user_id=${encodeURIComponent(userId)}`);
+    const data = await res.json();
+    currency = data.base_currency || "USD";
+  } catch (err) {
+    console.warn("Failed to fetch base currency, defaulting to USD");
+  }
+
   const payload = {
     user_id: userId,
     portfolio,
     ticker: "CASH",
+    name: "Cash",
     portfolio_ticker: `${portfolio}#CASH`,
     quantity: 1,
-    timestamp
+    purchase_price: 1,     // ✅ New line
+    timestamp,
+    is_private: true,
+    currency               // ✅ Base currency
   };
 
   try {
@@ -713,10 +748,7 @@ async function submitNewPortfolio() {
     if (!res.ok) throw new Error("Creation failed");
     alert("Portfolio created!");
     closeCreatePortfolioModal();
-    
-    // 🔁 Full page reload instead of dropdown update
-    window.location.reload();
-    
+    window.location.reload();  // Refresh to show new portfolio
   } catch (err) {
     alert("Error creating portfolio: " + err.message);
   }
