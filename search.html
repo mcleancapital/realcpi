@@ -650,11 +650,10 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 	    
 <div class="mobile-menu">
   <div class="mobile-menu-left">
-    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="40" />
+    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" />
   </div>
   <div class="mobile-menu-right">
     <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
-    <div id="user-status-mobile" style="margin-left: 12px;"></div>
   </div>
 </div>
 
@@ -796,7 +795,10 @@ const [
   fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json()),
   fetch(`https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}`).then(r => r.json()),
   fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-  fetch(`https://financialmodelingprep.com/api/v3/earning_calendar?symbol=${ticker}&from=${fromDate}&to=${toDate}&apikey=${apiKey}`).then(r => r.json())
+  fetch(`https://financialmodelingprep.com/api/v3/earning_calendar?from=${fromDate}&to=${toDate}&apikey=${apiKey}`)
+    .then(res => res.json())
+    .then(data => data.filter(item => item.symbol === ticker.toUpperCase()))
+    });
 ]);
 
 
