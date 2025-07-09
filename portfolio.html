@@ -526,7 +526,7 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
   e.preventDefault();
 
   const isPrivate = document.getElementById("addPrivate").checked;
-  const currency = document.getElementById("addCurrency").value.trim().toUpperCase();
+  let currency = "USD";  // default
   const ticker = document.getElementById("addTicker").value.trim().toUpperCase();
   const name = document.getElementById("addName").value.trim();
   const custom_price = parseFloat(document.getElementById("addCustomPrice").value);
@@ -540,17 +540,18 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
   if (!ticker) return alert("Ticker is required.");
   if (isPrivate && (!name || isNaN(custom_price))) return alert("Name and Custom Price are required for private holdings.");
 
-  if (!isPrivate) {
-    try {
-      const res = await fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${fmpApiKey}`);
-      const data = await res.json();
-      currency = (data[0]?.currency || "USD").toUpperCase();
-    } catch {
-      console.warn("Could not fetch currency from FMP, defaulting to USD");
-    }
-  } else {
-    currency = document.getElementById("addCurrency").value.trim().toUpperCase();
+if (!isPrivate) {
+  try {
+    const res = await fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${fmpApiKey}`);
+    const data = await res.json();
+    currency = (data[0]?.currency || "USD").toUpperCase();
+  } catch {
+    console.warn("Could not fetch currency from FMP, defaulting to USD");
   }
+} else {
+  currency = document.getElementById("addCurrency").value.trim().toUpperCase();
+}
+
 
 
   
