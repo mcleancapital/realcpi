@@ -765,7 +765,19 @@ function setRange(range) {
 
 }
 
-
+// Try Yahoo! Finance earnings date first
+async function getNextEarningsDateYahoo(ticker) {
+  try {
+    const res = await fetch(`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${ticker}?modules=calendarEvents`);
+    const data = await res.json();
+    const earningsDate = data?.quoteSummary?.result?.[0]?.calendarEvents?.earnings?.earningsDate?.[0]?.fmt;
+    return earningsDate || null;
+  } catch (err) {
+    console.warn("Yahoo earnings fetch failed:", err);
+    return null;
+  }
+}
+	
 
 async function loadData() {
   const ticker = document.getElementById("tickerInput").value.toUpperCase();
@@ -787,22 +799,26 @@ const [
   historyData,
   balanceSheetData,
   estimatesData,
-  ratiosData,
-  earningsData
+  ratiosData
 ] = await Promise.all([
   fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${apiKey}`).then(r => r.json()),
   fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${ticker}?serietype=line&apikey=${apiKey}`).then(r => r.json()),
   fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json()),
   fetch(`https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-  fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-  fetch(`https://financialmodelingprep.com/api/v3/earning_calendar?from=${fromDate}&to=${toDate}&apikey=${apiKey}`)
-    .then(res => res.json())
-    .then(data => {
-      const earnings = data.filter(item => item.symbol === ticker.toUpperCase());
-      console.log(earnings);
-      return earnings; // ✅ THIS LINE is key
-    })
+  fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json())
 ]);
+
+// Get earnings from Yahoo first
+let nextEarningsDate = await getNextEarningsDateYahoo(ticker);
+
+// If Yahoo returns null, fallback to FMP
+if (!nextEarningsDate) {
+  const earningsData = await fetch(`https://financialmodelingprep.com/api/v3/earning_calendar?from=${fromDate}&to=${toDate}&apikey=${apiKey}`)
+    .then(res => res.json())
+    .then(data => data.filter(item => item.symbol === ticker.toUpperCase()));
+  nextEarningsDate = earningsData.length ? earningsData[0].date : "N/A";
+}
+
 
 
 
