@@ -546,6 +546,13 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     </button>
   </p>
 
+<p style="text-align: center; margin-top: 10px;">
+  <button onclick="promptReset()" style="font-size: 14px; padding: 6px 12px; background-color: #ffc107; color: black; border: none; border-radius: 4px; cursor: pointer;">
+    Change Password?
+  </button>
+</p>
+
+	
 </div>
 
 
@@ -751,6 +758,32 @@ async function signup() {
   button.textContent = "Create Account";
 }
 
+
+
+function promptReset() {
+  const email = prompt("Please enter your email to reset your password:");
+  if (!email) return;
+
+  const confirmed = confirm(`A password reset link will be sent to ${email}. Continue?`);
+  if (!confirmed) return;
+
+  fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Email not found or failed to send.");
+    return res.json();
+  })
+  .then(data => {
+    alert("Check your email for a link to reset your password.");
+  })
+  .catch(err => {
+    console.error(err);
+    alert("There was an error sending the reset email: " + err.message);
+  });
+}
 
 
 
