@@ -77,12 +77,14 @@ table, th, td {
     <tbody id="portfolioBody"></tbody>
     <tfoot>
       <tr>
-        <td colspan="8"></td>
+        <td colspan="7"></td>
+        <td id="totalDailyMove" style="font-weight: bold;"></td>
         <td id="totalMVBase"></td>
         <td></td>
         <td id="totalGainLossBase"></td>
       </tr>
     </tfoot>
+
   </table>
 
   <p style="font-size: 12px; color: #555; margin-top: 8px;">
@@ -285,6 +287,7 @@ filtered.sort((a, b) => {
 
   const fxRates = {};
   let totalMV = 0, totalMVBase = 0, totalGainLossBase = 0;
+  let weightedDailyMove = 0;
 
 const rows = [];
 
@@ -339,6 +342,9 @@ for (const rowData of rows) {
 
   const weight = totalMVBase > 0 ? marketValueBase / totalMVBase : 0;
 
+  const dailyMove = (livePrice / lastClose) - 1;
+  weightedDailyMove += weight * dailyMove;
+
   const today = new Date();
   const purchase = /^\d{8}$/.test(purchaseDate)
     ? new Date(purchaseDate.slice(0,4), purchaseDate.slice(4,6) - 1, purchaseDate.slice(6))
@@ -379,6 +385,10 @@ row.innerHTML = `
 }
 
 
+
+  const formattedWeightedMove = (weightedDailyMove * 100).toFixed(2) + "%";
+  document.getElementById("totalDailyMove").innerText = formattedWeightedMove;
+  document.getElementById("totalDailyMove").style.color = weightedDailyMove >= 0 ? "green" : "red";
   
   document.getElementById("totalMVBase").innerText = formatCurrency(totalMVBase, baseCurrency);
   document.getElementById("totalGainLossBase").innerText = `${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)}`;
