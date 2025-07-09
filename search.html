@@ -1052,12 +1052,10 @@ async function loadSummaryPortfolio() {
 </script>
 	
 <script>
-  const token = localStorage.getItem("idToken");
-  const email = localStorage.getItem("userEmail");
-
-  if (token && email) {
-    loadSummaryPortfolio();
-  }
+const email = localStorage.getItem("userEmail");
+if (email) {
+  loadSummaryPortfolio();
+}
 </script>
 
 
