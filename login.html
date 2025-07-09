@@ -540,11 +540,10 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   <p id="loginStatus" style="color: green;"></p>
 
   <p style="text-align: center; margin-top: 20px;">Not a member? 
-  <button onclick="signup()" style="width: 80%; padding: 12px; background-color: #28a745; color: white; font-weight: bold; font-size: 16px; border: none; border-radius: 6px; cursor: pointer;">
-    Create Account
-  </button>
-  <p id="signupStatus" style="color: red; text-align: center; margin-top: 10px;"></p>
-
+    <button onclick="document.getElementById('signup-section').scrollIntoView({ behavior: 'smooth' })"
+            style="font-size: 14px; padding: 6px 12px; margin-left: 6px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      Sign Up
+    </button>
   </p>
 
 </div>
@@ -584,9 +583,10 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   <label for="new-password" style="display: block; font-weight: bold; margin-bottom: 5px;">Password:</label>
   <input id="new-password" type="password" placeholder="Create a password" style="width: 80%; padding: 10px; margin-bottom: 20px; font-size: 16px;">
 
-  <button style="width: 80%; padding: 12px; background-color: #28a745; color: white; font-weight: bold; font-size: 16px; border: none; border-radius: 6px; cursor: pointer;">
+  <button onclick="signup()" style="width: 80%; padding: 12px; background-color: #28a745; color: white; font-weight: bold; font-size: 16px; border: none; border-radius: 6px; cursor: pointer;">
     Create Account
   </button>
+  <p id="signupStatus" style="color: red; text-align: center; margin-top: 10px;"></p>
 </div>
 
 
@@ -638,45 +638,40 @@ function togglePasswordVisibility() {
 function login() {
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
+  const button = document.querySelector('button[onclick="login()"]');
+  const statusEl = document.getElementById("loginStatus");
+
+  button.disabled = true;
+  button.textContent = "Logging in...";
+  statusEl.textContent = "";
 
   fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserName", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      email: email,
-      password: password
-    })
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
   })
   .then(res => {
-    if (!res.ok) {
-      throw new Error("Invalid login");
-    }
+    if (!res.ok) throw new Error("Invalid login");
     return res.json();
   })
-.then(data => {
-  console.log("Received from API:", data);	  
-  localStorage.setItem("userEmail", email);
-  localStorage.setItem("userName", `${data.first_name} ${data.last_name}`);
-  localStorage.setItem("baseCurrency", data.base_currency);
-  document.getElementById("loginStatus").innerText = `Welcome, ${data.first_name} ${data.last_name}`;
-  document.getElementById("loginStatus").style.color = "green";
-
-  // Replace login button with user's name
-  updateLoginButton(data.first_name, data.last_name);
-
-  // ✅ Redirect after 1.5s to rc_portfolio.html
-  setTimeout(() => {
-    window.location.href = "/rc_portfolio.html";
-  }, 1500);
-})
+  .then(data => {
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userName", `${data.first_name} ${data.last_name}`);
+    localStorage.setItem("baseCurrency", data.base_currency);
+    statusEl.innerText = `Welcome, ${data.first_name} ${data.last_name}`;
+    statusEl.style.color = "green";
+    updateLoginButton(data.first_name, data.last_name);
+    setTimeout(() => window.location.href = "/rc_portfolio.html", 1500);
+  })
   .catch(err => {
     console.error(err);
-    document.getElementById("loginStatus").innerText = "Login failed: " + err.message;
-    document.getElementById("loginStatus").style.color = "red";
+    statusEl.innerText = "Login failed: " + err.message;
+    statusEl.style.color = "red";
+    button.disabled = false;
+    button.textContent = "Log In";
   });
 }
+
 
 // Optional: auto-redirect if already logged in
 window.addEventListener("DOMContentLoaded", () => {
@@ -709,28 +704,26 @@ async function signup() {
   const last_name = document.getElementById("new-last-name").value.trim();
   const base_currency = document.getElementById("currency").value;
   const password = document.getElementById("new-password").value;
+  const button = document.getElementById("createAccountBtn");
 
   const statusEl = document.getElementById("signupStatus");
   statusEl.style.color = "red";
+  statusEl.textContent = "";
 
   if (!email || !first_name || !last_name || !base_currency || !password) {
     statusEl.textContent = "Please fill in all fields.";
     return;
   }
 
+  // Show loading state
+  button.disabled = true;
+  button.textContent = "Creating...";
+
   try {
     const res = await fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/signup", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        email,
-        first_name,
-        last_name,
-        base_currency,
-        password
-      })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, first_name, last_name, base_currency, password })
     });
 
     const data = await res.json();
@@ -752,7 +745,12 @@ async function signup() {
     console.error(err);
     statusEl.textContent = "Network or server error.";
   }
+
+  // Reset button
+  button.disabled = false;
+  button.textContent = "Create Account";
 }
+
 
 
 
