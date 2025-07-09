@@ -770,7 +770,9 @@ async function loadData() {
     fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${ticker}?serietype=line&apikey=${apiKey}`).then(r => r.json()),
     fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json()),
     fetch(`https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-    fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json())
+    fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json()),
+    fetch(`https://financialmodelingprep.com/api/v3/earning_calendar/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json())
+	  
   ]);
 
 
@@ -784,6 +786,8 @@ async function loadData() {
   const estimatedEpsAvg = nextYearEstimate?.estimatedEpsAvg;
   const allowedCurrencies = ["USD", "CAD"];
   const currency = profile.currency || "N/A";
+  const nextEarningsDate = earningsData[0]?.date || "N/A";
+	
 
   const forwardPE = (allowedCurrencies.includes(currency) && estimatedEpsAvg && profile.price)
     ? (profile.price / estimatedEpsAvg).toFixed(1)
@@ -816,7 +820,7 @@ async function loadData() {
 
 document.getElementById("info").innerHTML = `
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-      <img src="${profile.image}" alt="${profile.companyName} Logo" style="height: 36px; max-width: 60px;">
+      <img id="company-logo" src="${profile.image}" alt="${profile.companyName} Logo" style="height: 36px; max-width: 60px;" onerror="this.onerror=null; this.src='/static/images/${ticker}.png';">
       <h3 style="margin: 0;"><strong>${profile.companyName} (${profile.symbol})</strong></h3>
     </div>
     <p><strong>Exchange:</strong> ${profile.exchange}</p>
@@ -827,6 +831,7 @@ document.getElementById("info").innerHTML = `
     <p>Equity / Total Liabilities: ${equityToLiabilities}</p>
     <p>Dividend Yield: ${dividendYield}</p>
     <p>Industry: ${profile.industry}</p>
+    <p><strong>Next Earnings Date:</strong> ${nextEarningsDate}</p>
     <p style="margin-top: 12px; margin-bottom: 12px;">
       <a href="${profile.website}" target="_blank" style="color: #0056b3; font-weight: bold;">Website</a>
     </p>
