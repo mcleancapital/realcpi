@@ -271,11 +271,14 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
         @media (max-width: 729px) {
 
+  #user-status-desktop {
+    display: none !important;
+  }
+
+		
 #user-status-mobile {
-  flex: 1;
   text-align: right;
-  font-size: 14px;
-  padding: 8px;
+  font-size: 12px;
   white-space: nowrap;
 }
 		
@@ -307,7 +310,9 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     .mobile-menu {
 
                 display: flex;
-                justify-content: space-around;
+	        flex-direction: column;
+	        align-items: flex-end;
+                justify-content: center;
                 position: fixed;
 		top: 0;
                 left: 0;
@@ -315,7 +320,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
                 background-color: #ffffff;
                 border-bottom: 1px solid #ccc;
                 z-index: 2000;
-                padding: 5px 0;
+                padding: 0 8px;
 
             }
 
@@ -635,10 +640,11 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     <div class="center-column">
 	    
     <div class="mobile-menu">
-        <img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
-	    <!-- Hamburger Button for Mobile -->
-    	    <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
-	    <div id="user-status-mobile" style="font-size: 12px; padding: 6px 10px;"></div>
+      <img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
+      <div class="mobile-menu-right">
+        <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
+        <div id="user-status-mobile"></div>
+      </div>
     </div>
 
       <title>Stock Lookup</title>
