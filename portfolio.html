@@ -540,8 +540,6 @@ document.getElementById("addForm").addEventListener("submit", async function (e)
   if (!ticker) return alert("Ticker is required.");
   if (isPrivate && (!name || isNaN(custom_price))) return alert("Name and Custom Price are required for private holdings.");
 
-  let currency = "USD"; // fallback
-
   if (!isPrivate) {
     try {
       const res = await fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${fmpApiKey}`);
