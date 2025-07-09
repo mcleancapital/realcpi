@@ -110,5 +110,28 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
   `;
 
+
+document.querySelectorAll("#summary-portfolio-container table tr").forEach(row => {
+  const cells = row.querySelectorAll("td");
+  if (cells.length >= 1) {
+    const ticker = cells[0].innerText.trim();
+
+    row.style.cursor = "pointer";  // Add a hover cursor
+    row.addEventListener("click", () => {
+      const input = document.getElementById("tickerInput");
+      if (input) {
+        input.value = ticker;
+
+        // Trigger loadData() like Enter was pressed
+        input.dispatchEvent(new Event('input'));
+        setTimeout(() => {
+          loadData();  // ✅ Only call loadData directly — don't simulate keypress
+        }, 200);
+      }
+    });
+  }
+});
+
+  
 });
 
