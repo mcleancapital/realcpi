@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reset Password</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    .box {
+      max-width: 400px;
+      margin: 60px auto;
+      padding: 30px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    p { color: red; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2 style="text-align:center;">Reset Your Password</h2>
+    <input id="newPassword" type="password" placeholder="New Password" />
+    <input id="confirmPassword" type="password" placeholder="Confirm Password" />
+    <button onclick="resetPassword()">Reset Password</button>
+    <p id="status"></p>
+  </div>
+
+  <script>
+    async function resetPassword() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get("token");
+
+      const pw = document.getElementById("newPassword").value;
+      const confirm = document.getElementById("confirmPassword").value;
+      const statusEl = document.getElementById("status");
+
+      if (!pw || !confirm) {
+        statusEl.textContent = "Please fill both fields.";
+        return;
+      }
+      if (pw !== confirm) {
+        statusEl.textContent = "Passwords do not match.";
+        return;
+      }
+
+      try {
+        const res = await fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/confirm-reset", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, new_password: pw })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          statusEl.style.color = "green";
+          statusEl.textContent = "Password reset successful! Redirecting to login...";
+          setTimeout(() => (window.location.href = "/login.html"), 2000);
+        } else {
+          statusEl.textContent = data.message || "Error resetting password.";
+        }
+      } catch (err) {
+        statusEl.textContent = "Server error. Try again.";
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
