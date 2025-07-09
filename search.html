@@ -1045,6 +1045,7 @@ async function loadSummaryPortfolio() {
     // ✅ After injection, dynamically load and execute the portfolio logic
     const script = document.createElement("script");
     script.src = "/static/js/summaryPortfolio.js"; // path to external JS
+    script.onload = enablePortfolioRowClicks;  // ✅ Attach click handlers after script is loaded
     document.body.appendChild(script);
 
   } catch (error) {
