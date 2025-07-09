@@ -879,6 +879,9 @@ if (!nextEarningsDate) {
 
     <p><strong>Exchange:</strong> ${profile.exchange}</p>
     <p><strong>Currency:</strong> ${profile.currency || 'N/A'}</p>
+    <p><strong>Headquarters:</strong> ${profile.city}, ${profile.state || ''} ${profile.country}</p>    
+    <p><strong>CEO:</strong> ${profile.ceo || 'N/A'}</p>
+
     <p style="margin-top: 8px;"><strong>Market Cap:</strong> $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
     <p>P/E Ratio: ${peRatio}</p>
     <p>Forward P/E: ${forwardPE}</p>
