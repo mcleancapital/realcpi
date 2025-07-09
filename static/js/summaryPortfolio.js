@@ -28,7 +28,7 @@ async function renderSummary(selectedPortfolio) {
   const table = document.getElementById("summaryTable");
   table.innerHTML = "";
 
-  let filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio);
+  let filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio && (i.ticker || "").toUpperCase() !== "CASH");
   if (filtered.length === 0) {
     table.innerHTML = `<tr><td colspan="2">No holdings in selected portfolio.</td></tr>`;
     return;
@@ -44,53 +44,81 @@ async function renderSummary(selectedPortfolio) {
     priceMap[sym] = q.price;
     moveMap[sym] = ((q.price / q.previousClose - 1) * 100).toFixed(2);
     nameMap[sym] = q.name;
-    currencyMap[sym] = q.currency || "USD";  // fallback to USD if missing
+    currencyMap[sym] = q.currency || "USD";
   });
 
-  // Define custom currency priority
-  const currencyOrder = { CAD: 0, USD: 1, EUR: 2, JPY: 3 };
-
-  // Sort first by privacy, then by currency priority
-filtered.sort((a, b) => {
-  const privA = a.is_private === true ? 0 : (a.ticker?.includes('.') ? 1 : 2);
-  const privB = b.is_private === true ? 0 : (b.ticker?.includes('.') ? 1 : 2);
-  return privA - privB;
-});
-
-
-for (const item of filtered) {
-  const ticker = (item.ticker || "").toUpperCase();
-  const isPrivate = item.is_private === true;
-  const name = isPrivate ? (item.name || ticker) : (nameMap[ticker] || ticker);
-  const price = isPrivate ? item.custom_price : priceMap[ticker];
-  const move = isPrivate ? "" : (moveMap[ticker] + "%");
-
-  const row = document.createElement("tr");
-  row.style.cursor = "pointer"; // Show clickable cursor
-
-  // ✅ Add click event to trigger a ticker search
-  row.addEventListener("click", () => {
-    const input = document.getElementById("tickerInput");
-    if (input) {
-      input.value = ticker;
-      input.dispatchEvent(new Event("input"));
-      setTimeout(loadData, 200); // You can increase delay if needed
-    }
+  // 📌  Summary stats
+  const today = new Date();
+  const holdingPeriods = filtered.map(r => {
+    const d = /^\d{8}$/.test(r.purchase_date)
+      ? new Date(r.purchase_date.slice(0,4), r.purchase_date.slice(4,6) - 1, r.purchase_date.slice(6))
+      : new Date(r.purchase_date);
+    return Math.max((today - d) / (365.25 * 24 * 3600 * 1000), 0);
   });
 
-  row.innerHTML = `
-    <td>
-      <div class="ticker-name" style="color: ${isPrivate ? '#007BFF' : 'inherit'}">${ticker}</div>
-      <div class="name">${name}</div>
-    </td>
-    <td>
-      <div class="price">${price !== undefined ? "$" + parseFloat(price).toFixed(2) : "-"}</div>
-      <div class="move" style="color: ${move.startsWith('-') ? 'red' : 'green'}">${move}</div>
-    </td>
+  const avgYears = holdingPeriods.length ? holdingPeriods.reduce((a, b) => a + b) / holdingPeriods.length : 0;
+  const avgStr = avgYears >= 1 ? `${avgYears.toFixed(1)} yrs` : `${(avgYears * 12).toFixed(0)} mos`;
+
+  let totalValue = 0;
+  let weightedMove = 0;
+  for (const item of filtered) {
+    const price = item.is_private ? item.custom_price : priceMap[(item.ticker || "").toUpperCase()];
+    const prevClose = item.is_private ? price : quotes.find(q => q.symbol.toUpperCase() === item.ticker.toUpperCase())?.previousClose;
+    const q = parseFloat(item.quantity || 0);
+    const mv = q * price;
+    const move = price && prevClose ? (price / prevClose - 1) : 0;
+    totalValue += mv;
+    weightedMove += mv * move;
+  }
+
+  const dailyMovePct = totalValue ? (weightedMove / totalValue * 100).toFixed(2) + "%" : "N/A";
+
+  // Add summary rows
+  const summaryRow = document.createElement("tr");
+  summaryRow.innerHTML = `
+    <td><strong>📌 ${filtered.length} positions<br>⏳ Avg: ${avgStr}</strong></td>
+    <td><strong style="color:${dailyMovePct.startsWith("-") ? "red" : "green"}">📊 ${dailyMovePct}</strong></td>
   `;
+  table.appendChild(summaryRow);
 
-  table.appendChild(row);
-}
+  // Sort for display
+  filtered.sort((a, b) => {
+    const privA = a.is_private === true ? 0 : (a.ticker?.includes('.') ? 1 : 2);
+    const privB = b.is_private === true ? 0 : (b.ticker?.includes('.') ? 1 : 2);
+    return privA - privB;
+  });
+
+  for (const item of filtered) {
+    const ticker = (item.ticker || "").toUpperCase();
+    const isPrivate = item.is_private === true;
+    const name = isPrivate ? (item.name || ticker) : (nameMap[ticker] || ticker);
+    const price = isPrivate ? item.custom_price : priceMap[ticker];
+    const move = isPrivate ? "" : (moveMap[ticker] + "%");
+
+    const row = document.createElement("tr");
+    row.style.cursor = "pointer";
+    row.addEventListener("click", () => {
+      const input = document.getElementById("tickerInput");
+      if (input) {
+        input.value = ticker;
+        input.dispatchEvent(new Event("input"));
+        setTimeout(loadData, 200);
+      }
+    });
+
+    row.innerHTML = `
+      <td>
+        <div class="ticker-name" style="color: ${isPrivate ? '#007BFF' : 'inherit'}">${ticker}</div>
+        <div class="name">${name}</div>
+      </td>
+      <td>
+        <div class="price">${price !== undefined ? "$" + parseFloat(price).toFixed(2) : "-"}</div>
+        <div class="move" style="color: ${move.startsWith('-') ? 'red' : 'green'}">${move}</div>
+      </td>
+    `;
+
+    table.appendChild(row);
+  }
 }
 
 
