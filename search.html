@@ -797,8 +797,13 @@ const [
   fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json()),
   fetch(`https://financialmodelingprep.com/api/v3/earning_calendar?from=${fromDate}&to=${toDate}&apikey=${apiKey}`)
     .then(res => res.json())
-    .then(data => data.filter(item => item.symbol === ticker.toUpperCase()))
-    });
+    .then(data => {
+      const earnings = data.filter(item => item.symbol === ticker.toUpperCase());
+      console.log(earnings);
+      return earnings; // ✅ THIS LINE is key
+    })
+]);
+
 
 
 
