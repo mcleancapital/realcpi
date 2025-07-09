@@ -863,15 +863,20 @@ if (!nextEarningsDate) {
 
 
 
-document.getElementById("info").innerHTML = `
+  const fallbackLogo = profile.image && profile.image.trim() ? profile.image : "";
+  const localLogo = `https://www.realcpi.org/static/images/${ticker.toLowerCase()}.png`;
+
+  document.getElementById("info").innerHTML = `
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-    <img id="company-logo"
-         src="${profile.image}"
-         alt="${profile.companyName} Logo"
-        style="height: 36px; max-width: 60px;"
-         onerror="this.onerror=null; this.src='https://www.realcpi.org/static/images/${ticker.toLowerCase()}.png';">
+      <img id="company-logo"
+           src="${localLogo}"
+           alt="${profile.companyName} Logo"
+           style="height: 36px; max-width: 60px;"
+           onerror="this.onerror=null; this.src='${fallbackLogo}';">
       <h3 style="margin: 0;"><strong>${profile.companyName} (${profile.symbol})</strong></h3>
     </div>
+  `;
+
     <p><strong>Exchange:</strong> ${profile.exchange}</p>
     <p><strong>Currency:</strong> ${profile.currency || 'N/A'}</p>
     <p style="margin-top: 8px;"><strong>Market Cap:</strong> $${Math.round(Number(profile.mktCap) / 1e6).toLocaleString()}M</p>
