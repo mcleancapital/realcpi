@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const content = email
     ? `
       <div>
-        <a id="user-name" href="rc_portfolio.html" style="font-weight: bold; color: black; text-decoration: none;">⭐ ${name || "Logged in"}</a><br>
+        <a id="user-name" href="rc_portfolio.html" style="font-weight: bold; color: black; text-decoration: none;">${name || "Logged in"} ⭐</a><br>
         <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3; text-decoration: underline;">Log out</a>
       </div>
     `
