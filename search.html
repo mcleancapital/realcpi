@@ -280,6 +280,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   text-align: right;
   font-size: 12px;
   white-space: nowrap;
+  margin-right: 8px; /* 👈 creates space between login info and hamburger */	
 }
 		
   #summary-portfolio-container {
@@ -323,13 +324,13 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 }
 
 .mobile-menu-left img {
-  height: 40px;
+  height: 52px;
 }
 
 .mobile-menu-right {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
 }
 
 
@@ -781,7 +782,7 @@ async function loadData() {
     fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json()),
     fetch(`https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}`).then(r => r.json()),
     fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-    fetch(`https://financialmodelingprep.com/api/v3/earning_calendar/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json())  
+    fetch(`https://financialmodelingprep.com/api/v4/earning_calendar?symbol=${ticker}&apikey=${apiKey}`).then(r => r.json())  
   ]);
 
 
@@ -795,8 +796,7 @@ async function loadData() {
   const estimatedEpsAvg = nextYearEstimate?.estimatedEpsAvg;
   const allowedCurrencies = ["USD", "CAD"];
   const currency = profile.currency || "N/A";
-  const nextEarningsDate = earningsData[0]?.date || "N/A";
-	
+  const nextEarningsDate = earningsData.length ? earningsData[0].date : "N/A";	
 
   const forwardPE = (allowedCurrencies.includes(currency) && estimatedEpsAvg && profile.price)
     ? (profile.price / estimatedEpsAvg).toFixed(1)
