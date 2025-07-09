@@ -58,26 +58,39 @@ filtered.sort((a, b) => {
 });
 
 
-  for (const item of filtered) {
-    const ticker = (item.ticker || "").toUpperCase();
-    const isPrivate = item.is_private === true;
-    const name = isPrivate ? (item.name || ticker) : (nameMap[ticker] || ticker);
-    const price = isPrivate ? item.custom_price : priceMap[ticker];
-    const move = isPrivate ? "" : (moveMap[ticker] + "%");
+for (const item of filtered) {
+  const ticker = (item.ticker || "").toUpperCase();
+  const isPrivate = item.is_private === true;
+  const name = isPrivate ? (item.name || ticker) : (nameMap[ticker] || ticker);
+  const price = isPrivate ? item.custom_price : priceMap[ticker];
+  const move = isPrivate ? "" : (moveMap[ticker] + "%");
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>
-        <div class="ticker-name" style="color: ${isPrivate ? '#007BFF' : 'inherit'}">${ticker}</div>
-        <div class="name">${name}</div>
-      </td>
-      <td>
-        <div class="price">${price !== undefined ? "$" + parseFloat(price).toFixed(2) : "-"}</div>
-        <div class="move" style="color: ${move.startsWith('-') ? 'red' : 'green'}">${move}</div>
-      </td>
-    `;
-    table.appendChild(row);
-  }
+  const row = document.createElement("tr");
+  row.style.cursor = "pointer"; // Show clickable cursor
+
+  // ✅ Add click event to trigger a ticker search
+  row.addEventListener("click", () => {
+    const input = document.getElementById("tickerInput");
+    if (input) {
+      input.value = ticker;
+      input.dispatchEvent(new Event("input"));
+      setTimeout(loadData, 200); // You can increase delay if needed
+    }
+  });
+
+  row.innerHTML = `
+    <td>
+      <div class="ticker-name" style="color: ${isPrivate ? '#007BFF' : 'inherit'}">${ticker}</div>
+      <div class="name">${name}</div>
+    </td>
+    <td>
+      <div class="price">${price !== undefined ? "$" + parseFloat(price).toFixed(2) : "-"}</div>
+      <div class="move" style="color: ${move.startsWith('-') ? 'red' : 'green'}">${move}</div>
+    </td>
+  `;
+
+  table.appendChild(row);
+}
 }
 
 
