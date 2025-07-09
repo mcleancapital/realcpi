@@ -519,7 +519,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     </nav>
 
 	
-<div id="user-status" style="margin-left: auto; padding: 8px 18px; text-align: right;"></div>
+<div id="user-status-desktop" style="margin-left: auto; padding: 8px 18px; text-align: right;"></div>
 
 <script>
   const script = document.createElement("script");
@@ -637,6 +637,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         <img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
 	    <!-- Hamburger Button for Mobile -->
     	    <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
+	    <div id="user-status-mobile" style="font-size: 12px; padding: 6px 10px;"></div>
     </div>
 
       <title>Stock Lookup</title>
@@ -1063,6 +1064,30 @@ if (email) {
 }
 </script>
 
+<script>
+function enablePortfolioRowClicks() {
+  const container = document.getElementById("summary-portfolio-container");
+  if (!container) return;
+
+  container.querySelectorAll("table tr").forEach(row => {
+    const cells = row.querySelectorAll("td");
+    if (cells.length >= 1) {
+      const ticker = cells[0].innerText.trim();
+      row.style.cursor = "pointer";
+      row.addEventListener("click", () => {
+        const input = document.getElementById("tickerInput");
+        if (input) {
+          input.value = ticker;
+          input.dispatchEvent(new Event('input'));
+          setTimeout(() => {
+            loadData();
+          }, 200);
+        }
+      });
+    }
+  });
+}
+</script>
 
 
 	
