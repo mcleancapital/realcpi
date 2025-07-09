@@ -89,9 +89,12 @@ document.addEventListener("DOMContentLoaded", () => {
       <a href="/login" style="font-size: 14px; color: #0056b3; text-decoration: underline;">Log in</a>
     `;
 
-  document.querySelectorAll(".user-status").forEach(div => {
-    div.innerHTML = content;
-  });
+  const desktopDiv = document.getElementById("user-status-desktop");
+  const mobileDiv = document.getElementById("user-status-mobile");
+
+  if (desktopDiv) desktopDiv.innerHTML = content;
+  if (mobileDiv) mobileDiv.innerHTML = content;
+
 
   if (!email) {
     if (summarySection) summarySection.style.display = "none";
