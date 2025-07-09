@@ -307,22 +307,32 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 
 
-    .mobile-menu {
+.mobile-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #ccc;
+  z-index: 2000;
+  padding: 8px 12px;
+  box-sizing: border-box;
+}
 
-                display: flex;
-	        flex-direction: column;
-	        align-items: flex-end;
-                justify-content: center;
-                position: fixed;
-		top: 0;
-                left: 0;
-                width: 100%;
-                background-color: #ffffff;
-                border-bottom: 1px solid #ccc;
-                z-index: 2000;
-                padding: 0 8px;
+.mobile-menu-left img {
+  height: 40px;
+}
 
-            }
+.mobile-menu-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
 
             .mobile-menu button {
                 flex: 1;
@@ -464,14 +474,12 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 
     /* Style hamburger button */
-    .hamburger-menu {
-        display: block;
-        font-size: 48px;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 10px;
-        margin-left: auto;
+.hamburger-menu {
+  font-size: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
 	position: relative;  /* Required for z-index to take effect */
         z-index: 2001;        /* 👈 Make sure it floats above the ticker bar and input */
     }
@@ -639,13 +647,16 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     <!-- Center Column -->
     <div class="center-column">
 	    
-    <div class="mobile-menu">
-      <img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
-      <div class="mobile-menu-right">
-        <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
-        <div id="user-status-mobile"></div>
-      </div>
-    </div>
+<div class="mobile-menu">
+  <div class="mobile-menu-left">
+    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="40" />
+  </div>
+  <div class="mobile-menu-right">
+    <button class="hamburger-menu" onclick="toggleMenu()">☰</button>
+    <div id="user-status-mobile" style="margin-left: 12px;"></div>
+  </div>
+</div>
+
 
       <title>Stock Lookup</title>
       <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
