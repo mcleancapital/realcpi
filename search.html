@@ -758,14 +758,13 @@ async function loadData() {
   document.getElementById("suggestions").style.display = "none"; // ⬅️ Add this
 
 
-  const [profileData, historyData, balanceSheetData, estimatesData, ratiosData] = await Promise.all([
+  const [profileData, historyData, balanceSheetData, estimatesData, ratiosData, nextEarningsDate] = await Promise.all([
     fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${apiKey}`).then(r => r.json()),
     fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${ticker}?serietype=line&apikey=${apiKey}`).then(r => r.json()),
     fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json()),
     fetch(`https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}`).then(r => r.json()),
     fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-    fetch(`https://financialmodelingprep.com/api/v3/earning_calendar/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json())
-	  
+    fetch(`https://financialmodelingprep.com/api/v3/earning_calendar/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json())  
   ]);
 
 
