@@ -75,10 +75,14 @@ async function renderSummary(selectedPortfolio) {
 
   // Add summary rows
   const summaryRow = document.createElement("tr");
+  summaryRow.style.backgroundColor = "#f0f0f0";  // light grey
+  summaryRow.style.fontWeight = "bold";
+
   summaryRow.innerHTML = `
-    <td><strong>📌 ${filtered.length} positions<br>⏳ Avg: ${avgStr}</strong></td>
-    <td><strong style="color:${dailyMovePct.startsWith("-") ? "red" : "green"}">📊 ${dailyMovePct}</strong></td>
+    <td>📌 ${filtered.length} positions<br>⏳ Avg holding period: ${avgStr}</td>
+    <td style="color:${dailyMovePct.startsWith("-") ? "red" : "green"}">📊 Daily Move: ${dailyMovePct}</td>
   `;
+
   table.appendChild(summaryRow);
 
   // Sort for display
