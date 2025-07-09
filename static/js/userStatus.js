@@ -84,15 +84,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const name = localStorage.getItem("userName");
   const userDiv = document.getElementById("user-status");
 
+  const summarySection = document.querySelector(".summary-container");
+  const centerColumn = document.querySelector(".center-column");
+
   if (!userDiv) return;
 
   if (!email) {
+    // Not logged in
     userDiv.innerHTML = `
       <a href="/login" style="font-size: 14px; color: #0056b3; text-decoration: underline;">Log in</a>
     `;
+
+    // Hide portfolio and expand center column
+    if (summarySection) summarySection.style.display = "none";
+    if (centerColumn) centerColumn.style.flex = "3";
+
     return;
   }
 
+  // Logged in
   userDiv.innerHTML = `
     <div>
       <span id="user-name" style="font-weight: bold; cursor: pointer;">${name || "Logged in"}</span><br>
@@ -102,3 +112,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("user-name").addEventListener("click", showUserSettings);
 });
+
