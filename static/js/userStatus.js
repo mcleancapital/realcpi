@@ -81,8 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const content = email
     ? `
       <div style="text-align: right;">
-        <div style="font-weight: bold; font-size: 13px;">${name}</div>
-        <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3;">Log out</a>
+        <div style="font-weight: bold; font-size: 17px;">${name}</div>
+        <a href="#" onclick="logout()" style="font-size: 17px; color: #0056b3;">Log out</a>
       </div>
     `
     : `
