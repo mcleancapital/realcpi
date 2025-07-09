@@ -111,30 +111,6 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
 
 
-function enablePortfolioRowClicks() {
-  const container = document.getElementById("summary-portfolio-container");
-  if (!container) return;
-
-  container.querySelectorAll("table tr").forEach(row => {
-    const cells = row.querySelectorAll("td");
-    if (cells.length >= 1) {
-      const ticker = cells[0].innerText.trim();
-      row.style.cursor = "pointer";
-      row.addEventListener("click", () => {
-        const input = document.getElementById("tickerInput");
-        if (input) {
-          input.value = ticker;
-          input.dispatchEvent(new Event('input'));
-          setTimeout(() => {
-            loadData();
-          }, 200);
-        }
-      });
-    }
-  });
-}
-
-
   
 });
 
