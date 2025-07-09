@@ -52,7 +52,10 @@ table, th, td {
       <select id="portfolioSelect">
         <option value="">Loading...</option>
       </select>
+
+      <div id="portfolioSummary" style="font-size: 12px; margin-top: 4px; color: #444;"></div>
     </div>
+
   </div>
 
   <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
@@ -245,6 +248,8 @@ async function loadHoldings(initial = false) {
 async function renderTable(selectedPortfolio) {
   const tbody = document.getElementById("portfolioBody");
   tbody.innerHTML = "";
+  const summaryDiv = document.getElementById("portfolioSummary");
+
 
   const filtered = allHoldings.filter(i => i.portfolio === selectedPortfolio);
 
@@ -392,6 +397,32 @@ row.innerHTML = `
   
   document.getElementById("totalMVBase").innerText = formatCurrency(totalMVBase, baseCurrency);
   document.getElementById("totalGainLossBase").innerText = `${totalGainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(totalGainLossBase), baseCurrency)}`;
+
+  // Count of positions excluding CASH
+  const nonCashRows = rows.filter(r => r.ticker !== "CASH");
+  const numPositions = nonCashRows.length;
+
+  // Average holding period
+  const totalYears = nonCashRows.reduce((sum, r) => {
+    const purchase = /^\d{8}$/.test(r.purchaseDate)
+      ? new Date(r.purchaseDate.slice(0,4), r.purchaseDate.slice(4,6) - 1, r.purchaseDate.slice(6))
+      : new Date(r.purchaseDate);
+    const yearsHeld = Math.max((new Date() - purchase) / (365.25 * 24 * 3600 * 1000), 0);
+    return sum + yearsHeld;
+  }, 0);
+  const avgHoldingYears = numPositions ? (totalYears / numPositions) : 0;
+  const avgHoldingStr = avgHoldingYears >= 1
+    ? `${avgHoldingYears.toFixed(1)} years`
+    : `${(avgHoldingYears * 12).toFixed(0)} months`;
+
+  // Set summary
+  summaryDiv.innerHTML = `
+    📌 <b>${numPositions}</b> positions, 
+    ⏳ <b>avg. holding</b>: ${avgHoldingStr}, 
+    📊 <b>daily move</b>: <span style="color: ${weightedDailyMove >= 0 ? 'green' : 'red'}">${(weightedDailyMove * 100).toFixed(2)}%</span>
+  `;
+
+  
 }
 
 let currentModifyItem = null;
