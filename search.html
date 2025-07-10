@@ -906,7 +906,7 @@ if (!nextEarningsDate) {
   reportLinkDiv.style.marginTop = "20px";
 
   // Try lowercase filename (e.g., aapl.pdf)
-  const s3Url = `https://realcpi-reports.s3.amazonaws.com/${ticker.toLowerCase()}.pdf`;
+  const s3Url = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
 
   try {
     const headRes = await fetch(s3Url, { method: "HEAD" });
