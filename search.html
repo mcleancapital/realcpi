@@ -900,29 +900,34 @@ if (!nextEarningsDate) {
   document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
 	
+// Remove old report link if exists
+const existingReport = document.getElementById("pdf-report-link");
+if (existingReport) existingReport.remove();
+
+// Check container exists
+const container = document.getElementById("stock-container");
+if (!container) return;  // Avoid null error
+
 const reportLinkDiv = document.createElement("div");
 reportLinkDiv.id = "pdf-report-link";
 reportLinkDiv.style.marginTop = "20px";
 
 const s3Url = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
 
-// Check via <img> trick to bypass CORS
 const testImg = new Image();
 testImg.onload = () => {
-  // File exists
   reportLinkDiv.innerHTML = `
     <a href="${s3Url}" target="_blank" style="font-weight: bold; color: #0056b3;">
       📄 1-Pager Report for ${ticker.toUpperCase()}
     </a>
   `;
-  document.getElementById("stock-container").appendChild(reportLinkDiv);
+  container.appendChild(reportLinkDiv);
 };
 testImg.onerror = () => {
-  // File does not exist – do nothing
+  console.log(`No report found for ${ticker}`);
 };
-testImg.src = s3Url + '?dummy=.png'; // doesn't load actual image, just triggers check
+testImg.src = s3Url + '?dummy=.png';
 
-	
 
 
 
