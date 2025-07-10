@@ -900,27 +900,28 @@ if (!nextEarningsDate) {
   document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
 	
-  document.getElementById("pdf-report-link")?.remove();
-  const reportLinkDiv = document.createElement("div");
-  reportLinkDiv.id = "pdf-report-link";
-  reportLinkDiv.style.marginTop = "20px";
+const reportLinkDiv = document.createElement("div");
+reportLinkDiv.id = "pdf-report-link";
+reportLinkDiv.style.marginTop = "20px";
 
-  // Try lowercase filename (e.g., aapl.pdf)
-  const s3Url = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
+const s3Url = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
 
-  try {
-    const headRes = await fetch(s3Url, { method: "HEAD" });
-    if (headRes.ok) {
-      reportLinkDiv.innerHTML = `
-        <a href="${s3Url}" target="_blank" style="font-weight: bold; color: #0056b3;">
-          📄 1-Pager Report for ${ticker.toUpperCase()}
-        </a>
-      `;
-      document.getElementById("stock-container").appendChild(reportLinkDiv);
-    }
-  } catch (err) {
-    console.warn("PDF not found or error:", err);
-  }
+// Check via <img> trick to bypass CORS
+const testImg = new Image();
+testImg.onload = () => {
+  // File exists
+  reportLinkDiv.innerHTML = `
+    <a href="${s3Url}" target="_blank" style="font-weight: bold; color: #0056b3;">
+      📄 1-Pager Report for ${ticker.toUpperCase()}
+    </a>
+  `;
+  document.getElementById("stock-container").appendChild(reportLinkDiv);
+};
+testImg.onerror = () => {
+  // File does not exist – do nothing
+};
+testImg.src = s3Url + '?dummy=.png'; // doesn't load actual image, just triggers check
+
 	
 
 
