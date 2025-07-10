@@ -335,11 +335,17 @@ for (const item of filtered) {
       ? parseFloat(item.custom_price)
       : parseFloat(priceMap[ticker]) || 0;
 
-  const lastClose = (ticker === "CASH")
-    ? 1
-    : isPrivate
-      ? livePrice
-      : parseFloat(closeMap[ticker]) || 0;
+  let lastClose;
+  if (ticker === "CASH") {
+    lastClose = 1;
+  } else if (isPrivate && item.last_close) {
+    lastClose = parseFloat(item.last_close);
+  } else if (isPrivate) {
+    lastClose = livePrice;  // fallback if no last_close set
+  } else {
+    lastClose = parseFloat(closeMap[ticker]) || 0;
+  }
+
 
   if (!fxRates[currency]) fxRates[currency] = await fetchFxRate(currency);
   const fxRate = fxRates[currency];
