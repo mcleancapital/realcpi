@@ -899,38 +899,6 @@ if (!nextEarningsDate) {
   document.getElementById("currentPrice").textContent = `$${Number(profile.price).toFixed(2)}`;
   document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
-	
-// Remove old report link if exists
-const existingReport = document.getElementById("pdf-report-link");
-if (existingReport) existingReport.remove();
-
-// Check container exists
-const container = document.getElementById("stock-container");
-if (!container) return;  // Avoid null error
-
-const s3Url = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
-const reportLinkDiv = document.createElement("div");
-reportLinkDiv.id = "pdf-report-link";
-reportLinkDiv.style.marginTop = "20px";
-
-try {
-  const res = await fetch(s3Url, { method: "HEAD" });
-  if (res.ok) {
-    reportLinkDiv.innerHTML = `
-      <a href="${s3Url}" target="_blank" style="font-weight: bold; color: #0056b3;">
-        📄 1-Pager Report for ${ticker.toUpperCase()}
-      </a>
-    `;
-    // Append below the chart or anywhere else you prefer:
-    document.getElementById("info").appendChild(reportLinkDiv);
-  } else {
-    console.log("PDF not found:", res.status);
-  }
-} catch (err) {
-  console.error("Error checking PDF:", err);
-}
-
-
 
 
 
@@ -996,10 +964,13 @@ async function handleInput() {
       li.style.padding = "8px";
       li.style.cursor = "pointer";
       li.addEventListener("click", () => {
-        document.getElementById("tickerInput").value = item.symbol;
+        const ticker = item.symbol.toUpperCase();
+        sessionStorage.setItem("lastTicker", ticker); // ✅ store in session
+        document.getElementById("tickerInput").value = ticker;
         suggestionBox.style.display = "none";
         loadData();
       });
+
       suggestionBox.appendChild(li);
     });
     suggestionBox.style.display = "block";
@@ -1025,13 +996,15 @@ function handleKeyDown(event) {
   } else if (event.key === "Enter") {
     event.preventDefault();
     if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < currentSuggestions.length) {
-      // If suggestion selected, use it
       document.getElementById("tickerInput").value = currentSuggestions[selectedSuggestionIndex].symbol;
     }
-    // Either way, trigger search with current value
+
+    const inputValue = document.getElementById("tickerInput").value.trim().toUpperCase();
+    sessionStorage.setItem("lastTicker", inputValue); // ✅ store in session
     document.getElementById("suggestions").style.display = "none";
     loadData();
-  }
+
+ }
 }
 
 function updateActiveSuggestion(items) {
