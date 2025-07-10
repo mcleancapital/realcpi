@@ -632,6 +632,12 @@ Copyright © 2024
 
 
 <script>
+
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+
+
+	
 function toggleMenu() {
   var menu = document.getElementById("menu-items");
   menu.classList.toggle("show");
@@ -668,7 +674,7 @@ function login() {
     statusEl.innerText = `Welcome, ${data.first_name} ${data.last_name}`;
     statusEl.style.color = "green";
     updateLoginButton(data.first_name, data.last_name);
-    setTimeout(() => window.location.href = "/rc_portfolio.html", 1500);
+    setTimeout(() => window.location.href = `/accept.html?token=${encodeURIComponent(token)}`, 1500);
   })
   .catch(err => {
     console.error(err);
