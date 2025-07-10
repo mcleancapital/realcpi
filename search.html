@@ -693,7 +693,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 <div id="stock-container">
   <div id="chart-container">
-    <canvas id="priceChart"></canvas>
+    <canvas id="priceChart"></canvas><br>
     <a id="pdfLink" href="#" target="_blank" style="font-size: 14px; color: #0056b3; font-weight: bold; text-decoration: none; display: none;">
       📄 Report on Selected Company
     </a>
@@ -795,7 +795,7 @@ async function loadData() {
     const pdfLink = document.getElementById("pdfLink");
     if (exists) {
       pdfLink.href = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker}.pdf`;
-      pdfLink.innerText = `📄 Simple Report on ${ticker.toUpperCase()}`;
+      pdfLink.innerText = `📄 Report on ${ticker.toUpperCase()}`;
       pdfLink.style.display = "inline";
     } else {
       pdfLink.style.display = "none";
