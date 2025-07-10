@@ -688,15 +688,15 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     <button class="range-btn" onclick="setRange('10y')">10 Years</button>
     <button class="range-btn" onclick="setRange('max')">Max</button>
   </div>
-  <a id="pdfLink" href="#" target="_blank" style="font-size: 14px; color: #0056b3; font-weight: bold; text-decoration: none;">
-    📄 Simple Report on Selected Company
-  </a>
 </div>
 
 
 <div id="stock-container">
   <div id="chart-container">
     <canvas id="priceChart"></canvas>
+    <a id="pdfLink" href="#" target="_blank" style="font-size: 14px; color: #0056b3; font-weight: bold; text-decoration: none; display: none;">
+      📄 Report on Selected Company
+    </a>
   </div>
   <div id="info"></div>
 </div>
