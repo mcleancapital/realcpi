@@ -682,10 +682,15 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <span id="companyName"></span>
 
 <div id="controls">
-  <button class="range-btn" onclick="setRange('ytd')">YTD</button>
-  <button class="range-btn" onclick="setRange('5y')">5 Years</button>
-  <button class="range-btn" onclick="setRange('10y')">10 Years</button>
-  <button class="range-btn" onclick="setRange('max')">Max</button>
+  <div>
+    <button class="range-btn" onclick="setRange('ytd')">YTD</button>
+    <button class="range-btn" onclick="setRange('5y')">5 Years</button>
+    <button class="range-btn" onclick="setRange('10y')">10 Years</button>
+    <button class="range-btn" onclick="setRange('max')">Max</button>
+  </div>
+  <a id="pdfLink" href="#" target="_blank" style="font-size: 14px; color: #0056b3; font-weight: bold; text-decoration: none;">
+    📄 Simple Report on Selected Company
+  </a>
 </div>
 
 
@@ -784,6 +789,14 @@ async function loadData() {
   const ticker = document.getElementById("tickerInput").value.toUpperCase();
   if (!ticker) return;
   currentTicker = ticker;
+
+  const pdfLink = document.getElementById("pdfLink");
+  pdfLink.href = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker}.pdf`;
+  pdfLink.innerText = `📄 Simple Report on ${ticker}`;
+  pdfLink.style.display = "inline";
+
+
+	
 
   document.getElementById("suggestions").style.display = "none"; // ⬅️ Add this
 
