@@ -54,6 +54,7 @@ table, th, td {
           <option value="">Loading...</option>
         </select>
         <button onclick="openRenamePortfolioModal()" title="Rename Portfolio" style="font-size: 16px; cursor: pointer;">✏️</button>
+        <button onclick="openSharePortfolioModal()" title="Share Portfolio" style="font-size: 16px; cursor: pointer;">↗️</button>
       </div>
 
 
@@ -160,6 +161,15 @@ table, th, td {
   <button onclick="submitRenamePortfolio()">Rename</button>
   <button onclick="closeRenamePortfolioModal()">Cancel</button>
 </div>
+
+<div id="sharePortfolioModal" style="display:none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%);
+  background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+  <h3>Share Portfolio</h3>
+  <label>Recipient Email:<br><input type="email" id="shareRecipientEmail" required /></label><br><br>
+  <button onclick="submitSharePortfolio()">Share</button>
+  <button onclick="closeSharePortfolioModal()">Cancel</button>
+</div>
+
   
   
 <script>
@@ -855,6 +865,40 @@ async function submitRenamePortfolio() {
   }
 }
 
+function openSharePortfolioModal() {
+  const selected = document.getElementById("portfolioSelect").value;
+  if (!selected) return alert("Please select a portfolio first.");
+  document.getElementById("shareRecipientEmail").value = "";
+  document.getElementById("sharePortfolioModal").style.display = "block";
+}
+
+function closeSharePortfolioModal() {
+  document.getElementById("sharePortfolioModal").style.display = "none";
+}
+
+async function submitSharePortfolio() {
+  const recipientEmail = document.getElementById("shareRecipientEmail").value.trim();
+  const portfolio = document.getElementById("portfolioSelect").value;
+  if (!recipientEmail || !portfolio) return alert("Please enter a valid email and select a portfolio.");
+
+  try {
+    const res = await fetch("https://ztwopo33va.execute-api.us-east-1.amazonaws.com/sharePortfolioRequest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sender: userId,
+        recipient: recipientEmail,
+        portfolio
+      })
+    });
+
+    if (!res.ok) throw new Error("Failed to send share request.");
+    alert("Share request sent!");
+    closeSharePortfolioModal();
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+}
   
   
 </script>
