@@ -60,18 +60,6 @@ async function renderSummary(selectedPortfolio) {
   const avgStr = avgYears >= 1 ? `${avgYears.toFixed(1)} yrs` : `${(avgYears * 12).toFixed(0)} mos`;
 
   let totalValue = 0;
-  let weightedMove = 0;
-  for (const item of filtered) {
-    const price = item.is_private ? item.custom_price : priceMap[(item.ticker || "").toUpperCase()];
-    const prevClose = item.is_private ? item.last_close : quotes.find(q => q.symbol.toUpperCase() === item.ticker.toUpperCase())?.previousClose;
-    const q = parseFloat(item.quantity || 0);
-    const mv = q * price;
-    const move = price && prevClose ? (price / prevClose - 1) : 0;
-    totalValue += mv;
-    weightedMove += mv * move;
-  }
-
-  const dailyMovePct = totalValue ? (weightedMove / totalValue * 100).toFixed(2) + "%" : "N/A";
 
   // Add summary rows
   const summaryRow = document.createElement("tr");
@@ -79,8 +67,8 @@ async function renderSummary(selectedPortfolio) {
   summaryRow.style.fontWeight = "bold";
 
   summaryRow.innerHTML = `
-    <td>📌 ${filtered.length} positions<br>⏳ Avg holding period: ${avgStr}</td>
-    <td style="color:${dailyMovePct.startsWith("-") ? "red" : "green"}">📊 Daily Move: ${dailyMovePct}</td>
+    <td>📌 ${filtered.length} positions</td>
+    <td>⏳ Avg holding period: ${avgStr}</td>
   `;
 
   table.appendChild(summaryRow);
