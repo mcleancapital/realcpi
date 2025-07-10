@@ -80,7 +80,6 @@ async function renderSummary(selectedPortfolio) {
 
   summaryRow.innerHTML = `
     <td>📌 ${filtered.length} positions<br>⏳ Avg holding period: ${avgStr}</td>
-    <td style="color:${dailyMovePct.startsWith("-") ? "red" : "green"}">📊 Daily Move: ${dailyMovePct}</td>
   `;
 
   table.appendChild(summaryRow);
