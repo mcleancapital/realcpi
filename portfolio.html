@@ -119,6 +119,7 @@ table, th, td {
     <div id="privateFields" style="display: none;">
       <label>Name:<br><input type="text" id="modifyName" /></label><br><br>
       <label>Custom Price:<br><input type="number" step="any" id="modifyCustomPrice" /></label><br><br>
+      <label>Last Close:<br><input type="number" step="any" id="modifyLastClose" /></label><br><br>
     </div>
 
     <button type="submit">Save</button>
@@ -462,6 +463,8 @@ function modifyHolding(item) {
     document.getElementById("privateFields").style.display = "block";
     document.getElementById("modifyName").value = item.name || "";
     document.getElementById("modifyCustomPrice").value = item.custom_price || "";
+    document.getElementById("modifyLastClose").value = item.last_close || "";
+
   } else {
     document.getElementById("privateFields").style.display = "none";
   }
@@ -474,12 +477,22 @@ function modifyHolding(item) {
   document.getElementById("deleteButton").disabled = isCash;
   document.getElementById("deleteButton").style.display = isCash ? "none" : "inline";
 
-  // Set field access
-  document.getElementById("modifyQuantity").disabled = false;
-  document.getElementById("modifyPurchasePrice").disabled = isCash;
-  document.getElementById("modifyPurchaseDate").disabled = isCash;
+// Set field access
+document.getElementById("modifyQuantity").disabled = false;
+document.getElementById("modifyPurchasePrice").disabled = isCash;
+document.getElementById("modifyPurchaseDate").disabled = isCash;
+
+if (item.is_private && !isCash) {
+  document.getElementById("modifyName").disabled = false;
+  document.getElementById("modifyCustomPrice").disabled = false;
+  document.getElementById("modifyLastClose").disabled = false;
+} else {
   document.getElementById("modifyName").disabled = true;
   document.getElementById("modifyCustomPrice").disabled = true;
+  document.getElementById("modifyLastClose").disabled = true;
+}
+
+
 
   
   // ⬇️ Position modal near the clicked button
@@ -533,6 +546,13 @@ const ticker = document.getElementById("modifyTicker").value;
       updated.name = document.getElementById("modifyName").value;
       updated.custom_price = parseFloat(document.getElementById("modifyCustomPrice").value);
       updated.is_private = true;
+
+      const lastCloseInput = parseFloat(document.getElementById("modifyLastClose").value);
+        if (!isNaN(lastCloseInput)) {
+          updated.last_close = lastCloseInput;
+        }
+
+      
     }
   }
 
