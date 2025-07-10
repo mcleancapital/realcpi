@@ -868,9 +868,21 @@ async function submitRenamePortfolio() {
 function openSharePortfolioModal() {
   const selected = document.getElementById("portfolioSelect").value;
   if (!selected) return alert("Please select a portfolio first.");
+  
   document.getElementById("shareRecipientEmail").value = "";
-  document.getElementById("sharePortfolioModal").style.display = "block";
+
+  const modal = document.getElementById("sharePortfolioModal");
+
+  // Find the position of the share button
+  const button = event?.target || document.querySelector("button[onclick='openSharePortfolioModal()']");
+  const rect = button.getBoundingClientRect();
+
+  // Position the modal to the right of the share button
+  modal.style.display = "block";
+  modal.style.top = `${window.scrollY + rect.top}px`;
+  modal.style.left = `${rect.left + rect.width + 10}px`; // Shift to the right
 }
+
 
 function closeSharePortfolioModal() {
   document.getElementById("sharePortfolioModal").style.display = "none";
