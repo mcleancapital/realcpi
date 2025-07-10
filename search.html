@@ -790,10 +790,17 @@ async function loadData() {
   if (!ticker) return;
   currentTicker = ticker;
 
-  const pdfLink = document.getElementById("pdfLink");
-  pdfLink.href = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
-  pdfLink.innerText = `📄 Simple Report on ${ticker}`;
-  pdfLink.style.display = "inline";
+  const ticker = currentTicker.toLowerCase();
+  checkIfPdfExists(ticker).then(exists => {
+    const pdfLink = document.getElementById("pdfLink");
+    if (exists) {
+      pdfLink.href = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker}.pdf`;
+      pdfLink.innerText = `📄 Simple Report on ${ticker.toUpperCase()}`;
+      pdfLink.style.display = "inline";
+    } else {
+      pdfLink.style.display = "none";
+   }
+  });
 
 
 	
@@ -1150,6 +1157,20 @@ const email = localStorage.getItem("userEmail");
 if (email) {
   loadSummaryPortfolio();
 }
+
+async function checkIfPdfExists(ticker) {
+  const url = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
+
+  try {
+    const res = await fetch(url, { method: 'HEAD' });
+    return res.ok;
+  } catch (err) {
+    console.error("Error checking PDF:", err);
+    return false;
+  }
+}
+
+	
 </script>
 
 <script src="/static/js/userStatus.js" defer></script>
