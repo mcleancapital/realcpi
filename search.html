@@ -786,11 +786,11 @@ async function getNextEarningsDateYahoo(ticker) {
 	
 
 async function loadData() {
-  const ticker = document.getElementById("tickerInput").value.toUpperCase();
-  if (!ticker) return;
+  const rawInput = document.getElementById("tickerInput").value.trim();
+  if (!rawInput) return;
+  const ticker = rawInput.toLowerCase();
   currentTicker = ticker;
 
-  const ticker = currentTicker.toLowerCase();
   checkIfPdfExists(ticker).then(exists => {
     const pdfLink = document.getElementById("pdfLink");
     if (exists) {
