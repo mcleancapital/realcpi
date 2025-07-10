@@ -63,7 +63,7 @@ async function renderSummary(selectedPortfolio) {
   let weightedMove = 0;
   for (const item of filtered) {
     const price = item.is_private ? item.custom_price : priceMap[(item.ticker || "").toUpperCase()];
-    const prevClose = item.is_private ? price : quotes.find(q => q.symbol.toUpperCase() === item.ticker.toUpperCase())?.previousClose;
+    const prevClose = item.is_private ? item.last_close : quotes.find(q => q.symbol.toUpperCase() === item.ticker.toUpperCase())?.previousClose;
     const q = parseFloat(item.quantity || 0);
     const mv = q * price;
     const move = price && prevClose ? (price / prevClose - 1) : 0;
@@ -80,6 +80,7 @@ async function renderSummary(selectedPortfolio) {
 
   summaryRow.innerHTML = `
     <td>📌 ${filtered.length} positions<br>⏳ Avg holding period: ${avgStr}</td>
+    <td style="color:${dailyMovePct.startsWith("-") ? "red" : "green"}">📊 Daily Move: ${dailyMovePct}</td>
   `;
 
   table.appendChild(summaryRow);
