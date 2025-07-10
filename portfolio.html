@@ -811,8 +811,16 @@ function openRenamePortfolioModal() {
   if (!selected) return alert("Please select a portfolio first.");
 
   document.getElementById("renamePortfolioInput").value = selected;
-  document.getElementById("renamePortfolioModal").style.display = "block";
+
+  const modal = document.getElementById("renamePortfolioModal");
+  const button = event?.target || document.querySelector("button[onclick='openRenamePortfolioModal()']");
+  const rect = button.getBoundingClientRect();
+
+  modal.style.display = "block";
+  modal.style.top = `${window.scrollY + rect.top}px`;
+  modal.style.left = `${rect.left + rect.width + 10}px`; // Open just to the right
 }
+
 
 function closeRenamePortfolioModal() {
   document.getElementById("renamePortfolioModal").style.display = "none";
