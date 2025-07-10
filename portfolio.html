@@ -49,9 +49,13 @@ table, th, td {
   <div style="display: flex; align-items: center; gap: 12px;">
     <div>
       <label for="portfolioSelect">Select Portfolio:</label>
-      <select id="portfolioSelect">
-        <option value="">Loading...</option>
-      </select>
+      <div style="display: inline-flex; align-items: center; gap: 6px;">
+        <select id="portfolioSelect">
+          <option value="">Loading...</option>
+        </select>
+        <button onclick="openRenamePortfolioModal()" title="Rename Portfolio" style="font-size: 16px; cursor: pointer;">✏️</button>
+      </div>
+
 
       <div id="portfolioSummary" style="font-size: 12px; margin-top: 4px; color: #444;"></div>
     </div>
@@ -150,6 +154,12 @@ table, th, td {
   <button onclick="closeCreatePortfolioModal()">Cancel</button>
 </div>
 
+<div id="renamePortfolioModal" style="display:none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -50%); background: white; border: 1px solid #ccc; padding: 20px; z-index: 1000;">
+  <h3>Rename Portfolio</h3>
+  <label>New Portfolio Name:<br><input type="text" id="renamePortfolioInput" required /></label><br><br>
+  <button onclick="submitRenamePortfolio()">Rename</button>
+  <button onclick="closeRenamePortfolioModal()">Cancel</button>
+</div>
   
   
 <script>
@@ -794,6 +804,50 @@ async function submitNewPortfolio() {
   }
 }
 
+
+
+function openRenamePortfolioModal() {
+  const selected = document.getElementById("portfolioSelect").value;
+  if (!selected) return alert("Please select a portfolio first.");
+
+  document.getElementById("renamePortfolioInput").value = selected;
+  document.getElementById("renamePortfolioModal").style.display = "block";
+}
+
+function closeRenamePortfolioModal() {
+  document.getElementById("renamePortfolioModal").style.display = "none";
+}
+
+async function submitRenamePortfolio() {
+  const oldName = document.getElementById("portfolioSelect").value;
+  const newName = document.getElementById("renamePortfolioInput").value.trim();
+
+  if (!newName || newName === oldName) {
+    alert("Enter a new name different from the current one.");
+    return;
+  }
+
+  try {
+    const res = await fetch("https://umd5byy4m3.execute-api.us-east-1.amazonaws.com/renamePortfolio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        user_id: userId,
+        old_portfolio: oldName,
+        new_portfolio: newName
+      })
+    });
+
+    if (!res.ok) throw new Error("Rename failed");
+    alert("Portfolio renamed!");
+    closeRenamePortfolioModal();
+    window.location.reload();  // reload to see updated list
+  } catch (err) {
+    alert("Error renaming portfolio: " + err.message);
+  }
+}
+
+  
   
 </script>
 
