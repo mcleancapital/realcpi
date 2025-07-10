@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3345310399251053"
+     crossorigin="anonymous"></script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-97F7RYQNKC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-97F7RYQNKC');
+</script>
+
+<style>
+.menu-bar {
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+
+}
+
+
+
+.menu-bar ul {
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+}
+
+
+
+.menu-bar ul li {
+
+    display: inline-block;
+    margin: 0 25px;
+
+}
+
+
+
+.menu-bar ul li a {
+
+    text-decoration: none;
+    font-size: 18px;
+    padding: 8px 12px;
+    color: #222;
+
+}
+
+
+.menu-bar ul li a:hover {
+    text-decoration: underline;
+}
+
+.container {
+
+  display: flex; /* Create a flex container */
+  gap: 16px; /* Add space between columns */
+
+}
+
+.left-column {
+
+  flex: 1; /* Takes up 1/4 of the space */
+  background-color: #f9f9f9; /* Optional: Light background for visibility */
+  padding: 16px;
+}
+
+.right-column {
+  flex: 3; /* Takes up 3/4 of the space */
+  padding: 16px;
+}
+
+
+
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+        @font-face{
+
+                font-family:"Whitney";
+                font-style:normal;
+                font-weight:400;
+                font-stretch:normal;
+                font-display:swap;
+                src:url("/fonts/whitney-book-webfont.woff") format("woff");
+                font-display: swap;}
+
+        @font-face{
+
+                font-family:concourse_ot_3_book;
+                font-style:italic;
+                font-weight:400;
+                font-stretch:normal;
+                font-display:swap;
+                src:url('/static/fonts/concourse_ot_3_book_italic.woff2') format('woff2')}
+
+        body{
+
+                font-size:17px;
+                color:#222;
+                line-height:1.43;
+                -webkit-font-smoothing:antialiased;
+                font-family:"Garamond", serif}
+
+        @media (min-width:550px){:root{--grid-columns:2}}
+        @media (min-width:950px){:root{--grid-columns:3}}
+        @media (min-width:1128px){:root{--grid-columns:4}}
+        .box{display:flex;flex-direction:column}.chart canvas{width:100%}:root{--std_padding:40px}
+        header{
+
+                position: relative;
+                display:block;
+                align-items:center;
+                text-align:center}
+
+        header{
+
+                padding:0 var(--std_padding);
+                box-shadow:rgb(0 0 0 / 8%) 0 1px 0}
+
+        #logo{flex:1 0 auto;display:inline-flex;align-items:center;text-align:center;height:64px}#logo svg{height:20px}main{padding:var(--std_padding) 16px}
+
+        #grid{display:grid;grid-gap:40px 12px;
+
+              grid-template-columns:repeat(var(--grid-columns,1),1fr)}
+
+
+
+@media(min-width:730px){
+
+	.mobile-menu {
+        	display: none;
+    	}
+
+
+
+	header{display:flex;align-items:center;padding:0 24px}
+	#logo svg{height:32px}
+	#logo{flex:0 0 auto;display:inline-flex;align-items:center;height:80px}
+
+                	a.box:hover{
+                	        border:.5px solid #ccc;
+                	        border-radius:16px}
+               	 main{padding:var(--std_padding) 16px}
+               	 #grid{grid-gap:24px 8px}
+
+
+
+	.hamburger-menu {
+       		display: none;
+  		}
+
+   	.menu-bar ul {
+        	display: flex;
+    		}
+	}
+
+
+
+
+
+a.box{padding:8px}
+#tag{flex:1 0 auto;padding-left:24px;font-weight:700}
+#tag{flex:0 1 auto;display:none}
+
+
+@media (min-width:730px){#tag{display:block}}
+                a.box{
+                        border:.5px solid transparent;
+                        color:inherit;
+                        text-decoration:none}
+                a.box:hover{
+                        text-decoration:none}
+                a.touch_box{border:.5px solid #ccc;border-radius:16px}.box h3{font-weight:700}.box .date{color:#717171}.pos{color:#55a232}.neg{color:#cc3314}
+
+
+footer{
+	padding:var(--std_padding);
+	box-shadow:rgb(0 0 0 / 8%) 0 -1px 0;
+	text-align:center;
+	color:#717171;font-size:.75em}
+a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.more:hover{text-decoration:none}a.more{text-align:center;display:block;margin:var(--std_padding) auto 0 auto;color:#fff;border:1px solid rgba(0,0,0,.08);border-radius:24px;background-color:#000;padding:14px 19px;width:80px}
+
+
+ @media (max-width: 729px) {
+
+  #ticker-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    justify-content: flex-start; /* Align items to the left */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+  #ticker-bar span {
+    flex: 0 0 auto; /* Prevent shrinking */
+    min-width: 120px; /* Or more depending on your content */
+  }               
+
+    .mobile-menu {
+                display: flex;
+                justify-content: space-around;
+                position: fixed;
+		top: 0;
+                left: 0;
+                width: 100%;
+                background-color: #ffffff;
+                border-bottom: 1px solid #ccc;
+                z-index: 2000;
+                padding: 5px 0;
+            }
+
+            .mobile-menu button {
+                flex: 1;
+                padding: 0px;
+                font-size: 48px;
+		top: 0;
+                border: none;
+                background-color: #fff;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+.mobile-menu button.hamburger-menu {
+
+    flex: 1;
+    padding: 0px;
+    font-size: 48px;
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+    z-index: 2001; /* Ensure above ticker bar and input box */
+    position: relative;
+}
+            .mobile-menu button:hover {
+                background-color: #e0e0e0;
+            }
+            body {
+                margin-top: 64px; /* Prevent content overlap with the fixed menu */
+            }
+
+.left-column {
+    display: none; /* Hide the left column */
+  }
+  .right-column {
+
+    flex: 1; /* Take full width when left column is hidden */
+
+  }
+
+                #logo {
+
+        display: none; /* Hide the logo on mobile */
+
+  }
+                }
+
+
+
+/* Add the center-text class here */
+
+.center-text {
+
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+            width: 100%;             /* Full width of the page */
+            height: 5vh;           /* Take full viewport height */
+            font-size: 35px;         /* Make the font larger */
+            font-weight: bold;       /* Bold text */
+            text-align: center;      /* Text alignment */
+   	    border: 0.5px solid black; /* Add a border around the box */
+    	    background-color: #e8e8e8; /* Light gray background for the box */
+    	    padding: 10px;           /* Space between text and border */
+    	    box-sizing: border-box;  /* Include padding and border in width/height */
+}
+
+
+
+.center-text2 {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+            width: 100%;             /* Full width of the page */
+            height: 5vh;           /* Take full viewport height */
+            font-size: 25px;         /* Make the font larger */
+            font-weight: bold;       /* Bold text */
+            text-align: center;      /* Text alignment */
+}
+
+
+
+.small-centered-text {
+    font-size: 12px;
+    text-align: center;
+    padding: 1px;
+}
+
+
+
+/* Hide the menu items by default on mobile */
+
+@media (max-width: 729px) {
+
+  .container {
+    flex-direction: column; /* Stack elements vertically */
+  }
+
+  .right-column {
+    padding: 16px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .left-column {
+    display: none;
+  }
+
+  /* Optional: center login/signup boxes */
+  .right-column > div {
+    margin: 0 auto !important;
+  }
+	
+    .menu-bar ul {
+        display: none;
+        flex-direction: column;
+        background-color: white;
+        position: fixed; * Now stays visible while scrolling */
+        top: 120px; /* Adjust so it appears below the hamburger */
+        left: 0;
+        width: 100%;
+	z-index: 3000; /* <-- Add this */
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        padding: 0;
+    }
+
+
+
+    /* Show menu when toggled */
+
+    .menu-bar ul.show {
+
+        display: flex;
+
+    }
+
+
+    /* Style menu items in mobile mode */
+
+    .menu-bar ul li {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+
+
+    /* Style hamburger button */
+    .hamburger-menu {
+        display: block;
+        font-size: 48px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        margin-left: auto;
+	position: relative;  /* Required for z-index to take effect */
+        z-index: 2001;        /* 👈 Make sure it floats above the ticker bar and input */
+    }
+}
+
+
+
+</style>
+
+
+
+<meta name="viewport" content="initial-scale=1" />
+
+
+<title>Real CPI</title>
+<meta property="og:site_name" content="Real CPI" />
+<link rel="icon" type="image/png" href="/static/images/favicon.png">
+<script type="application/ld+json">
+
+{
+
+"@context" : "https://schema.org",
+"@type" : "WebSite",
+"name" : "Real CPI",
+"url" : "https://www.realcpi.org/"
+"description": "Real CPI provides economic, stock market, real estate, financial and industry-specific data.",
+  "about": {
+    "@type": "Thing",
+    "name": "Financial Data"
+}
+
+
+</script>
+
+<meta name="description" content="Financial metrics that give you the real data about the market and the economy.">
+<link rel="canonical" href="https://www.realcpi.org/"/>
+
+
+
+	
+
+</head>
+<body>
+<header>
+
+<a id="logo" href="/">
+    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" style="padding: 10px;" />
+</a>
+
+
+    <nav class="menu-bar">
+        <ul id="menu-items">
+            <li><a href="/">Daily Data</a></li>
+            <li><a href="stocks.html">Stock Market</a></li>
+            <li><a href="realestate.html">Real Estate</a></li>
+            <li><a href="economy.html">Economic Dashboard</a></li>
+            <li class="current"><a href="search.html" style="color: blue;">Stock Search</a></li>
+            <li><a href="currency.html">Currency Converter</a></li>
+            <li><a href="https://tradingeconomics.com/commodities" target="_blank" rel="noopener noreferrer">Commodities</a></li>
+        </ul>
+    </nav>
+
+<div style="margin-left: auto; padding: 8px 18px;">
+  <a href="/login" id="login-button" style="font-weight: bold; font-size: 13px; padding: 4px 12px; border: 1px solid #0056b3; color: white; background-color: #0056b3; border-radius: 5px; text-decoration: none;">Log in</a>
+</div>
+
+<!--
+
+<div id="top-right-links">
+
+        <a href="/list" class="top-link">List View</a>
+        <a href="/detailed" class="top-link">Detailed View</a>
+
+</div> -->
+
+</header>
+
+
+
+<div id="ticker-bar">
+  Loading market data...
+</div>
+
+
+
+<style>
+
+#ticker-bar {
+  background-color: #f0f0f0;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-family: "Whitney", sans-serif;
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  text-align: center;
+}
+
+#ticker-bar span {
+  display: inline-block;
+  min-width: 90px;
+}
+.green {
+  color: #55a232;
+}
+.red {
+  color: #cc3314;
+}
+.blue {
+  color: #0056b3;
+  font-weight: bold;
+}
+</style>
+
+
+
+<main>
+
+
+
+<div class="container">
+    <!-- Left Column -->
+    <div class="left-column">
+
+	    
+
+	<iframe src="news.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+
+
+
+    </div>
+
+
+
+    <!-- Right Column -->
+
+    <div class="right-column">
+
+
+
+<div class="mobile-menu">
+    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="54" style="padding: 10px;" />
+	<!-- Hamburger Button for Mobile -->
+    	<button class="hamburger-menu" onclick="toggleMenu()">☰</button>
+</div>
+
+
+<div style="max-width: 70%; width: 500px; margin: 40px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9; box-sizing: border-box;">
+  <h2 style="text-align: center; margin-bottom: 20px;">Log in</h2>
+  <input type="email" id="loginEmail" placeholder="Email" style="width: 90%; padding: 10px;"><br><br>
+  <input type="password" id="loginPassword" placeholder="Password" style="width: 90%; padding: 10px;"><br>
+  <input type="checkbox" id="togglePassword" onclick="togglePasswordVisibility()"> Show Password<br><br>
+  <div style="text-align: center;">	
+  <button onclick="login()" style="width: 80%; text-align: center; padding: 12px; background-color: #0056b3; color: white; font-weight: bold; font-size: 16px; border: none; border-radius: 6px; cursor: pointer;">Log In</button>
+  </div>
+  <p id="loginStatus" style="color: green;"></p>
+
+  <p style="text-align: center; margin-top: 20px;">Not a member? 
+    <button onclick="document.getElementById('signup-section').scrollIntoView({ behavior: 'smooth' })"
+            style="font-size: 14px; padding: 6px 12px; margin-left: 6px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      Sign Up
+    </button>
+  </p>
+
+<p style="text-align: center; margin-top: 10px;">
+  <button onclick="promptReset()" style="font-size: 14px; padding: 6px 12px; background-color: #ffc107; color: black; border: none; border-radius: 4px; cursor: pointer;">
+    Change Password?
+  </button>
+</p>
+
+	
+</div>
+
+
+
+
+	    
+
+
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>____________________________________________________________________________________________________________________________________
+<br><br><br><br><br><br>
+<div id="signup-section"></div><br><br><br>
+
+<div id="signup-section2" style="max-width: 70%; width: 450px; margin: 60px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f1f1f1; box-sizing: border-box;">
+  <h2 style="text-align: center; margin-bottom: 20px;">Sign Up</h2>
+
+  <label for="new-email" style="display: block; font-weight: bold; margin-bottom: 5px;">Email:</label>
+  <input id="new-email" type="email" placeholder="Your email" style="width: 80%; padding: 10px; margin-bottom: 20px; font-size: 16px;">
+
+  <label for="new-first-name" style="display: block; font-weight: bold; margin-bottom: 5px;">First Name:</label>
+  <input id="new-first-name" type="first_name" placeholder="Your first name" style="width: 80%; padding: 10px; margin-bottom: 20px; font-size: 16px;">
+
+  <label for="new-last-name" style="display: block; font-weight: bold; margin-bottom: 5px;">Last name:</label>
+  <input id="new-last-name" type="last_name" placeholder="Your last name" style="width: 80%; padding: 10px; margin-bottom: 20px; font-size: 16px;">
+
+  <label for="currency" style="display: block; font-weight: bold; margin-bottom: 5px;">Base currency:</label>
+  <select id="currency" style="width: 85%; padding: 10px; margin-bottom: 20px; font-size: 16px;">
+  <option value="">Select currency</option>
+  <option value="USD">USD</option>
+  <option value="CAD">CAD</option>
+  <option value="EUR">EUR</option>
+  <option value="JPY">JPY</option>
+  </select>
+
+  <label for="new-password" style="display: block; font-weight: bold; margin-bottom: 5px;">Password:</label>
+  <input id="new-password" type="password" placeholder="Create a password" style="width: 80%; padding: 10px; margin-bottom: 20px; font-size: 16px;">
+
+  <button id="createAccountBtn" onclick="signup()" style="width: 80%; padding: 12px; background-color: #28a745; color: white; font-weight: bold; font-size: 16px; border: none; border-radius: 6px; cursor: pointer;">
+    Create Account
+  </button>
+  <p id="signupStatus" style="color: red; text-align: center; margin-top: 10px;"></p>
+</div>
+
+
+
+
+
+</main>
+
+<footer>
+
+This information is provided for informational purposes only. This is not for advice.
+
+<br><br>
+
+Please let us know if you have any suggestions, including data series or metrics we could add to Real CPI.
+
+<br><br>
+View S&P 500 Calculator:<br><br>
+
+<a href="/sp-calculator">
+<img src="/static/images/sp_calculator.png" alt="Real CPI Logo" height="25" />
+</a>
+<br><br>
+
+Copyright © 2024
+
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
+<a href="mailto:contact@realcpi.org">contact@realcpi.org</a>
+
+</footer>
+
+
+
+<script>
+function toggleMenu() {
+  var menu = document.getElementById("menu-items");
+  menu.classList.toggle("show");
+}
+
+function togglePasswordVisibility() {
+  const pw = document.getElementById("loginPassword");
+  pw.type = pw.type === "password" ? "text" : "password";
+}
+
+function login() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const button = document.querySelector('button[onclick="login()"]');
+  const statusEl = document.getElementById("loginStatus");
+
+  button.disabled = true;
+  button.textContent = "Logging in...";
+  statusEl.textContent = "";
+
+  fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/getUserName", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Invalid login");
+    return res.json();
+  })
+  .then(data => {
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userName", `${data.first_name} ${data.last_name}`);
+    localStorage.setItem("baseCurrency", data.base_currency);
+    statusEl.innerText = `Welcome, ${data.first_name} ${data.last_name}`;
+    statusEl.style.color = "green";
+    updateLoginButton(data.first_name, data.last_name);
+    setTimeout(() => window.location.href = "/rc_portfolio.html", 1500);
+  })
+  .catch(err => {
+    console.error(err);
+    statusEl.innerText = "Login failed: " + err.message;
+    statusEl.style.color = "red";
+    button.disabled = false;
+    button.textContent = "Log In";
+  });
+}
+
+
+// Optional: auto-redirect if already logged in
+window.addEventListener("DOMContentLoaded", () => {
+  const email = localStorage.getItem("userEmail");
+  const name = localStorage.getItem("userName");
+
+  if (email && name) {
+    const [firstName, lastName] = name.split(" ");
+    updateLoginButton(firstName, lastName);
+  }
+});
+</script>
+
+<script>
+function updateLoginButton(firstName, lastName) {
+  const container = document.querySelector("div[style*='margin-left: auto']");
+
+  container.innerHTML = `
+    <div style="text-align: right;">
+      <div style="font-weight: bold; font-size: 13px;">${firstName} ${lastName}</div>
+      <a href="#" onclick="logout()" style="font-size: 12px; color: #0056b3;">Log out</a>
+    </div>
+  `;
+}
+
+
+async function signup() {
+  const email = document.getElementById("new-email").value.trim();
+  const first_name = document.getElementById("new-first-name").value.trim();
+  const last_name = document.getElementById("new-last-name").value.trim();
+  const base_currency = document.getElementById("currency").value;
+  const password = document.getElementById("new-password").value;
+  const button = document.getElementById("createAccountBtn");
+
+  const statusEl = document.getElementById("signupStatus");
+  statusEl.style.color = "red";
+  statusEl.textContent = "";
+
+  if (!email || !first_name || !last_name || !base_currency || !password) {
+    statusEl.textContent = "Please fill in all fields.";
+    return;
+  }
+
+  // Show loading state
+  button.disabled = true;
+  button.textContent = "Creating...";
+
+  try {
+    const res = await fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, first_name, last_name, base_currency, password })
+    });
+
+    const data = await res.json();
+
+    if (res.status === 409) {
+      statusEl.textContent = "Account already exists.";
+    } else if (res.ok) {
+      statusEl.style.color = "green";
+      statusEl.textContent = "Account created successfully!";
+      setTimeout(() => {
+        document.getElementById("loginEmail").value = email;
+        document.getElementById("loginPassword").value = password;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 1000);
+    } else {
+      statusEl.textContent = data.message || "Something went wrong.";
+    }
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = "Network or server error.";
+  }
+
+  // Reset button
+  button.disabled = false;
+  button.textContent = "Create Account";
+}
+
+
+
+function promptReset() {
+  const email = prompt("Please enter your email to reset your password:");
+  if (!email) return;
+
+  const confirmed = confirm(`A password reset link will be sent to ${email}. Continue?`);
+  if (!confirmed) return;
+
+  fetch("https://210jsf4oy1.execute-api.us-east-1.amazonaws.com/reset-password", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Email not found or failed to send.");
+    return res.json();
+  })
+  .then(data => {
+    alert("Check your email for a link to reset your password.");
+  })
+  .catch(err => {
+    console.error(err);
+    alert("There was an error sending the reset email: " + err.message);
+  });
+}
+
+
+
+	
+function logout() {
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("baseCurrency");
+  location.reload();
+}
+	
+</script>
+    
+	  
+</body>
+
+<script>
+
+function formatNumber(value) {
+
+  return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+}
+
+
+
+async function loadTickerBar() {
+
+  const apiKey = 'y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj'; // Replace with your actual API key
+
+  const symbols = [
+    '^GSPC',       // S&P 500
+    '^IXIC',       // NASDAQ
+    '^RUT',        // Russell 2000
+    '^GSPTSE',     // TSX
+    'URTH',        // MSCI World ETF
+    'CLUSD',        // Crude Oil
+    '^TNX',        // 10-Year Treasury
+    'BTCUSD',     // Bitcoin
+    'XAUUSD',     // Gold
+    'CADUSD'     // CAD/USD
+  ];
+
+
+
+  const displayNames = {
+    '^GSPC': 'S&P 500',
+    '^IXIC': 'NASDAQ',
+    '^RUT': 'Russell 2000',
+    '^GSPTSE': 'S&P/TSX',
+    'URTH': 'MSCI World',
+    'CLUSD': 'Crude Oil',
+    '^TNX': '10-Year',
+    'BTCUSD': 'Bitcoin',
+    'XAUUSD': 'Gold',	  
+    'CADUSD': 'CAD/USD'
+  };
+
+
+
+  try {
+
+    const url = `https://financialmodelingprep.com/api/v3/quote/${symbols.join(',')}?apikey=${apiKey}`;
+
+    const res = await fetch(url);
+
+    const data = await res.json();
+
+
+
+    const bar = document.getElementById("ticker-bar");
+
+    bar.innerHTML = "";
+
+
+
+    data.forEach(item => {
+
+      const changeClass = item.changesPercentage >= 0 ? "green" : "red";
+
+      const display = displayNames[item.symbol] || item.symbol;
+
+      const span = document.createElement("span");
+
+      const tickerMap = {
+        '^GSPC': 'VOO',
+        '^IXIC': 'QQQ',
+        '^RUT': 'IWM',
+        '^GSPTSE': 'XIC.to',
+        'URTH': 'URTH',
+        'CLUSD': 'CLUSD',
+        '^TNX': 'IEF',
+        'BTCUSD': 'BTCUSD',
+	'XAUUSD': 'XAUUSD',
+        'CADUSD': 'CADUSD'
+
+      };
+
+
+
+      const targetTicker = tickerMap[item.symbol] || item.symbol;
+
+
+
+      span.innerHTML = `
+
+        <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
+
+          <div class="blue">${display}</div>
+
+          <div>${formatNumber(item.price)}</div>
+
+          <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
+
+        </a>
+
+      `;
+
+
+
+      // ✅ Append the span to the ticker bar
+
+      bar.appendChild(span);
+
+
+
+    });
+
+  } catch (error) {
+
+    document.getElementById("ticker-bar").textContent = "Unable to load market data.";
+
+    console.error("Ticker fetch error:", error);
+
+  }
+
+}
+
+
+
+loadTickerBar();
+
+setInterval(loadTickerBar, 30000); // Refresh every 30 seconds
+
+</script>
+
+</html>
