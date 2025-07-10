@@ -67,8 +67,7 @@ async function renderSummary(selectedPortfolio) {
   summaryRow.style.fontWeight = "bold";
 
   summaryRow.innerHTML = `
-    <td>📌 ${filtered.length} positions</td>
-    <td>⏳ Avg holding period: ${avgStr}</td>
+    <td>📌 ${filtered.length} positions • ⏳ Avg holding period: ${avgStr}</td>
   `;
 
   table.appendChild(summaryRow);
