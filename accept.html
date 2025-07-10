@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Accept Portfolio Share</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      max-width: 500px;
+    }
+    .hidden { display: none; }
+    button {
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📤 Portfolio Invitation</h2>
+<div id="status">Loading...</div>
+
+<div id="details" class="hidden">
+  <p><b><span id="sender"></span></b> has invited you to access the portfolio <b><span id="portfolio"></span></b>.</p>
+  <p>Click below to accept this portfolio into your account.</p>
+  <button onclick="acceptShare()">✅ Accept Portfolio</button>
+</div>
+
+<script>
+  const token = new URLSearchParams(window.location.search).get("token");
+  const userEmail = localStorage.getItem("userEmail");
+
+  if (!token) {
+    document.getElementById("status").innerText = "Missing token.";
+  } else {
+    fetch(`https://ztwopo33va.execute-api.us-east-1.amazonaws.com/getShareDetails?token=${token}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.status !== "pending") {
+          document.getElementById("status").innerText = "This portfolio has already been accepted or is no longer valid.";
+          return;
+        }
+
+        document.getElementById("sender").innerText = data.sender;
+        document.getElementById("portfolio").innerText = data.portfolio;
+
+        if (!userEmail) {
+          document.getElementById("status").innerHTML = `
+            Please <a href="/login.html?redirect=accept.html?token=${token}">log in</a> to accept this portfolio.
+          `;
+          return;
+        }
+
+        if (userEmail.toLowerCase() !== data.recipient.toLowerCase()) {
+          document.getElementById("status").innerText = "This invitation was sent to another email address.";
+          return;
+        }
+
+        document.getElementById("status").classList.add("hidden");
+        document.getElementById("details").classList.remove("hidden");
+      })
+      .catch(err => {
+        document.getElementById("status").innerText = "Error loading invitation: " + err.message;
+      });
+  }
+
+  function acceptShare() {
+    fetch("https://ztwopo33va.execute-api.us-east-1.amazonaws.com/acceptSharedPortfolio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, user_id: userEmail })
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert("Portfolio accepted!");
+      window.location.href = "/portfolio.html";
+    })
+    .catch(err => {
+      alert("Error accepting portfolio: " + err.message);
+    });
+  }
+</script>
+
+</body>
+</html>
