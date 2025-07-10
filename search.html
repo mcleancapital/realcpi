@@ -791,7 +791,7 @@ async function loadData() {
   currentTicker = ticker;
 
   const pdfLink = document.getElementById("pdfLink");
-  pdfLink.href = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker}.pdf`;
+  pdfLink.href = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
   pdfLink.innerText = `📄 Simple Report on ${ticker}`;
   pdfLink.style.display = "inline";
 
