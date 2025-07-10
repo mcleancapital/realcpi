@@ -908,25 +908,28 @@ if (existingReport) existingReport.remove();
 const container = document.getElementById("stock-container");
 if (!container) return;  // Avoid null error
 
+const s3Url = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
 const reportLinkDiv = document.createElement("div");
 reportLinkDiv.id = "pdf-report-link";
 reportLinkDiv.style.marginTop = "20px";
 
-const s3Url = `https://realcpi-reports.s3.us-east-1.amazonaws.com/${ticker.toLowerCase()}.pdf`;
+try {
+  const res = await fetch(s3Url, { method: "HEAD" });
+  if (res.ok) {
+    reportLinkDiv.innerHTML = `
+      <a href="${s3Url}" target="_blank" style="font-weight: bold; color: #0056b3;">
+        📄 1-Pager Report for ${ticker.toUpperCase()}
+      </a>
+    `;
+    // Append below the chart or anywhere else you prefer:
+    document.getElementById("info").appendChild(reportLinkDiv);
+  } else {
+    console.log("PDF not found:", res.status);
+  }
+} catch (err) {
+  console.error("Error checking PDF:", err);
+}
 
-const testImg = new Image();
-testImg.onload = () => {
-  reportLinkDiv.innerHTML = `
-    <a href="${s3Url}" target="_blank" style="font-weight: bold; color: #0056b3;">
-      📄 1-Pager Report for ${ticker.toUpperCase()}
-    </a>
-  `;
-  container.appendChild(reportLinkDiv);
-};
-testImg.onerror = () => {
-  console.log(`No report found for ${ticker}`);
-};
-testImg.src = s3Url + '?dummy=.png';
 
 
 
