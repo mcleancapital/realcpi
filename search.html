@@ -679,6 +679,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 </div>
 
 <span id="currentPrice"></span>
+<span id="dailyChange" style="margin-left: 10px; font-size: 16px;"></span>
 <span id="companyName"></span>
 
 <div id="controls">
@@ -692,13 +693,20 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 
 <div id="stock-container">
-  <div id="chart-container">
-    <canvas id="priceChart"></canvas><br>
-    <a id="pdfLink" href="#" target="_blank" style="font-size: 14px; color: #0056b3; font-weight: bold; text-decoration: none; display: none;">
-      📄 Report on Selected Company
-    </a>
+	  <div id="info"></div>
+<div id="chart-container">
+  <canvas id="priceChart"></canvas><br>
+  <a id="pdfLink" href="#" target="_blank" style="font-size: 14px; color: #0056b3; font-weight: bold; text-decoration: none; display: none;">
+    📄 Report on Selected Company
+  </a>
+
+  <div id="extra-metrics" style="font-size: 14px; margin-top: 10px; display: none;">
+    <p><strong>Last Close:</strong> <span id="last-close"></span></p>
+    <p><strong>Avg Daily Volume:</strong> <span id="avg-volume"></span></p>
   </div>
-  <div id="info"></div>
+</div>
+
+
 </div>
 
 
@@ -876,6 +884,27 @@ if (!nextEarningsDate) {
   if (!profile || allPrices.length === 0) {
     document.getElementById("info").innerHTML = `<p>Not found.</p>`;
     document.getElementById("currentPrice").textContent = "";
+
+    // Get last close and volume from price history
+    const lastClose = allPrices.length >= 2 ? allPrices[1].close : null;
+    const avgVolume = historyData.historical?.slice(0, 30).reduce((sum, d) => sum + (d.volume || 0), 0) / 30;
+
+    // Update daily move (%)
+    const currentPrice = Number(profile.price);
+    if (lastClose) {
+      const dailyMove = ((currentPrice / lastClose - 1) * 100).toFixed(2);
+      document.getElementById("dailyChange").textContent = `(${dailyMove > 0 ? '+' : ''}${dailyMove}%)`;
+      document.getElementById("dailyChange").style.color = dailyMove >= 0 ? "#55a232" : "#cc3314";
+    } else {
+      document.getElementById("dailyChange").textContent = "";
+    }
+
+    // Show last close and avg volume
+    document.getElementById("last-close").textContent = lastClose ? `$${lastClose.toFixed(2)}` : "N/A";
+    document.getElementById("avg-volume").textContent = avgVolume ? Math.round(avgVolume).toLocaleString() : "N/A";
+    document.getElementById("extra-metrics").style.display = "block";
+
+	  
     document.getElementById("companyName").textContent = "";
     return;
   }
