@@ -81,14 +81,14 @@ document.addEventListener("DOMContentLoaded", () => {
 const content = email
   ? `
     <div style="text-align: right;">
-      <a id="user-name" href="rc_portfolio.html" style="font-weight: bold; font-size: 17px; color: black; text-decoration: none; cursor: pointer;">
+      <a id="user-name" href="rc_portfolio.html" style="font-weight: bold; font-size: 14px; color: black; text-decoration: none; cursor: pointer;">
         ${name || "Logged in"} ⭐
       </a><br>
-      <a href="#" onclick="logout()" style="font-size: 17px; color: #0056b3;">Log out</a>
+      <a href="#" onclick="logout()" style="font-size: 14px; color: #0056b3;">Log out</a>
     </div>
   `
     : `
-      <a href="/login" id="login-button" style="font-weight: bold; font-size: 13px; padding: 4px 12px; border: 1px solid #0056b3; color: white; background-color: #0056b3; border-radius: 5px; text-decoration: none;">Log in</a>
+      <a href="/login" id="login-button" style="font-weight: bold; font-size: 14px; padding: 4px 12px; border: 1px solid #0056b3; color: white; background-color: #0056b3; border-radius: 5px; text-decoration: none;">Log in</a>
     `;
 
 
