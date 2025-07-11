@@ -701,7 +701,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 
 <div id="stock-container">
-	  <div id="info"></div>
+	  <div id="info" style="font-size: 17px; line-height: 1.43;"></div>
 <div id="chart-container">
   <canvas id="priceChart"></canvas><br>
   <a id="pdfLink" href="#" target="_blank" style="font-size: 14px; color: #0056b3; font-weight: bold; text-decoration: none; display: none;">
@@ -842,7 +842,8 @@ const [
   fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${ticker}?serietype=line&apikey=${apiKey}`).then(r => r.json()),
   fetch(`https://financialmodelingprep.com/api/v3/balance-sheet-statement/${ticker}?limit=1&apikey=${apiKey}`).then(r => r.json()),
   fetch(`https://financialmodelingprep.com/api/v3/analyst-estimates/${ticker}?apikey=${apiKey}`).then(r => r.json()),
-  fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json())
+  fetch(`https://financialmodelingprep.com/api/v3/ratios-ttm/${ticker}?apikey=${apiKey}`).then(r => r.json()),
+  fetch(`https://financialmodelingprep.com/api/v3/quote/${ticker}?apikey=${apiKey}`).then(r => r.json())
 ]);
 
 // Get earnings from Yahoo first
@@ -946,7 +947,8 @@ const volumeData = await fetch(`https://financialmodelingprep.com/api/v3/histori
   .then(r => r.json())
   .catch(() => []);
 
-const avgVolume = volumeData.length
+const quote = quoteData[0];
+const avgVolume = quote?.avgVolume || "N/A";
   ? Math.round(volumeData.slice(0, 30).reduce((sum, d) => sum + (d.volume || 0), 0) / 30)
   : "N/A";
 
@@ -960,8 +962,17 @@ if (lastClose) {
   document.getElementById("dailyChange").textContent = "";
 }
 
+function formatVolume(num) {
+  if (typeof num !== 'number') return "N/A";
+  if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(1) + 'B';
+  if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + 'M';
+  if (num >= 1_000) return (num / 1_000).toFixed(0) + 'K';
+  return num.toString();
+}
+
+	
 document.getElementById("last-close").textContent = lastClose ? `$${lastClose.toFixed(2)}` : "N/A";
-document.getElementById("avg-volume").textContent = avgVolume !== "N/A" ? avgVolume.toLocaleString() : "N/A";
+document.getElementById("avg-volume").textContent = avgVolume !== "N/A" ? formatVolume(avgVolume) : "N/A";
 document.getElementById("extra-metrics").style.display = "block";
 
 
