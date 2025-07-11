@@ -885,29 +885,6 @@ if (!nextEarningsDate) {
     document.getElementById("info").innerHTML = `<p>Not found.</p>`;
     document.getElementById("currentPrice").textContent = "";
 
-    // Get last close and volume from price history
-    const lastClose = allPrices.length >= 2 ? allPrices[1].close : null;
-    const avgVolume = historyData.historical?.slice(0, 30).reduce((sum, d) => sum + (d.volume || 0), 0) / 30;
-
-    // Update daily move (%)
-    const currentPrice = Number(profile.price);
-    if (lastClose) {
-      const dailyMove = ((currentPrice / lastClose - 1) * 100).toFixed(2);
-      document.getElementById("dailyChange").textContent = `(${dailyMove > 0 ? '+' : ''}${dailyMove}%)`;
-      document.getElementById("dailyChange").style.color = dailyMove >= 0 ? "#55a232" : "#cc3314";
-    } else {
-      document.getElementById("dailyChange").textContent = "";
-    }
-
-    // Show last close and avg volume
-    document.getElementById("last-close").textContent = lastClose ? `$${lastClose.toFixed(2)}` : "N/A";
-    document.getElementById("avg-volume").textContent = avgVolume ? Math.round(avgVolume).toLocaleString() : "N/A";
-    document.getElementById("extra-metrics").style.display = "block";
-
-	  
-    document.getElementById("companyName").textContent = "";
-    return;
-  }
 
 
 
@@ -949,6 +926,22 @@ if (!nextEarningsDate) {
   document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
 
+// Show daily move, last close, and volume
+const lastClose = allPrices.length >= 2 ? allPrices[1].close : null;
+const avgVolume = historyData.historical?.slice(0, 30).reduce((sum, d) => sum + (d.volume || 0), 0) / 30;
+
+const currentPriceNum = Number(profile.price);
+if (lastClose) {
+  const dailyMove = ((currentPriceNum / lastClose - 1) * 100).toFixed(2);
+  document.getElementById("dailyChange").textContent = `(${dailyMove > 0 ? '+' : ''}${dailyMove}%)`;
+  document.getElementById("dailyChange").style.color = dailyMove >= 0 ? "#55a232" : "#cc3314";
+} else {
+  document.getElementById("dailyChange").textContent = "";
+}
+
+document.getElementById("last-close").textContent = lastClose ? `$${lastClose.toFixed(2)}` : "N/A";
+document.getElementById("avg-volume").textContent = avgVolume ? Math.round(avgVolume).toLocaleString() : "N/A";
+document.getElementById("extra-metrics").style.display = "block";
 
 
   fetch("https://pqzw0hq6g4.execute-api.us-east-1.amazonaws.com/default/generateTickerNews", {
