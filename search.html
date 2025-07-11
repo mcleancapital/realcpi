@@ -629,6 +629,14 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
           flex: 1;
           min-width: 250px;
         }
+
+#extra-metrics {
+  font-size: 17px;
+  line-height: 1.43;
+  margin-top: 10px;
+  display: none;
+  color: #222;
+}
 	
 </style>
 
@@ -934,7 +942,14 @@ if (!nextEarningsDate) {
 
 // Show daily move, last close, and volume
 const lastClose = allPrices.length >= 2 ? allPrices[1].close : null;
-const avgVolume = historyData.historical?.slice(0, 30).reduce((sum, d) => sum + (d.volume || 0), 0) / 30;
+const volumeData = await fetch(`https://financialmodelingprep.com/api/v3/historical-chart/1min/${ticker}?apikey=${apiKey}`)
+  .then(r => r.json())
+  .catch(() => []);
+
+const avgVolume = volumeData.length
+  ? Math.round(volumeData.slice(0, 30).reduce((sum, d) => sum + (d.volume || 0), 0) / 30)
+  : "N/A";
+
 
 const currentPriceNum = Number(profile.price);
 if (lastClose) {
@@ -946,7 +961,7 @@ if (lastClose) {
 }
 
 document.getElementById("last-close").textContent = lastClose ? `$${lastClose.toFixed(2)}` : "N/A";
-document.getElementById("avg-volume").textContent = avgVolume ? Math.round(avgVolume).toLocaleString() : "N/A";
+document.getElementById("avg-volume").textContent = avgVolume !== "N/A" ? avgVolume.toLocaleString() : "N/A";
 document.getElementById("extra-metrics").style.display = "block";
 
 
