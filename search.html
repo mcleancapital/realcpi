@@ -836,7 +836,8 @@ const [
   historyData,
   balanceSheetData,
   estimatesData,
-  ratiosData
+  ratiosData,
+  quoteData
 ] = await Promise.all([
   fetch(`https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=${apiKey}`).then(r => r.json()),
   fetch(`https://financialmodelingprep.com/api/v3/historical-price-full/${ticker}?serietype=line&apikey=${apiKey}`).then(r => r.json()),
