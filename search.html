@@ -949,9 +949,12 @@ const volumeData = await fetch(`https://financialmodelingprep.com/api/v3/histori
   .catch(() => []);
 
 const quote = quoteData[0];
-const avgVolume = quote?.avgVolume || "N/A";
-  ? Math.round(volumeData.slice(0, 30).reduce((sum, d) => sum + (d.volume || 0), 0) / 30)
-  : "N/A";
+const avgVolume = quote?.avgVolume || (
+  volumeData.length > 0
+    ? Math.round(volumeData.slice(0, 30).reduce((sum, d) => sum + (d.volume || 0), 0) / 30)
+    : "N/A"
+);
+
 
 
 const currentPriceNum = Number(profile.price);
