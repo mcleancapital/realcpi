@@ -842,7 +842,15 @@ async function loadData() {
   });
 
 async function saveStaticSnapshot(ticker) {
-  const htmlContent = document.documentElement.outerHTML;
+  let htmlContent = document.documentElement.outerHTML;
+
+  // Fix relative iframe src paths by replacing them with absolute URLs
+  htmlContent = htmlContent
+    .replace(/src="news\.html"/g, 'src="https://www.realcpi.org/news.html"')
+    .replace(/src="news2\.html"/g, 'src="https://www.realcpi.org/news2.html"')
+    .replace(/src="summary_portfolio\.html"/g, 'src="https://www.realcpi.org/summary_portfolio.html"')
+    .replace(/src="\/static\//g, 'src="https://www.realcpi.org/static/') // also fix static paths
+    .replace(/href="\/static\//g, 'href="https://www.realcpi.org/static/');
 
   await fetch('https://vyay46elra.execute-api.us-east-1.amazonaws.com/save-html', {
     method: 'POST',
@@ -853,6 +861,8 @@ async function saveStaticSnapshot(ticker) {
     })
   });
 }
+
+
 	
 
   document.getElementById("suggestions").style.display = "none"; // ⬅️ Add this
