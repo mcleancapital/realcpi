@@ -850,7 +850,9 @@ async function saveStaticSnapshot(ticker) {
     .replace(/src="news2\.html"/g, 'src="https://www.realcpi.org/news2.html"')
     .replace(/src="summary_portfolio\.html"/g, 'src="https://www.realcpi.org/summary_portfolio.html"')
     .replace(/src="\/static\//g, 'src="https://www.realcpi.org/static/') // also fix static paths
-    .replace(/href="\/static\//g, 'href="https://www.realcpi.org/static/');
+    .replace(/href="\/static\//g, 'href="https://www.realcpi.org/static/')
+    .replace(/script\.src\s*=\s*["']\/static\/js\/summaryPortfolio\.js["']/g, 'script.src="https://www.realcpi.org/static/js/summaryPortfolio.js"');
+	
 
   await fetch('https://vyay46elra.execute-api.us-east-1.amazonaws.com/save-html', {
     method: 'POST',
