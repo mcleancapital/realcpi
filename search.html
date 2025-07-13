@@ -844,7 +844,7 @@ async function loadData() {
 async function saveStaticSnapshot(ticker) {
   const htmlContent = document.documentElement.outerHTML;
 
-  await fetch('https://your-backend-endpoint/save-html', {
+  await fetch('https://vyay46elra.execute-api.us-east-1.amazonaws.com/save-html', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
