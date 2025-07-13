@@ -1,0 +1,39 @@
+name: Sync S3 to GitHub
+
+on:
+  workflow_dispatch:  # manually triggered
+  schedule:
+    - cron: '0 * * * *'  # every hour
+
+jobs:
+  sync-html:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-east-1  # adjust if needed
+      BUCKET_NAME: realcpi-reports
+      S3_PREFIX: stocks/
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Sync HTML files from S3
+      run: |
+        mkdir -p stocks
+        aws s3 sync s3://$BUCKET_NAME/$S3_PREFIX stocks/ --exclude "*" --include "*.html"
+
+    - name: Commit and push changes
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add stocks/*.html
+        git diff --cached --quiet || git commit -m "Sync updated static HTML from S3"
+        git push
