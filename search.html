@@ -841,7 +841,18 @@ async function loadData() {
    }
   });
 
+async function saveStaticSnapshot(ticker) {
+  const htmlContent = document.documentElement.outerHTML;
 
+  await fetch('https://your-backend-endpoint/save-html', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      filename: `${ticker.toLowerCase()}.html`,
+      html: htmlContent
+    })
+  });
+}
 	
 
   document.getElementById("suggestions").style.display = "none"; // ⬅️ Add this
@@ -965,6 +976,10 @@ if (!nextEarningsDate) {
   document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
 
+await saveStaticSnapshot(ticker);
+
+
+	
 // Show daily move, last close, and volume
 const lastClose = allPrices.length >= 2 ? allPrices[1].close : null;
 const volumeData = await fetch(`https://financialmodelingprep.com/api/v3/historical-chart/1min/${ticker}?apikey=${apiKey}`)
