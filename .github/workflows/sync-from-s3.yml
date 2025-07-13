@@ -2,8 +2,6 @@ name: Sync S3 to GitHub
 
 on:
   workflow_dispatch:  # manually triggered
-  schedule:
-    - cron: '0 * * * *'  # every hour
 
 jobs:
   sync-html:
@@ -11,7 +9,7 @@ jobs:
 
     env:
       AWS_REGION: us-east-1  # adjust if needed
-      BUCKET_NAME: realcpi-reports
+      BUCKET_NAME: realcpi-html
       S3_PREFIX: stocks/
 
     steps:
