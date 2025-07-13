@@ -1,4 +1,4 @@
-name: Sync S3 to GitHub
+name: **Sync S3 to GitHub
 
 on:
   workflow_dispatch:  # manually triggered
@@ -37,6 +37,8 @@ jobs:
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         git add stocks/*.html
-        git diff --cached --quiet || git commit -m "Sync updated static HTML from S3"
-        git push https://x-access-token:${GH_PAT}@github.com/mcleancapital/realcpi.git HEAD:main
-
+        git diff --cached --quiet || (
+          git commit -m "Sync updated static HTML from S3"
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/mcleancapital/realcpi.git
+          git push origin HEAD:main
+        )
