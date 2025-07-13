@@ -1,4 +1,4 @@
-name: **Sync S3 to GitHub
+name: 0. Sync S3 to GitHub
 
 on:
   workflow_dispatch:  # manually triggered
