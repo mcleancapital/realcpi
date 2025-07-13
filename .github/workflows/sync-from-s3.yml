@@ -31,9 +31,11 @@ jobs:
         aws s3 sync s3://$BUCKET_NAME/$S3_PREFIX stocks/ --exclude "*" --include "*.html"
 
     - name: Commit and push changes
+      env:
+        GH_PAT: ${{ secrets.GH_PAT }}
       run: |
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
         git add stocks/*.html
         git diff --cached --quiet || git commit -m "Sync updated static HTML from S3"
-        git push
+        git push https://x-access-token:${GH_PAT}@github.com/mcleancapital/realcpi.git
