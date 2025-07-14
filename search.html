@@ -851,7 +851,13 @@ async function saveStaticSnapshot(ticker) {
     .replace(/src="summary_portfolio\.html"/g, 'src="https://www.realcpi.org/summary_portfolio.html"')
     .replace(/src="\/static\//g, 'src="https://www.realcpi.org/static/') // also fix static paths
     .replace(/href="\/static\//g, 'href="https://www.realcpi.org/static/')
-    .replace(/script\.src\s*=\s*["']\/static\/js\/summaryPortfolio\.js["']/g, 'script.src="https://www.realcpi.org/static/js/summaryPortfolio.js"');
+    .replace(/script\.src\s*=\s*["']\/static\/js\/summaryPortfolio\.js["']/g, 'script.src="https://www.realcpi.org/static/js/summaryPortfolio.js"')
+    .replace(/href="stocks\.html"/g, 'href="https://www.realcpi.org/stocks.html"')
+    .replace(/href="realestate\.html"/g, 'href="https://www.realcpi.org/realestate.html"')
+    .replace(/href="economy\.html"/g, 'href="https://www.realcpi.org/economy.html"')
+    .replace(/href="search\.html"/g, 'href="https://www.realcpi.org/search.html"')
+    .replace(/href="currency\.html"/g, 'href="https://www.realcpi.org/currency.html"')
+    .replace(/href="\/"/g, 'href="https://www.realcpi.org/"');
 	
 
   await fetch('https://vyay46elra.execute-api.us-east-1.amazonaws.com/save-html', {
