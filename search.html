@@ -121,7 +121,7 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
 
 .summary-container {
   font-size: 13px;
-  padding: 8px;
+  padding: 8px;f
   border-radius: 6px;
   margin-top: 10px;
 }
@@ -841,8 +841,34 @@ async function loadData() {
    }
   });
 
+async function saveStaticSnapshot(ticker) {
+  let htmlContent = document.documentElement.outerHTML;
 
+  // Fix relative iframe src paths by replacing them with absolute URLs
+  htmlContent = htmlContent
+    .replace(/src="news\.html"/g, 'src="https://www.realcpi.org/news.html"')
+    .replace(/src="news2\.html"/g, 'src="https://www.realcpi.org/news2.html"')
+    .replace(/src="summary_portfolio\.html"/g, 'src="https://www.realcpi.org/summary_portfolio.html"')
+    .replace(/src="\/static\//g, 'src="https://www.realcpi.org/static/') // also fix static paths
+    .replace(/href="\/static\//g, 'href="https://www.realcpi.org/static/')
+    .replace(/script\.src\s*=\s*["']\/static\/js\/summaryPortfolio\.js["']/g, 'script.src="https://www.realcpi.org/static/js/summaryPortfolio.js"')
+    .replace(/href="stocks\.html"/g, 'href="https://www.realcpi.org/stocks.html"')
+    .replace(/href="realestate\.html"/g, 'href="https://www.realcpi.org/realestate.html"')
+    .replace(/href="economy\.html"/g, 'href="https://www.realcpi.org/economy.html"')
+    .replace(/href="search\.html"/g, 'href="https://www.realcpi.org/search.html"')
+    .replace(/href="currency\.html"/g, 'href="https://www.realcpi.org/currency.html"')
+    .replace(/href="\/"/g, 'href="https://www.realcpi.org/"');
+	
 
+  await fetch('https://vyay46elra.execute-api.us-east-1.amazonaws.com/save-html', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      filename: `${ticker.toLowerCase()}.html`,
+      html: htmlContent
+    })
+  });
+}
 
 
 	
@@ -886,68 +912,6 @@ if (!nextEarningsDate) {
 
 
 
-async function saveStaticSnapshot(ticker, profile) {
-  const titleTag = `<title>${profile.companyName} (${profile.symbol}) - Stock Overview | Real CPI</title>`;
-  const descriptionTag = `<meta name="description" content="Key financial data and analysis for ${profile.companyName} (${profile.symbol}). Includes stock price, P/E, earnings, dividends, and more.">`;
-
-  const redirectScript = `
-<script>
-  const pathname = window.location.pathname;
-  const isStatic = pathname.startsWith('/stocks/');
-  const input = document.getElementById("tickerInput");
-  const ticker = input?.value?.trim();
-  if (isStatic && ticker) {
-    window.location.href = '/search.html?ticker=' + encodeURIComponent(ticker);
-  }
-</script>
-`;
-
-  let htmlContent = document.documentElement.outerHTML;
-
-  htmlContent = htmlContent
-    .replace(/src="news\.html"/g, 'src="https://www.realcpi.org/news.html"')
-    .replace(/src="news2\.html"/g, 'src="https://www.realcpi.org/news2.html"')
-    .replace(/src="summary_portfolio\.html"/g, 'src="https://www.realcpi.org/summary_portfolio.html"')
-    .replace(/src="\/static\//g, 'src="https://www.realcpi.org/static/')
-    .replace(/href="\/static\//g, 'href="https://www.realcpi.org/static/')
-    .replace(/script\.src\s*=\s*["']\/static\/js\/summaryPortfolio\.js["']/g, 'script.src="https://www.realcpi.org/static/js/summaryPortfolio.js"')
-    .replace(/href="stocks\.html"/g, 'href="https://www.realcpi.org/stocks.html"')
-    .replace(/href="realestate\.html"/g, 'href="https://www.realcpi.org/realestate.html"')
-    .replace(/href="economy\.html"/g, 'href="https://www.realcpi.org/economy.html"')
-    .replace(/href="search\.html"/g, 'href="https://www.realcpi.org/search.html"')
-    .replace(/href="currency\.html"/g, 'href="https://www.realcpi.org/currency.html"')
-    .replace(/href="\/"/g, 'href="https://www.realcpi.org/"');
-
-  // Safe inject title
-  if (/<title>/i.test(htmlContent)) {
-    htmlContent = htmlContent.replace(/<title>.*?<\/title>/i, titleTag);
-  } else {
-    htmlContent = htmlContent.replace(/<head>/i, `<head>\n${titleTag}`);
-  }
-
-  // Safe inject meta description
-  if (/<meta name="description"/i.test(htmlContent)) {
-    htmlContent = htmlContent.replace(/<meta name="description" content=".*?">/i, descriptionTag);
-  } else {
-    htmlContent = htmlContent.replace(/<head>/i, `<head>\n${descriptionTag}`);
-  }
-
-  // Safe inject redirect script
-  if (/<\/body>/i.test(htmlContent)) {
-    htmlContent = htmlContent.replace(/<\/body>/i, redirectScript + '\n</body>');
-  } else {
-    htmlContent += redirectScript;
-  }
-
-  await fetch('https://vyay46elra.execute-api.us-east-1.amazonaws.com/save-html', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      filename: `${ticker.toLowerCase()}.html`,
-      html: htmlContent
-    })
-  });
-}
 
 
 
@@ -1184,23 +1148,16 @@ function updateActiveSuggestion(items) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
+
   const params = new URLSearchParams(window.location.search);
   const ticker = params.get("ticker");
-  const input = document.getElementById("tickerInput");
-
   if (ticker) {
+    const input = document.getElementById("tickerInput");
     input.value = ticker;
-    input.dispatchEvent(new Event('input'));
-    setTimeout(loadData, 500);
-  } else {
-    // ✅ fallback for static pages like ko.html
-    const staticTicker = input?.value?.trim();
-    if (staticTicker) {
-      setTimeout(loadData, 500);
-    }
+    input.dispatchEvent(new Event('input')); // triggers name autofill
+    setTimeout(loadData, 500); // simulate Enter after short delay
   }
 });
-
 
 </script>
 
