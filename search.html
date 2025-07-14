@@ -841,41 +841,6 @@ async function loadData() {
    }
   });
 
-async function saveStaticSnapshot(ticker) {
-  let htmlContent = document.documentElement.outerHTML;
-
-// Inject hardcoded ticker value for static HTML snapshot
-htmlContent = htmlContent.replace(
-  /window\.addEventListener\("DOMContentLoaded", \(\) => \{/,
-  `const ticker = "${ticker.toUpperCase()}";\n  const input = document.getElementById("tickerInput");\n  input.value = ticker;\n  input.dispatchEvent(new Event('input'));\n  setTimeout(loadData, 500);\n\n  window.addEventListener("DOMContentLoaded", () => {`
-);
-	
-  // Fix relative iframe src paths by replacing them with absolute URLs
-  htmlContent = htmlContent
-    .replace(/src="news\.html"/g, 'src="https://www.realcpi.org/news.html"')
-    .replace(/src="news2\.html"/g, 'src="https://www.realcpi.org/news2.html"')
-    .replace(/src="summary_portfolio\.html"/g, 'src="https://www.realcpi.org/summary_portfolio.html"')
-    .replace(/src="\/static\//g, 'src="https://www.realcpi.org/static/') // also fix static paths
-    .replace(/href="\/static\//g, 'href="https://www.realcpi.org/static/')
-    .replace(/script\.src\s*=\s*["']\/static\/js\/summaryPortfolio\.js["']/g, 'script.src="https://www.realcpi.org/static/js/summaryPortfolio.js"')
-    .replace(/href="stocks\.html"/g, 'href="https://www.realcpi.org/stocks.html"')
-    .replace(/href="realestate\.html"/g, 'href="https://www.realcpi.org/realestate.html"')
-    .replace(/href="economy\.html"/g, 'href="https://www.realcpi.org/economy.html"')
-    .replace(/href="search\.html"/g, 'href="https://www.realcpi.org/search.html"')
-    .replace(/href="currency\.html"/g, 'href="https://www.realcpi.org/currency.html"')
-    .replace(/href="\/"/g, 'href="https://www.realcpi.org/"');
-	
-
-  await fetch('https://vyay46elra.execute-api.us-east-1.amazonaws.com/save-html', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      filename: `${ticker.toLowerCase()}.html`,
-      html: htmlContent
-    })
-  });
-}
-
 
 	
 
@@ -1000,10 +965,6 @@ if (!nextEarningsDate) {
   document.getElementById("companyName").textContent = profile.companyName;
   setRange(currentRange);
 
-await saveStaticSnapshot(ticker);
-
-
-	
 // Show daily move, last close, and volume
 const lastClose = allPrices.length >= 2 ? allPrices[1].close : null;
 const volumeData = await fetch(`https://financialmodelingprep.com/api/v3/historical-chart/1min/${ticker}?apikey=${apiKey}`)
@@ -1246,7 +1207,7 @@ function logout() {
 <script>
 async function loadSummaryPortfolio() {
   try {
-    const response = await fetch('https://www.realcpi.org/summary_portfolio.html');
+    const response = await fetch('summary_portfolio.html');
     if (!response.ok) throw new Error('Network error');
     const html = await response.text();
 
