@@ -844,6 +844,12 @@ async function loadData() {
 async function saveStaticSnapshot(ticker) {
   let htmlContent = document.documentElement.outerHTML;
 
+// Inject hardcoded ticker value for static HTML snapshot
+htmlContent = htmlContent.replace(
+  /window\.addEventListener\("DOMContentLoaded", \(\) => \{/,
+  `const ticker = "${ticker.toUpperCase()}";\n  const input = document.getElementById("tickerInput");\n  input.value = ticker;\n  input.dispatchEvent(new Event('input'));\n  setTimeout(loadData, 500);\n\n  window.addEventListener("DOMContentLoaded", () => {`
+);
+	
   // Fix relative iframe src paths by replacing them with absolute URLs
   htmlContent = htmlContent
     .replace(/src="news\.html"/g, 'src="https://www.realcpi.org/news.html"')
