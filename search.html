@@ -790,8 +790,12 @@ function setRange(range) {
       datasets: [{
         data,
         fill: false,
-        borderColor: 'blue'
+        borderColor: 'blue',
+        borderWidth: 1,       // Make the line thinner (default is 3)
+        pointRadius: 0,       // Hide the point markers
+        pointHoverRadius: 4   // Optionally still show on hover
       }]
+
     },
     options: {
       plugins: {
