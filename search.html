@@ -793,7 +793,8 @@ function setRange(range) {
         borderColor: 'blue',
         borderWidth: 3,       // Make the line thinner (default is 3)
         pointRadius: 0,       // Hide the point markers
-        pointHoverRadius: 4   // Optionally still show on hover
+        pointHoverRadius: 4,   // Optionally still show on hover
+	pointHitRadius: 10       // 👈 makes hover easier
       },
       {
       type: 'scatter',
@@ -807,25 +808,30 @@ function setRange(range) {
 
     },
     options: {
+      responsive: true,
+      interaction: {
+        mode: 'nearest',   // 👈 activates tooltip when nearest point is close
+        intersect: false   // 👈 allows tooltips without direct intersection
+      },
       plugins: {
-        legend: { display: false },
+       legend: { display: false },
         tooltip: {
           callbacks: {
             label: function (context) {
               const currentValue = context.raw;
-              const startValue = data[0];
+              const startValue = context.chart.data.datasets[0].data[0];
               const change = ((currentValue - startValue) / startValue) * 100;
               return `Price: $${currentValue.toFixed(2)} (${change >= 0 ? '+' : ''}${change.toFixed(2)}%)`;
             }
           }
         }
       },
-      responsive: true,
       scales: {
         x: { display: true },
         y: { display: true }
       }
     }
+
   });
 
 
