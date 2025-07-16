@@ -1217,22 +1217,34 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function getQuarterEndPoints(data) {
-  const quarterMonths = [2, 5, 8, 11]; // March, June, Sept, Dec (0-based)
+  const quarterEnds = ['03-31', '06-30', '09-30', '12-31'];
   const points = [];
+  const years = new Set(data.map(d => new Date(d.date).getFullYear()));
 
-  const seen = new Set();
+  years.forEach(year => {
+    quarterEnds.forEach(qe => {
+      const target = new Date(`${year}-${qe}`);
+      let closest = null;
+      let minDiff = Infinity;
 
-  data.forEach((d, i) => {
-    const date = new Date(d.date);
-    const key = `${date.getFullYear()}-Q${Math.floor(date.getMonth() / 3) + 1}`;
-    if (quarterMonths.includes(date.getMonth()) && !seen.has(key)) {
-      points.push({ x: d.date, y: d.close });
-      seen.add(key);
-    }
+      data.forEach(d => {
+        const current = new Date(d.date);
+        const diff = Math.abs(current - target);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closest = d;
+        }
+      });
+
+      if (closest) {
+        points.push({ x: closest.date, y: closest.close });
+      }
+    });
   });
 
   return points;
 }
+
 
 	
 </script>
