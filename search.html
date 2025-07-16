@@ -767,60 +767,32 @@ function setRange(range) {
   document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelector(`.range-btn[onclick*="${range}"]`).classList.add('active');
 
-
   const filtered = filterDataByRange(range);
-  const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  // Autofill the date input with the first available date in the sorted dataset
-  if (range !== "custom" && sorted.length > 0) {
-    const firstDate = new Date(sorted[0].date);
+  // Autofill the date input with the first available date in the selected range
+  if (range !== "custom" && filtered.length > 0) {
+    const firstDate = new Date(filtered[0].date);
     document.getElementById("customStartDate").value = firstDate.toISOString().split("T")[0];
   }
 
+
 	
+  const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
   const labels = sorted.map(d => d.date);
   const data = sorted.map(d => d.close);
   const returns = calculateReturns(sorted, range);
 
-  // Identify quarter-end dates (or closest within the last few days of each quarter)
-  const quarterPoints = sorted
-    .map((d, i) => ({ ...d, index: i }))
-    .filter(d => {
-      const date = new Date(d.date);
-      return (
-        (date.getMonth() === 2 && date.getDate() >= 28 && date.getDate() <= 31) || // March
-        (date.getMonth() === 5 && date.getDate() >= 28 && date.getDate() <= 30) || // June
-        (date.getMonth() === 8 && date.getDate() >= 28 && date.getDate() <= 30) || // September
-        (date.getMonth() === 11 && date.getDate() >= 28 && date.getDate() <= 31)   // December
-      );
-    });
-
-  const quarterDataset = {
-    label: 'Quarter Ends',
-    data: quarterPoints.map(p => ({ x: p.date, y: p.close })),
-    pointRadius: 3,
-    pointBackgroundColor: 'black',
-    showLine: false,
-    type: 'line'
-  };
-
-	
   if (chart) chart.destroy();
   chart = new Chart(document.getElementById("priceChart"), {
     type: 'line',
     data: {
       labels,
-      datasets: [
-        {
-          data,
-          fill: false,
-          borderColor: 'blue',
-          borderWidth: 1,
-          pointRadius: 0
-        },
-        quarterDataset
-      ]
-    }, // ✅ this line properly closes "data"
+      datasets: [{
+        data,
+        fill: false,
+        borderColor: 'blue'
+      }]
+    },
     options: {
       plugins: {
         legend: { display: false },
@@ -846,7 +818,6 @@ function setRange(range) {
 
 
 
-
   document.getElementById("info").querySelector("#returns")?.remove();
   const div = document.createElement("div");
   div.id = "returns";
@@ -868,49 +839,6 @@ function setCustomDate() {
   const data = sorted.map(d => d.close);
   const returns = calculateReturns(sorted, "custom");
 
-  // Identify quarter-end dates (or closest within the last few days of each quarter)
-  const quarterPoints = sorted
-    .map((d, i) => ({ ...d, index: i }))
-    .filter(d => {
-      const date = new Date(d.date);
-      return (
-        (date.getMonth() === 2 && date.getDate() >= 28 && date.getDate() <= 31) || // March
-        (date.getMonth() === 5 && date.getDate() >= 28 && date.getDate() <= 30) || // June
-        (date.getMonth() === 8 && date.getDate() >= 28 && date.getDate() <= 30) || // September
-        (date.getMonth() === 11 && date.getDate() >= 28 && date.getDate() <= 31)   // December
-      );
-    });
-
-  const quarterDataset = {
-    label: 'Quarter Ends',
-    data: quarterPoints.map(p => ({ x: p.date, y: p.close })),
-    pointRadius: 3,
-    pointBackgroundColor: 'black',
-    showLine: false,
-    type: 'line'
-  };
-
-  // ⬇️ Existing chart creation logic
-  if (chart) chart.destroy();
-  chart = new Chart(document.getElementById("priceChart"), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          data,
-          fill: false,
-          borderColor: 'blue',
-          borderWidth: 1,
-          pointRadius: 0
-        },
-        quarterDataset
-      ]
-   },
-    ...
-  });
-
-	
   if (chart) chart.destroy();
   chart = new Chart(document.getElementById("priceChart"), {
     type: 'line',
