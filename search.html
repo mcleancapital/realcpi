@@ -29,7 +29,13 @@
 
 }
 
-
+.date-input-small {
+  font-size: 12px;
+  padding: 2px 4px;
+  width: 100px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
 
 .menu-bar ul {
 
@@ -696,8 +702,8 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     <button class="range-btn" onclick="setRange('5y')">5 Years</button>
     <button class="range-btn" onclick="setRange('10y')">10 Years</button>
     <button class="range-btn" onclick="setRange('max')">Max</button>
-    <input type="date" id="customStartDate" style="margin-left: 12px;" />
     <button class="range-btn" onclick="setCustomDate()">Start Date</button>
+    <input type="date" id="customStartDate" class="date-input-small" />
   </div>
 </div>
 
