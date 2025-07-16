@@ -794,7 +794,16 @@ function setRange(range) {
         borderWidth: 3,       // Make the line thinner (default is 3)
         pointRadius: 0,       // Hide the point markers
         pointHoverRadius: 4   // Optionally still show on hover
-      }]
+      },
+      {
+      type: 'scatter',
+      data: getQuarterEndPoints(sorted),  // ⬅️ overlay quarter points
+      backgroundColor: '#cc3314',
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      showLine: false
+      }
+      ]
 
     },
     options: {
@@ -1201,6 +1210,25 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 });
 
+function getQuarterEndPoints(data) {
+  const quarterMonths = [2, 5, 8, 11]; // March, June, Sept, Dec (0-based)
+  const points = [];
+
+  const seen = new Set();
+
+  data.forEach((d, i) => {
+    const date = new Date(d.date);
+    const key = `${date.getFullYear()}-Q${Math.floor(date.getMonth() / 3) + 1}`;
+    if (quarterMonths.includes(date.getMonth()) && !seen.has(key)) {
+      points.push({ x: d.date, y: d.close });
+      seen.add(key);
+    }
+  });
+
+  return points;
+}
+
+	
 </script>
 
     <iframe id="news-frame" style="width:100%; height:600px; border:none;"></iframe>    
