@@ -804,28 +804,6 @@ function setRange(range) {
     type: 'line'
   };
 
-  // ⬇️ Existing chart creation logic
-  if (chart) chart.destroy();
-  chart = new Chart(document.getElementById("priceChart"), {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          data,
-          fill: false,
-          borderColor: 'blue',
-          borderWidth: 1,
-          pointRadius: 0
-        },
-        quarterDataset
-      ]
-   },
-    ...
-  });
-
-
-
 	
   if (chart) chart.destroy();
   chart = new Chart(document.getElementById("priceChart"), {
@@ -842,7 +820,7 @@ function setRange(range) {
         },
         quarterDataset
       ]
-    },
+    }, // ✅ this line properly closes "data"
     options: {
       plugins: {
         legend: { display: false },
@@ -864,6 +842,7 @@ function setRange(range) {
       }
     }
   });
+
 
 
 
