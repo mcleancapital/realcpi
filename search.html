@@ -782,16 +782,66 @@ function setRange(range) {
   const data = sorted.map(d => d.close);
   const returns = calculateReturns(sorted, range);
 
+  // Identify quarter-end dates (or closest within the last few days of each quarter)
+  const quarterPoints = sorted
+    .map((d, i) => ({ ...d, index: i }))
+    .filter(d => {
+      const date = new Date(d.date);
+      return (
+        (date.getMonth() === 2 && date.getDate() >= 28 && date.getDate() <= 31) || // March
+        (date.getMonth() === 5 && date.getDate() >= 28 && date.getDate() <= 30) || // June
+        (date.getMonth() === 8 && date.getDate() >= 28 && date.getDate() <= 30) || // September
+        (date.getMonth() === 11 && date.getDate() >= 28 && date.getDate() <= 31)   // December
+      );
+    });
+
+  const quarterDataset = {
+    label: 'Quarter Ends',
+    data: quarterPoints.map(p => ({ x: p.date, y: p.close })),
+    pointRadius: 3,
+    pointBackgroundColor: 'black',
+    showLine: false,
+    type: 'line'
+  };
+
+  // ⬇️ Existing chart creation logic
   if (chart) chart.destroy();
   chart = new Chart(document.getElementById("priceChart"), {
     type: 'line',
     data: {
       labels,
-      datasets: [{
-        data,
-        fill: false,
-        borderColor: 'blue'
-      }]
+      datasets: [
+        {
+          data,
+          fill: false,
+          borderColor: 'blue',
+          borderWidth: 1,
+          pointRadius: 0
+        },
+        quarterDataset
+      ]
+   },
+    ...
+  });
+
+
+
+	
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById("priceChart"), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          data,
+          fill: false,
+          borderColor: 'blue',
+          borderWidth: 1,
+          pointRadius: 0
+        },
+        quarterDataset
+      ]
     },
     options: {
       plugins: {
@@ -839,6 +889,49 @@ function setCustomDate() {
   const data = sorted.map(d => d.close);
   const returns = calculateReturns(sorted, "custom");
 
+  // Identify quarter-end dates (or closest within the last few days of each quarter)
+  const quarterPoints = sorted
+    .map((d, i) => ({ ...d, index: i }))
+    .filter(d => {
+      const date = new Date(d.date);
+      return (
+        (date.getMonth() === 2 && date.getDate() >= 28 && date.getDate() <= 31) || // March
+        (date.getMonth() === 5 && date.getDate() >= 28 && date.getDate() <= 30) || // June
+        (date.getMonth() === 8 && date.getDate() >= 28 && date.getDate() <= 30) || // September
+        (date.getMonth() === 11 && date.getDate() >= 28 && date.getDate() <= 31)   // December
+      );
+    });
+
+  const quarterDataset = {
+    label: 'Quarter Ends',
+    data: quarterPoints.map(p => ({ x: p.date, y: p.close })),
+    pointRadius: 3,
+    pointBackgroundColor: 'black',
+    showLine: false,
+    type: 'line'
+  };
+
+  // ⬇️ Existing chart creation logic
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById("priceChart"), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          data,
+          fill: false,
+          borderColor: 'blue',
+          borderWidth: 1,
+          pointRadius: 0
+        },
+        quarterDataset
+      ]
+   },
+    ...
+  });
+
+	
   if (chart) chart.destroy();
   chart = new Chart(document.getElementById("priceChart"), {
     type: 'line',
