@@ -767,17 +767,17 @@ function setRange(range) {
   document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelector(`.range-btn[onclick*="${range}"]`).classList.add('active');
 
-  const filtered = filterDataByRange(range);
 
-  // Autofill the date input with the first available date in the selected range
-  if (range !== "custom" && filtered.length > 0) {
-    const firstDate = new Date(filtered[0].date);
+  const filtered = filterDataByRange(range);
+  const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  // Autofill the date input with the first available date in the sorted dataset
+  if (range !== "custom" && sorted.length > 0) {
+    const firstDate = new Date(sorted[0].date);
     document.getElementById("customStartDate").value = firstDate.toISOString().split("T")[0];
   }
 
-
 	
-  const sorted = filtered.slice().sort((a, b) => new Date(a.date) - new Date(b.date));
   const labels = sorted.map(d => d.date);
   const data = sorted.map(d => d.close);
   const returns = calculateReturns(sorted, range);
