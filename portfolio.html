@@ -410,7 +410,7 @@ row.innerHTML = `
   <td>${formatCurrency(marketValueBase, baseCurrency)}</td>
   <td style="color: ${annualReturn >= 0 ? 'green' : 'red'}">${(annualReturn * 100).toFixed(1)}%</td>
   <td style="color: ${gainLossBase >= 0 ? 'green' : 'red'}">${gainLossBase >= 0 ? "+" : "-"}${formatCurrency(Math.abs(gainLossBase), baseCurrency)}</td>
-  <td><button onclick='modifyHolding(${JSON.stringify(item)})'>✏️</button></td>
+  <td><button onclick='modifyHolding(${JSON.stringify(item)}, event)'>✏️</button></td>
 `;
 
   tbody.appendChild(row);
@@ -454,7 +454,7 @@ row.innerHTML = `
 
 let currentModifyItem = null;
 
-function modifyHolding(item) {
+function modifyHolding(item, event) {
   currentModifyItem = item;
 
   document.getElementById("modifyPortfolio").value = item.portfolio;
