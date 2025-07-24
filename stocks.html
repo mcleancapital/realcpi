@@ -728,9 +728,13 @@ function submitSearch() {
 </body>
 
 <script>
-function formatNumber(value) {
-return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function formatNumber(value, symbol) {
+  if (symbol === 'CADUSD') {
+    return value.toFixed(4);
+  }
+  return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
 
 async function loadTickerBar() {
 const apiKey = 'y9Bthip8mNYaWhrHQp0eTtPX3KltVYPj'; // Replace with your actual API key
@@ -789,7 +793,7 @@ const targetTicker = tickerMap[item.symbol] || item.symbol;
 span.innerHTML = `
        <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
          <div class="blue">${display}</div>
-         <div>${formatNumber(item.price)}</div>
+         <div>${formatNumber(item.price, item.symbol)}</div>
          <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
        </a>
      `;
