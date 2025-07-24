@@ -1382,11 +1382,13 @@ async function checkIfPdfExists(ticker) {
 
 <script>
 
-function formatNumber(value) {
-
+function formatNumber(value, symbol) {
+  if (symbol === 'CADUSD') {
+    return value.toFixed(4);
+  }
   return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
 }
+
 
 
 
@@ -1449,25 +1451,15 @@ async function loadTickerBar() {
       const span = document.createElement("span");
 
       const tickerMap = {
-
         '^GSPC': 'VOO',
-
         '^IXIC': 'QQQ',
-
         '^RUT': 'IWM',
-
         '^GSPTSE': 'XIC.to',
-
         'URTH': 'URTH',
-
         'CLUSD': 'CLUSD',
-
         '^TNX': 'IEF',
-
         'BTCUSD': 'BTCUSD',
-
         'CADUSD': 'CADUSD'
-
       };
 
 
@@ -1479,15 +1471,10 @@ async function loadTickerBar() {
       span.innerHTML = `
 
         <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
-
           <div class="blue">${display}</div>
-
-          <div>${formatNumber(item.price)}</div>
-
+          <div>${formatNumber(item.price, item.symbol)}</div>
           <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
-
         </a>
-
       `;
 
 
