@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="initial-scale=1" />
+  <title>Investment Reports – Real CPI</title>
+  <meta name="description" content="Static investment reports by company. Download PDFs of stock research.">
+  <link rel="icon" type="image/png" href="/static/images/favicon.png">
+
+  <style>
+    body {
+      font-family: Garamond, serif;
+      font-size: 17px;
+      color: #222;
+      line-height: 1.43;
+      -webkit-font-smoothing: antialiased;
+      margin: 0;
+    }
+
+    header {
+      padding: 20px;
+      background: #f9f9f9;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #ccc;
+    }
+
+    #logo img {
+      height: 50px;
+    }
+
+    .menu-bar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 25px;
+    }
+
+    .menu-bar ul li a {
+      text-decoration: none;
+      font-size: 18px;
+      color: #222;
+    }
+
+    .menu-bar ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      display: flex;
+      gap: 16px;
+      padding: 20px;
+    }
+
+    .left-column {
+      flex: 1;
+    }
+
+    .right-column {
+      flex: 3;
+    }
+
+    .center-text {
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      background-color: #e8e8e8;
+      border: 0.5px solid black;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    footer {
+      padding: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+      background: #fafafa;
+      border-top: 1px solid #ccc;
+    }
+
+    a {
+      color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<header style="display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: #f9f9f9; height: 80px; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
+  <div id="logo" style="flex: 0 0 auto;">
+    <a href="/">
+      <img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" style="padding: 10px;" />
+    </a>
+  </div>
+
+  <nav class="menu-bar" style="flex: 1 1 auto; text-align: right;">
+    <ul style="display: flex; justify-content: flex-end; gap: 25px; list-style: none; margin: 0; padding: 0;">
+      <li><a href="/">Daily Data</a></li>
+      <li><a href="/stocks.html">Stock Market</a></li>
+      <li><a href="/realestate.html">Real Estate</a></li>
+      <li><a href="/economy.html">Economic Dashboard</a></li>
+      <li><a href="/search.html">Stock Search</a></li>
+      <li><a href="/currency.html">Currency Converter</a></li>
+      <li><a href="https://tradingeconomics.com/commodities" target="_blank">Commodities</a></li>
+    </ul>
+  </nav>
+</header>
+
+
+<div id="ticker-bar">
+  <script>
+    document.getElementById("ticker-bar").innerText = "Loading market data...";
+  </script>
+</div>
+
+<main>
+  <div class="container">
+    <div class="left-column">
+      <iframe src="news.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+    </div>
+
+    <div class="right-column">
+      <div class="center-text">Investment Reports</div>
+
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Company Name</th>
+              <th>Investment Report</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- BEGIN GENERATED ROWS -->
+            <tr>
+              <td>AAPL</td>
+              <td>Apple Inc.</td>
+              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/aapl.pdf" target="_blank">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td>MSFT</td>
+              <td>Microsoft Corporation</td>
+              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/MSFT.pdf" target="_blank">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td>GOOGL</td>
+              <td>Alphabet Inc.</td>
+              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/GOOGL.pdf" target="_blank">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td>AMZN</td>
+              <td>Amazon.com, Inc.</td>
+              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/AMZN.pdf" target="_blank">Download PDF</a></td>
+            </tr>
+            <tr>
+              <td>NVDA</td>
+              <td>NVIDIA Corporation</td>
+              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/NVDA.pdf" target="_blank">Download PDF</a></td>
+            </tr>
+            <!-- Add more rows here -->
+          </tbody>
+        </table>
+      </div>
+
+      <br><br>
+      <iframe src="news2.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
+    </div>
+  </div>
+</main>
+
+<footer>
+  This information is provided for informational purposes only. This is not financial advice.
+  <br><br>
+  Suggestions welcome: contact@realcpi.org
+  <br><br>
+  Copyright © 2024 Real CPI
+</footer>
+
+</body>
+</html>
