@@ -1,126 +1,424 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="initial-scale=1" />
-  <title>Investment Reports – Real CPI</title>
-  <meta name="description" content="Static investment reports by company. Download PDFs of stock research.">
-  <link rel="icon" type="image/png" href="/static/images/favicon.png">
 
-  <style>
-    body {
-      font-family: Garamond, serif;
-      font-size: 17px;
-      color: #222;
-      line-height: 1.43;
-      -webkit-font-smoothing: antialiased;
-      margin: 0;
-    }
 
-    header {
-      padding: 20px;
-      background: #f9f9f9;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid #ccc;
-    }
 
-    #logo img {
-      height: 50px;
-    }
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3345310399251053"
+     crossorigin="anonymous"></script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-97F7RYQNKC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-97F7RYQNKC');
+</script>
+
+<style>
+.menu-bar {
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+
+}
+
+
+
+.menu-bar ul {
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+}
+
+
+
+.menu-bar ul li {
+
+    display: inline-block;
+    margin: 0 25px;
+
+}
+
+
+
+.menu-bar ul li a {
+
+    text-decoration: none;
+    font-size: 18px;
+    padding: 8px 12px;
+    color: #222;
+
+}
+.menu-bar ul li a:hover {
+    text-decoration: underline;
+}
+.container {
+  display: flex; /* Create a flex container */
+  gap: 16px; /* Add space between columns */
+}
+.left-column {
+  flex: 1; /* Takes up 1/4 of the space */
+  background-color: #f9f9f9; /* Optional: Light background for visibility */
+  padding: 16px;
+}
+.right-column {
+  flex: 3; /* Takes up 3/4 of the space */
+  padding: 16px;
+}
+a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+        @font-face{
+                font-family:"Whitney";
+                font-style:normal;
+                font-weight:400;
+                font-stretch:normal;
+                font-display:swap;
+                src:url("/fonts/whitney-book-webfont.woff") format("woff");
+                font-display: swap;}
+
+        @font-face{
+
+                font-family:concourse_ot_3_book;
+                font-style:italic;
+                font-weight:400;
+                font-stretch:normal;
+                font-display:swap;
+                src:url('/static/fonts/concourse_ot_3_book_italic.woff2') format('woff2')}
+
+        body{
+
+                font-size:17px;
+                color:#222;
+                line-height:1.43;
+                -webkit-font-smoothing:antialiased;
+                font-family:"Garamond", serif}
+
+        @media (min-width:550px){:root{--grid-columns:2}}
+        @media (min-width:950px){:root{--grid-columns:3}}
+        @media (min-width:1128px){:root{--grid-columns:4}}
+        .box{display:flex;flex-direction:column}.chart canvas{width:100%}:root{--std_padding:40px}
+        header{
+
+                position: relative;
+                display:block;
+                align-items:center;
+                text-align:center}
+
+        header{
+
+                padding:0 var(--std_padding);
+                box-shadow:rgb(0 0 0 / 8%) 0 1px 0}
+
+        #logo{flex:1 0 auto;display:inline-flex;align-items:center;text-align:center;height:64px}#logo svg{height:20px}main{padding:var(--std_padding) 16px}
+
+        #grid{display:grid;grid-gap:40px 12px;
+              grid-template-columns:repeat(var(--grid-columns,1),1fr)}
+
+@media(min-width:730px){
+
+	.mobile-menu {
+        	display: none;
+    	}
+
+	header{display:flex;align-items:center;padding:0 24px}
+	#logo svg{height:32px}
+	#logo{flex:0 0 auto;display:inline-flex;align-items:center;height:80px}
+
+                	a.box:hover{
+                	        border:.5px solid #ccc;
+                	        border-radius:16px}
+               	 main{padding:var(--std_padding) 16px}
+               	 #grid{grid-gap:24px 8px}
+
+	.hamburger-menu {
+       		display: none;
+  		}
+
+   	.menu-bar ul {
+        	display: flex;
+    		}
+	}
+
+
+a.box{padding:8px}
+#tag{flex:1 0 auto;padding-left:24px;font-weight:700}
+#tag{flex:0 1 auto;display:none}
+
+
+@media (min-width:730px){#tag{display:block}}
+                a.box{
+                        border:.5px solid transparent;
+                        color:inherit;
+                        text-decoration:none}
+                a.box:hover{
+                        text-decoration:none}
+                a.touch_box{border:.5px solid #ccc;border-radius:16px}.box h3{font-weight:700}.box .date{color:#717171}.pos{color:#55a232}.neg{color:#cc3314}
+
+
+footer{
+	padding:var(--std_padding);
+	box-shadow:rgb(0 0 0 / 8%) 0 -1px 0;
+	text-align:center;
+	color:#717171;font-size:.75em}
+a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.more:hover{text-decoration:none}a.more{text-align:center;display:block;margin:var(--std_padding) auto 0 auto;color:#fff;border:1px solid rgba(0,0,0,.08);border-radius:24px;background-color:#000;padding:14px 19px;width:80px}
+
+
+        @media (max-width: 729px) {
+
+  #ticker-bar {
+
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    white-space: nowrap;
+    justify-content: flex-start; /* Align items to the left */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+
+  }
+
+  #ticker-bar span {
+    flex: 0 0 auto; /* Prevent shrinking */
+    min-width: 120px; /* Or more depending on your content */
+  }               
+
+    .mobile-menu {
+                display: flex;
+                justify-content: space-around;
+                position: fixed;
+		top: 0;
+                left: 0;
+                width: 100%;
+                background-color: #ffffff;
+                border-bottom: 1px solid #ccc;
+                z-index: 2000;
+                padding: 5px 0;
+
+            }
+
+            .mobile-menu button {
+                flex: 1;
+                padding: 0px;
+                font-size: 48px;
+		top: 0;
+                border: none;
+                background-color: #fff;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+
+
+.mobile-menu button.hamburger-menu {
+
+    flex: 1;
+    padding: 0px;
+    font-size: 48px;
+    border: none;
+    background-color: #fff;
+    cursor: pointer;
+    z-index: 2001; /* Ensure above ticker bar and input box */
+    position: relative;
+}
+
+
+            .mobile-menu button:hover {
+                background-color: #e0e0e0;
+
+            }
+
+            body {
+                margin-top: 64px; /* Prevent content overlap with the fixed menu */
+            }
+
+
+
+.left-column {
+    display: none; /* Hide the left column */
+  }
+
+  .right-column {
+    flex: 1; /* Take full width when left column is hidden */
+  }
+
+                #logo {
+        display: none; /* Hide the logo on mobile */
+  }
+                }
+
+
+
+/* Add the center-text class here */
+
+.center-text {
+
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+            width: 100%;             /* Full width of the page */
+            height: 5vh;           /* Take full viewport height */
+            font-size: 35px;         /* Make the font larger */
+            font-weight: bold;       /* Bold text */
+            text-align: center;      /* Text alignment */
+   	    border: 0.5px solid black; /* Add a border around the box */
+    	    background-color: #e8e8e8; /* Light gray background for the box */
+    	    padding: 10px;           /* Space between text and border */
+    	    box-sizing: border-box;  /* Include padding and border in width/height */
+}
+
+
+
+.center-text2 {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center;     /* Center vertically */
+            width: 100%;             /* Full width of the page */
+            height: 5vh;           /* Take full viewport height */
+            font-size: 25px;         /* Make the font larger */
+            font-weight: bold;       /* Bold text */
+            text-align: center;      /* Text alignment */
+}
+
+
+
+.small-centered-text {
+    font-size: 12px;
+    text-align: center;
+    padding: 1px;
+}
+
+
+
+/* Hide the menu items by default on mobile */
+
+@media (max-width: 729px) {
 
     .menu-bar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      gap: 25px;
+        display: none;
+        flex-direction: column;
+        background-color: white;
+        position: fixed; * Now stays visible while scrolling */
+        top: 120px; /* Adjust so it appears below the hamburger */
+        left: 0;
+        width: 100%;
+	z-index: 3000; /* <-- Add this */
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        padding: 0;
     }
 
-    .menu-bar ul li a {
-      text-decoration: none;
-      font-size: 18px;
-      color: #222;
+    /* Show menu when toggled */
+    .menu-bar ul.show {
+        display: flex;
     }
 
-    .menu-bar ul li a:hover {
-      text-decoration: underline;
+    /* Style menu items in mobile mode */
+
+    .menu-bar ul li {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd;
     }
 
-    .container {
-      display: flex;
-      gap: 16px;
-      padding: 20px;
+    /* Style hamburger button */
+    .hamburger-menu {
+        display: block;
+        font-size: 48px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        margin-left: auto;
+	position: relative;  /* Required for z-index to take effect */
+        z-index: 2001;        /* 👈 Make sure it floats above the ticker bar and input */
     }
+}
 
-    .left-column {
-      flex: 1;
-    }
 
-    .right-column {
-      flex: 3;
-    }
+#user-settings-modal {
+  display: none;
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  z-index: 5000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
 
-    .center-text {
-      font-size: 32px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 20px;
-      padding: 10px;
-      background-color: #e8e8e8;
-      border: 0.5px solid black;
-    }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+	
+</style>
 
-    th, td {
-      padding: 8px 12px;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-    }
+<meta name="viewport" content="initial-scale=1" />
 
-    th {
-      background-color: #f0f0f0;
-    }
 
-    footer {
-      padding: 40px;
-      text-align: center;
-      font-size: 13px;
-      color: #777;
-      background: #fafafa;
-      border-top: 1px solid #ccc;
-    }
+<title>Real CPI</title>
+<meta property="og:site_name" content="Real CPI" />
+<link rel="icon" type="image/png" href="/static/images/favicon.png">
+<script type="application/ld+json">
 
-    a {
-      color: #0056b3;
-    }
-  </style>
+{
+
+"@context" : "https://schema.org",
+"@type" : "WebSite",
+"name" : "Real CPI",
+"url" : "https://www.realcpi.org/"
+"description": "Real CPI provides economic, stock market, real estate, financial and industry-specific data.",
+  "about": {
+    "@type": "Thing",
+    "name": "Financial Data"
+}
+
+
+</script>
+
+<meta name="description" content="Financial metrics that give you the real data about the market and the economy.">
+<link rel="canonical" href="https://www.realcpi.org/"/>
+
+
 </head>
 <body>
+<header>
 
-<header style="display: flex; align-items: center; justify-content: space-between; padding: 0 24px; background: #f9f9f9; height: 80px; box-shadow: 0 1px 0 rgba(0,0,0,0.08);">
-  <div id="logo" style="flex: 0 0 auto;">
-    <a href="/">
-      <img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" style="padding: 10px;" />
-    </a>
-  </div>
+<a id="logo" href="/">
+    <img src="/static/images/favicon.png" alt="Real CPI Logo" height="50" style="padding: 10px;" />
+</a>
 
-  <nav class="menu-bar" style="flex: 1 1 auto; text-align: right;">
-    <ul style="display: flex; justify-content: flex-end; gap: 25px; list-style: none; margin: 0; padding: 0;">
-      <li><a href="/">Daily Data</a></li>
-      <li><a href="/stocks.html">Stock Market</a></li>
-      <li><a href="/realestate.html">Real Estate</a></li>
-      <li><a href="/economy.html">Economic Dashboard</a></li>
-      <li><a href="/search.html">Stock Search</a></li>
-      <li><a href="/currency.html">Currency Converter</a></li>
-      <li><a href="https://tradingeconomics.com/commodities" target="_blank">Commodities</a></li>
-    </ul>
-  </nav>
+
+    <nav class="menu-bar">
+        <ul id="menu-items">
+            <li><a href="/">Daily Data</a></li>
+            <li><a href="stocks.html">Stock Market</a></li>
+            <li><a href="realestate.html">Real Estate</a></li>
+            <li><a href="economy.html">Economic Dashboard</a></li>
+            <li class="current"><a href="search.html" style="color: blue;">Stock Search</a></li>
+            <li><a href="currency.html">Currency Converter</a></li>
+            <li><a href="https://tradingeconomics.com/commodities" target="_blank" rel="noopener noreferrer">Commodities</a></li>
+        </ul>
+    </nav>
+
+<div id="user-status" style="margin-left: auto; padding: 8px 18px; text-align: right;"></div>
+
+
+
+<!--
+
+<div id="top-right-links">
+
+        <a href="/list" class="top-link">List View</a>
+        <a href="/detailed" class="top-link">Detailed View</a>
+
+</div> -->
+
 </header>
 
 
@@ -158,22 +456,22 @@
             <tr>
               <td>MSFT</td>
               <td>Microsoft Corporation</td>
-              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/MSFT.pdf" target="_blank">Download PDF</a></td>
+              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/msft.pdf" target="_blank">Download PDF</a></td>
             </tr>
             <tr>
               <td>GOOGL</td>
               <td>Alphabet Inc.</td>
-              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/GOOGL.pdf" target="_blank">Download PDF</a></td>
+              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/googl.pdf" target="_blank">Download PDF</a></td>
             </tr>
             <tr>
               <td>AMZN</td>
               <td>Amazon.com, Inc.</td>
-              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/AMZN.pdf" target="_blank">Download PDF</a></td>
+              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/amzn.pdf" target="_blank">Download PDF</a></td>
             </tr>
             <tr>
               <td>NVDA</td>
               <td>NVIDIA Corporation</td>
-              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/NVDA.pdf" target="_blank">Download PDF</a></td>
+              <td><a href="https://realcpi-reports.s3.us-east-1.amazonaws.com/nvda.pdf" target="_blank">Download PDF</a></td>
             </tr>
             <!-- Add more rows here -->
           </tbody>
