@@ -493,7 +493,30 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     }
 }
 
-	
+.report-link-box {
+  width: 300px; /* Same as search input */
+  margin: 10px 0;
+}
+
+.report-link {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  background-color: #e8e8e8;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #0056b3;
+  transition: background-color 0.2s ease;
+}
+
+.report-link:hover {
+  background-color: #d0d0d0;
+  text-decoration: underline;
+}
+
 
 </style>
 
@@ -696,9 +719,12 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <span id="dailyChange" style="margin-left: 10px; font-size: 16px;"></span>
 <span id="companyName"></span>
 
-<div class="small-centered-text" style="margin-bottom: 8px;">
-  <a href="https://www.realcpi.org/investment_reports.html">View list of reports</a>
+<div class="report-link-box" style="margin-top: 8px;">
+  <a href="https://www.realcpi.org/investment_reports.html" class="report-link">
+    📄 View list of reports
+  </a>
 </div>
+
 
 	    
 <div id="controls">
