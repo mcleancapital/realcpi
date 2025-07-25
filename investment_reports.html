@@ -507,13 +507,24 @@ a:hover {
     <div class="right-column">
       <div class="center-text">Investment Reports</div>
 
+<div style="text-align: center; margin: 20px 0;">
+  <input
+    type="text"
+    id="reportSearchInput"
+    placeholder="Search by symbol or company name..."
+    style="width: 60%; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px;"
+    oninput="filterInvestmentReports()"
+  />
+</div>
+
+	    
       <div style="overflow-x:auto;">
         <table>
           <thead>
             <tr>
               <th>Symbol</th>
               <th>Company Name</th>
-              <th>Investment Report</th>
+              <th>Simple Investment Report</th>
             </tr>
           </thead>
           <tbody>
@@ -1660,6 +1671,22 @@ loadTickerBar();
 setInterval(loadTickerBar, 30000); // Refresh every 30 seconds
 </script>
 
+<script>
+function filterInvestmentReports() {
+  const input = document.getElementById("reportSearchInput").value.toLowerCase();
+  const rows = document.querySelectorAll("tbody tr");
+
+  rows.forEach(row => {
+    const symbol = row.cells[0]?.textContent.toLowerCase();
+    const name = row.cells[1]?.textContent.toLowerCase();
+    if (symbol.includes(input) || name.includes(input)) {
+      row.style.display = "";
+    } else {
+      row.style.display = "none";
+    }
+  });
+}
+</script>
 
 	
 </body>
