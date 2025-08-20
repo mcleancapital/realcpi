@@ -588,7 +588,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 	    
 <!-- The 2nd grid starts here. -->
-<div id=grid>
+<div id=grid2>
 
 <a class=box href="/equity-flows">
 <div>
@@ -817,6 +817,37 @@ function submitSearch() {
 </script>
 
 <script src="/static/js/userStatus.js" defer></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  function renderBarChart(canvas, labels, data) {
+    new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: { labels, datasets: [{ data, borderWidth: 1 }] },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true } },
+        plugins: { legend: { display: false } }
+      }
+    });
+  }
+
+  const canvases = document.querySelectorAll('#grid2 .chart canvas');
+
+  // Replace with your real series per card (weekly flows etc.)
+  const demoLabels = ['W1','W2','W3','W4','W5','W6'];
+  const demoData   = [5, 7, 3, 9, 6, 8];
+
+  canvases.forEach((cvs) => {
+    const container = cvs.closest('.chart');
+    if (container) container.style.height = '140px';
+    renderBarChart(cvs, demoLabels, demoData);
+  });
+})();
+</script>
 	
 </body>
 
