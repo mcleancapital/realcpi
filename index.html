@@ -845,26 +845,38 @@ let pis = [
       data: { labels, datasets: [{ data, borderWidth: 1 }] },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
+        // Use the canvas's intrinsic width/height (you already have width=162 height=100)
+        maintainAspectRatio: true,
         scales: { y: { beginAtZero: true } },
         plugins: { legend: { display: false } }
       }
     });
   }
 
-  const canvases = document.querySelectorAll('#grid2 .chart canvas');
+  // Collect cards/canvases in the Fund Flows grid (id="grid2")
+  const cards = Array.from(document.querySelectorAll('#grid2 a.box'));
+  const canvases = cards.map(card => card.querySelector('.chart canvas')).filter(Boolean);
 
-  // Replace with your real series per card (weekly flows etc.)
-  const demoLabels = ['W1','W2','W3','W4','W5','W6'];
-  const demoData   = [5, 7, 3, 9, 6, 8];
+  // Safety: ensure pis exists and counts match
+  if (!Array.isArray(window.pis)) return;
 
-  canvases.forEach((cvs) => {
-    const container = cvs.closest('.chart');
-    if (container) container.style.height = '140px';
-    renderBarChart(cvs, demoLabels, demoData);
+  canvases.forEach((cvs, i) => {
+    const series = window.pis[i];
+    if (!series || !Array.isArray(series.data) || series.data.length === 0) return;
+
+    // Make sure the canvas has intrinsic size like your old charts
+    if (!cvs.getAttribute('width'))  cvs.setAttribute('width', 162);
+    if (!cvs.getAttribute('height')) cvs.setAttribute('height', 100);
+
+    const labels = Array.isArray(series.labels)
+      ? series.labels
+      : Array.from({ length: series.data.length }, (_, j) => `W${j+1}`);
+
+    renderBarChart(cvs, labels, series.data);
   });
 })();
 </script>
+
 	
 </body>
 
