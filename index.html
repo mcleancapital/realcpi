@@ -580,11 +580,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 <br><br>
 	    
-<div class="center-text" style="margin-top: 20px;">Fund Flows Data</div>
 
-
-
-<br><br>
 <iframe src="news2.html" style="width: 100%; height: 100%; border: none;" onload="this.style.height=(this.contentDocument.body.scrollHeight + 50) + 'px';"></iframe>
 
 
@@ -721,58 +717,6 @@ function submitSearch() {
 
 
 
-<script>
-let pisFlows = [
-  { labels: ['7/13/2025','7/21/2025','7/28/2025','8/4/2025','8/11/2025','8/18/2025'], data: [ 1, -1, -1, 4, 3, 2 ] },
-  { labels: ['7/13/2025','7/21/2025','7/28/2025','8/4/2025','8/11/2025','8/18/2025'], data: [ 3, -1, -6,-12,11,10 ] },
-  { labels: ['7/13/2025','7/21/2025','7/28/2025','8/4/2025','8/11/2025','8/18/2025'], data: [ 2,-22, 75,-22,38,32 ] },
-  { labels: ['7/13/2025','7/21/2025','7/28/2025','8/4/2025','8/11/2025','8/18/2025'], data: [62,181, 40,-10,-10,68 ] },
-  { labels: ['8/18/2025'], data: [ 2 ] },
-  { labels: ['8/18/2025'], data: [ 12 ] },
-  { labels: ['8/18/2025'], data: [ 12 ] },
-  { labels: ['8/18/2025'], data: [ 39 ] }
-];
-
-
-</script>
-
-	
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-<script>
-// Define a callable function instead of running immediately
-function renderFlows() {
-  function renderBarChart(canvas, labels, data) {
-    new Chart(canvas.getContext('2d'), {
-      type: 'bar',
-      data: { labels, datasets: [{ data, borderWidth: 1 }] },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true, // uses your <canvas width=162 height=100>
-        scales: { y: { beginAtZero: true } },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-
-  const cards = Array.from(document.querySelectorAll('#grid2 a.box'));
-  const canvases = cards.map(card => card.querySelector('.chart canvas')).filter(Boolean);
-
-  if (!Array.isArray(window.pisFlows)) return;
-
-  canvases.forEach((cvs, i) => {
-    const s = window.pisFlows[i];
-    if (!s || !Array.isArray(s.data) || s.data.length === 0) return;
-
-    if (!cvs.getAttribute('width'))  cvs.setAttribute('width', 162);
-    if (!cvs.getAttribute('height')) cvs.setAttribute('height', 100);
-
-    const labels = Array.isArray(s.labels) ? s.labels
-                  : Array.from({ length: s.data.length }, (_, j) => `W${j+1}`);
-
-    renderBarChart(cvs, labels, s.data);
-  });
-}
-</script>
 
 
 
