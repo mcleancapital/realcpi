@@ -843,10 +843,10 @@ function renderFlows() {
   const cards = Array.from(document.querySelectorAll('#grid2 a.box'));
   const canvases = cards.map(card => card.querySelector('.chart canvas')).filter(Boolean);
 
-  if (!Array.isArray(window.pis)) return;
+  if (!Array.isArray(window.pisFlows)) return;
 
   canvases.forEach((cvs, i) => {
-    const s = window.pis[i];
+    const s = window.pisFlows[i];
     if (!s || !Array.isArray(s.data) || s.data.length === 0) return;
 
     if (!cvs.getAttribute('width'))  cvs.setAttribute('width', 162);
@@ -1122,7 +1122,7 @@ let pis = [
 ];</script>
 
 <script>
-let pis = [
+let pisFlows = [
   { labels: ['7/13/2025','7/21/2025','7/28/2025','8/4/2025','8/11/2025','8/18/2025'], data: [ 1, -1, -1, 4, 3, 2 ] },
   { labels: ['7/13/2025','7/21/2025','7/28/2025','8/4/2025','8/11/2025','8/18/2025'], data: [ 3, -1, -6,-12,11,10 ] },
   { labels: ['7/13/2025','7/21/2025','7/28/2025','8/4/2025','8/11/2025','8/18/2025'], data: [ 2,-22, 75,-22,38,32 ] },
