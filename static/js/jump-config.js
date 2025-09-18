@@ -5,9 +5,14 @@ window.RC_JUMP_CONFIG = {
     {
       label: "Daily Data",
       items: [
-        { text: "10 Year Treasury Rate",           url: "/10-year-treasury-rate#chart" },
-        { text: "S&P 500 Historical Prices",       url: "/s-p-500-historical-prices#chart" },
-        { text: "High-Yield Credit Spread",        url: "/credit-spread#chart" }
+        { text: "10 Year Treasury Rate",     url: "/#ten-year" },
+        { text: "S&P 500 Historical Prices", url: "/#sp500-prices" },
+        { text: "High-Yield Credit Spread",  url: "/#credit-spread" },
+        { text: "S&P 500 P/E Ratio",         url: "/#sp500-pe" },
+        { text: "Magnificent 7 Returns",     url: "/#mag7" },
+        { text: "S&P/TSX Historical Prices", url: "/#tsx-prices" },
+        { text: "Canada Top 10 (YTD)",       url: "/#top10" },
+        { text: "S&P 500 Sectors (YTD)",     url: "/#sectors" }
       ]
     },
     {
