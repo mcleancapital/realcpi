@@ -54,7 +54,7 @@ def update_sp500_html(html_file, excel_file, output_file):
 
         # Format the date into "4:00 PM EST, Fri Dec 13" format
         formatted_date = most_recent_date.strftime("%b %Y")  # e.g., Dec 2024
-        formatted_value = f"{most_recent_value:,.2f}"
+        formatted_value = f"{most_recent_value:,.0f}K"
 
         # Append percentage change to the value
         formatted_value += formatted_percentage
