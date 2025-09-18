@@ -1,77 +1,68 @@
-<script>
 // /static/js/jump.js
 (function () {
-  function init() {
-    const cfg = (window.RC_JUMP_CONFIG || {});
-    const path = (location.pathname.replace(/\/+$/, "") || "/");
-
-    // Ensure wrapper exists (create one in header if missing)
+  function initJump() {
+    // Make sure we have a wrapper; create one if missing.
     let wrapper = document.getElementById("quick-jump-wrapper");
     if (!wrapper) {
-      const header = document.querySelector("header") || document.body;
+      const header = document.querySelector("header");
+      if (!header) return;
       wrapper = document.createElement("div");
       wrapper.id = "quick-jump-wrapper";
-      wrapper.style.marginLeft = "auto";
       header.appendChild(wrapper);
-      console.warn("[jump] #quick-jump-wrapper was missing; created automatically.");
+    } else {
+      wrapper.innerHTML = ""; // reset if we re-init
     }
 
+    const path = (location.pathname.replace(/\/+$/, "") || "/");
+    const cfg  = (window.RC_JUMP_CONFIG || {});
     const globalGroups = Array.isArray(cfg["*"]) ? cfg["*"] : [];
     const pageGroups   = Array.isArray(cfg[path]) ? cfg[path] : [];
 
     // Build the <select>
-    const sel = document.createElement("select");
-    sel.id = "quick-jump-select";
-    sel.setAttribute("aria-label", "Quick navigation");
-    sel.innerHTML = '<option value="">Jump to…</option>';
-    wrapper.replaceChildren(sel); // clear + insert
+    const select = document.createElement("select");
+    select.id = "quick-jump-select";
+    select.setAttribute("aria-label", "Quick navigation");
+    select.innerHTML = '<option value="">Jump to…</option>';
+    wrapper.appendChild(select);
 
     function addGroup(groups, mode) {
-      groups.forEach(group => {
-        const items = Array.isArray(group.items) ? group.items : [];
-        if (!items.length) return;
-
+      (groups || []).forEach(group => {
         const og = document.createElement("optgroup");
         og.label = group.label || "";
-
-        items.forEach(item => {
-          // For on-page entries, attach the target id if possible
+        (group.items || []).forEach(item => {
+          // For on-page links: ensure the anchor exists on the target element
           if (mode === "page" && item.selector && item.hash) {
-            const target = document.querySelector(item.selector);
-            if (target) {
-              const id = String(item.hash).replace(/^#/, "");
-              if (id && !document.getElementById(id)) target.id = id;
+            const el = document.querySelector(item.selector);
+            if (el) {
+              const id = item.hash.replace(/^#/, "");
+              if (!document.getElementById(id)) el.id = id;
             } else {
-              console.warn("[jump] Selector not found on page:", item.selector);
+              // If the selector isn't found, skip adding this option
+              return;
             }
           }
-
-          // Determine value
-          let value = "";
-          if (mode === "page" && item.hash) {
-            value = String(item.hash);
-          } else if (item.url) {
-            value = String(item.url);
-          } else {
-            // Skip invalid entries
-            console.warn("[jump] Skipping item without url/hash:", item);
-            return;
-          }
-
           const opt = document.createElement("option");
-          opt.textContent = item.text || value;
-          opt.value = value;
+          opt.textContent = item.text;
+          opt.value = (mode === "page" && item.hash) ? item.hash : item.url;
           og.appendChild(opt);
         });
-
-        if (og.children.length) sel.appendChild(og);
+        if (og.children.length) select.appendChild(og);
       });
     }
 
+    // Global (all pages) first, then per-page additions
     addGroup(globalGroups, "global");
     addGroup(pageGroups, "page");
 
-    sel.addEventListener("change", e => {
+    // If there are no options beyond the placeholder, hide the control
+    if (select.children.length <= 1) {
+      wrapper.style.display = "none";
+    } else {
+      wrapper.style.display = "";
+    }
+
+    // Navigate
+    select.addEventListener("change", e => {
       const v = e.target.value;
       if (!v) return;
       if (v.startsWith("#")) {
@@ -87,11 +78,9 @@
     });
   }
 
-  // Wait for DOM (and avoid races if defer is missing somewhere)
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
+    document.addEventListener("DOMContentLoaded", initJump);
   } else {
-    init();
+    initJump();
   }
 })();
-</script>
