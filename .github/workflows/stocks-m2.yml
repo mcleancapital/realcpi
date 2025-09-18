@@ -2,7 +2,7 @@ name: Stocks.html - Update M2
 
 on:
   schedule:
-    - cron: "25 8 10 4 *"  # Runs at 08:25 UTC on April 10 every year
+    - cron: "30 8 10 * *"  # Runs at 08:30 UTC on the 10th every month
   workflow_dispatch:        # Allow manual triggering
 
 permissions:
