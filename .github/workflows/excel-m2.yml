@@ -2,7 +2,7 @@ name: Excel - M2
 
 on:
   schedule:
-    - cron: "25 8 10 4 *"  # Runs at 08:25 UTC on April 10 every year
+    - cron: "25 8 10 * *"  # Runs at 08:25 UTC on April 10 every year
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
