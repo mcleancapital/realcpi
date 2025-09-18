@@ -364,6 +364,25 @@ margin-left: auto;
     width: 100%;
   }
 }
+
+
+  #quick-jump {
+    margin-left: auto;
+    padding: 8px 18px;
+  }
+  #quick-jump-select {
+    font-size: 14px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    max-width: 260px;
+  }
+  @media (max-width: 729px) {
+    #quick-jump { padding: 6px 10px; }
+    #quick-jump-select { max-width: 100%; }
+  }
+
 	
 </style>
 
@@ -393,7 +412,7 @@ margin-left: auto;
        <a href="/detailed" class="top-link">Detailed View</a>
 </div> -->
 
-
+<div id="quick-jump-wrapper" style="margin-left:auto;"></div>
 
 </header>
 
@@ -722,6 +741,9 @@ function submitSearch() {
 </script>
 
 <script src="/static/js/userStatus.js" defer></script>
+
+<script src="/static/js/jump-config.js"></script>
+<script src="/static/js/jump.js" defer></script>	
 	
 </body>
 
