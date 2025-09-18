@@ -2,7 +2,7 @@ name: Excel - Energy
 
 on:
   schedule:
-    - cron: '0 0 20 * *'  # Run on the 20th of every month at 00:00 UTC
+    - cron: '0 0 28 * *'  # Run on the 28th of every month at 00:00 UTC
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
