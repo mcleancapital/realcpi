@@ -329,7 +329,7 @@ margin-left: auto;
 "@context" : "https://schema.org",
 "@type" : "WebSite",
 "name" : "Real CPI",
-"url" : "https://www.realcpi.org/"
+"url" : "https://www.realcpi.com/"
 "description": "Real CPI provides economic, stock market, real estate, financial and industry-specific data.",
 "about": {
 "@type": "Thing",
@@ -337,7 +337,7 @@ margin-left: auto;
 }
 </script>
 <meta name="description" content="Financial metrics that give you the real data about the market and the economy.">
-<link rel="canonical" href="https://www.realcpi.org/"/>
+<link rel="canonical" href="https://www.realcpi.com/"/>
 
 <style>
 
@@ -791,7 +791,7 @@ const tickerMap = {
 const targetTicker = tickerMap[item.symbol] || item.symbol;
 
 span.innerHTML = `
-       <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
+       <a href="/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
          <div class="blue">${display}</div>
          <div>${formatNumber(item.price, item.symbol)}</div>
          <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
