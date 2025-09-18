@@ -348,6 +348,27 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
     width: 100%;
   }
 }
+
+/* Quick Jump: always visible top-right in the header */
+#quick-jump-wrapper {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  z-index: 1100;
+}
+#quick-jump-select {
+  font-size: 14px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  max-width: 260px;
+}
+@media (max-width: 729px) {
+  /* Nudge down a bit on phones so it clears the logo/nav */
+  #quick-jump-wrapper { top: 70px; right: 12px; }
+  #quick-jump-select  { max-width: 80vw; }
+}
 	
 </style>
 
@@ -378,7 +399,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         <a href="/detailed" class="top-link">Detailed View</a>
 </div> -->
 
-
+<div id="quick-jump-wrapper" style="margin-left:auto;"></div>
 
 </header>
 
@@ -1107,6 +1128,9 @@ function submitSearch() {
 </script>
 
 <script src="/static/js/userStatus.js" defer></script>	
+
+<script src="/static/js/jump-config.js?v=3" defer></script>
+<script src="/static/js/jump.js?v=3" defer></script>	
 	
 </body>
 
