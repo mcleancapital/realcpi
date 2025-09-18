@@ -366,22 +366,26 @@ margin-left: auto;
 }
 
 
-  #quick-jump {
-    margin-left: auto;
-    padding: 8px 18px;
-  }
-  #quick-jump-select {
-    font-size: 14px;
-    padding: 6px 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background: #fff;
-    max-width: 260px;
-  }
-  @media (max-width: 729px) {
-    #quick-jump { padding: 6px 10px; }
-    #quick-jump-select { max-width: 100%; }
-  }
+/* Quick Jump: always visible top-right in the header */
+#quick-jump-wrapper {
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  z-index: 1100;
+}
+#quick-jump-select {
+  font-size: 14px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  max-width: 260px;
+}
+@media (max-width: 729px) {
+  /* Nudge down a bit on phones so it clears the logo/nav */
+  #quick-jump-wrapper { top: 70px; right: 12px; }
+  #quick-jump-select  { max-width: 80vw; }
+}
 
 	
 </style>
