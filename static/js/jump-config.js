@@ -1,68 +1,61 @@
 // /static/js/jump-config.js
 window.RC_JUMP_CONFIG = {
+  // ---------- GLOBAL MENU (shown on all pages) ----------
+  "*": [
+    {
+      label: "Daily Data",
+      items: [
+        { text: "10 Year Treasury Rate",           url: "/10-year-treasury-rate#chart" },
+        { text: "S&P 500 Historical Prices",       url: "/s-p-500-historical-prices#chart" },
+        { text: "High-Yield Credit Spread",        url: "/credit-spread#chart" }
+      ]
+    },
+    {
+      label: "Stock Market Data",
+      items: [
+        { text: "S&P 500 P/E Ratio",               url: "/s-p-500-pe-ratio#chart" },
+        { text: "Magnificent 7 Returns",           url: "/mag7#pie" },
+        { text: "S&P/TSX Historical Prices",       url: "/tsx-historical-prices#chart" }
+      ]
+    },
+    {
+      label: "Real Estate",
+      items: [
+        { text: "Existing Home Sales",             url: "/home-sales#chart" },
+        { text: "Housing Starts",                   url: "/housing-starts#chart" }
+      ]
+    },
+    {
+      label: "Economic Dashboard",
+      items: [
+        { text: "Inflation (CPI)",                 url: "/economy.html#inflation-cpi" },
+        { text: "Real GDP – QoQ",                  url: "/economy.html#real-gdp-qoq" },
+        { text: "Real GDP – YoY",                  url: "/economy.html#real-gdp-yoy" },
+        { text: "Nonfarm Payrolls",                url: "/economy.html#nonfarm" }
+      ]
+    }
+  ],
+
+  // ---------- PER-PAGE ADDITIONS (optional) ----------
   "/economy.html": [
     {
-      label: "Overview (Top Grid)",
+      label: "On this page",
       items: [
-        { text: "Total Economy – Real GDP",       hash: "#total-gdp",            selector: 'a.box[href="archive.html"]' },
-        { text: "Food – US Grocery Sales",        hash: "#grocery-sales",        selector: 'a.box[href="/grocery-sales"]' },
-        { text: "Healthcare",                      hash: "#healthcare",           selector: 'a.box[href="/healthcare"]' },
-        { text: "Existing Home Sales",             hash: "#home-sales",           selector: 'a.box[href="/home-sales"]' },
-        { text: "Travel – TSA Checkpoint",         hash: "#tsa",                  selector: 'a.box[href="/tsa-checkpoint"]' },
-        { text: "Energy – Personal Consumption",   hash: "#energy",               selector: 'a.box[href="/energy"]' },
-        { text: "Banking/Finance – Hours",         hash: "#finance-hours",        selector: 'a.box[href="/lending-hours"]' },
-        { text: "Transportation – TSI",            hash: "#transportation",       selector: 'a.box[href="/freight"]' },
-        { text: "Manufacturing – ISM PMI",         hash: "#pmi",                  selector: 'a.box[href="/pmi"]' },
-        { text: "Automotive – Vehicle Sales",      hash: "#vehicle-sales",        selector: 'a.box[href="/vehicle-sales"]' },
-        { text: "Home Construction – Starts",      hash: "#housing-starts",       selector: 'a.box[href="/housing-starts"]' },
-        { text: "Clothing – Monthly Sales",        hash: "#apparel",              selector: 'a.box[href="/apparel"]' },
-        { text: "AI Infrastructure – NVIDIA",      hash: "#ai-infrastructure",    selector: 'a.box[href="/ai"]' }
-      ]
-    },
-    {
-      label: "Inflation",
-      items: [
-        { text: "US CPI",                          hash: "#inflation-cpi",        selector: 'a.box[href="/inflation"]' },
-        { text: "Producer Price Index (PPI)",      hash: "#ppi",                  selector: 'a.box[href="/ppi"]' },
-        { text: "Commodities Inflation Index",     hash: "#commodities",          selector: 'a.box[href="/commodities"]' }
-      ]
-    },
-    {
-      label: "GDP (Productivity)",
-      items: [
-        { text: "Real GDP Growth QoQ",             hash: "#real-gdp-qoq",         selector: 'a.box[href="/us-real-gdp-growth-qoq"]' },
-        { text: "Real GDP Growth YoY",             hash: "#real-gdp-yoy",         selector: 'a.box[href="/us-gdp-real-growth-rate"]' },
-        { text: "Nominal GDP Growth",              hash: "#nominal-gdp-growth",   selector: 'a.box[href="/us-gdp-growth-rate"]' }
-      ]
-    },
-    {
-      label: "Labor",
-      items: [
-        { text: "Nonfarm Payrolls",                hash: "#nonfarm",              selector: 'a.box[href="/nonfarm-payrolls"]' },
-        { text: "Average Hourly Earnings",         hash: "#wages",                selector: 'a.box[href="/wages"]' },
-        { text: "Labor Force Participation",       hash: "#labor-participation",  selector: 'a.box[href="/labor-participation"]' },
-        { text: "Unemployment",                    hash: "#unemployment",         selector: 'a.box[href="/unemployment"]' },
-        { text: "Population",                      hash: "#population",           selector: 'a.box[href="/population"]' }
-      ]
-    },
-    {
-      label: "Debt",
-      items: [
-        { text: "Gov. Debt Service / GDP",         hash: "#gov-debt-service",     selector: 'a.box[href="/gov-debt-service"]' },
-        { text: "Household Debt Service",          hash: "#household-debt-service", selector: 'a.box[href="/household-debt-service"]' }
-      ]
-    },
-    {
-      label: "Other Metrics",
-      items: [
-        { text: "Leading Economic Index (LEI)",    hash: "#lei",                  selector: 'a.box[href="/lei"]' },
-        { text: "Federal Deficit / GDP",           hash: "#deficit-gdp",          selector: 'a.box[href="/us-deficit"]' },
-        { text: "Consumer Sentiment",              hash: "#sentiment",            selector: 'a.box[href="/sentiment"]' },
-        { text: "Retail Sales Growth",             hash: "#retail",               selector: 'a.box[href="/retail"]' },
-        { text: "Cash Use % of Transactions",      hash: "#cash-use",             selector: 'a.box[href="/cash-use"]' },
-        { text: "Aerospace",                       hash: "#aerospace",            selector: 'a.box[href="/aerospace"]' },
-        { text: "Rail Freight Carloads",           hash: "#rail",                 selector: 'a.box[href="/rail"]' }
+        // Ensure the first card’s selector matches your HTML structure
+        { text: "Total Economy – Real GDP",       selector: 'a[href="archive.html"] .box', hash: "#total-gdp" },
+        { text: "US CPI",                         selector: 'a.box[href="/inflation"]',              hash: "#inflation-cpi" },
+        { text: "Producer Price Index (PPI)",     selector: 'a.box[href="/ppi"]',                    hash: "#ppi" },
+        { text: "Real GDP – QoQ",                 selector: 'a.box[href="/us-real-gdp-growth-qoq"]', hash: "#real-gdp-qoq" },
+        { text: "Real GDP – YoY",                 selector: 'a.box[href="/us-gdp-real-growth-rate"]',hash: "#real-gdp-yoy" },
+        { text: "Nonfarm Payrolls",               selector: 'a.box[href="/nonfarm-payrolls"]',       hash: "#nonfarm" }
+        // …add more as you like
       ]
     }
   ]
 };
+
+// Handy aliases (optional)
+window.RC_JUMP_CONFIG["/economy"]  = window.RC_JUMP_CONFIG["/economy.html"];
+window.RC_JUMP_CONFIG["/"]         = window.RC_JUMP_CONFIG["/"] || [];
+window.RC_JUMP_CONFIG["/index"]    = window.RC_JUMP_CONFIG["/"];
+window.RC_JUMP_CONFIG["/index.html"]= window.RC_JUMP_CONFIG["/"];
