@@ -408,14 +408,8 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
         <a href="/detailed" class="top-link">Detailed View</a>
 </div> -->
 
-<!-- Quick Jump (top-right) -->
-<div id="quick-jump" aria-label="Quick navigation">
-  <select id="quick-jump-select">
-    <option value="">Jump to…</option>
-  </select>
-</div>
-<!-- replace the old user-status-desktop spot -->
 <div id="quick-jump-wrapper" style="margin-left:auto;"></div>
+
 
 
 </header>
@@ -744,6 +738,8 @@ function submitSearch() {
 
 
 
+<script src="/static/js/jump-config.js"></script>
+<script src="/static/js/jump.js" defer></script>
 
 
 
@@ -836,100 +832,7 @@ setInterval(loadTickerBar, 30000); // Refresh every 30 seconds
 </script>
 
 
-<script>
-/**
- * Configure your categories and targets here.
- * Use relative URLs + hash to jump to an element ID on the target page.
- * Make sure the target page has the element with that ID (e.g., <div id="chart">…)
- */
-const QUICK_JUMP_CONFIG = [
-  {
-    label: "Daily Data",
-    items: [
-      { text: "10 Year Treasury Rate", url: "/10-year-treasury-rate#chart" },
-      { text: "S&P 500 Historical Prices", url: "/s-p-500-historical-prices#chart" },
-      { text: "High-Yield Credit Spread", url: "/credit-spread#chart" },
-      { text: "S&P 500 Returns by Sector", url: "/sectors.html#grid-top" }
-    ]
-  },
-  {
-    label: "Stock Market Data",
-    items: [
-      { text: "S&P 500 P/E Ratio", url: "/s-p-500-pe-ratio#chart" },
-      { text: "Magnificent 7 Returns", url: "/mag7#pie" },
-      { text: "S&P/TSX Historical Prices", url: "/tsx-historical-prices#chart" },
-      { text: "Canada Top 10 Returns", url: "/top10#pie" }
-    ]
-  },
-  {
-    label: "Tools",
-    items: [
-      { text: "S&P 500 Calculator", url: "/sp-calculator#app" },
-      { text: "Stock Search", url: "/search.html#search" },
-      { text: "Currency Converter", url: "/currency.html#tool" }
-    ]
-  }
-];
 
-/** Build the <select> with <optgroup>s */
-(function initQuickJump() {
-  const container = document.getElementById("quick-jump") || document.getElementById("quick-jump-wrapper");
-  if (!container) return;
-  const select = document.getElementById("quick-jump-select") || document.createElement("select");
-
-  if (!select.id) {
-    select.id = "quick-jump-select";
-    select.innerHTML = '<option value="">Jump to…</option>';
-    container.appendChild(select);
-  }
-
-  QUICK_JUMP_CONFIG.forEach(group => {
-    const og = document.createElement("optgroup");
-    og.label = group.label;
-    group.items.forEach(item => {
-      const opt = document.createElement("option");
-      opt.value = item.url;
-      opt.textContent = item.text;
-      og.appendChild(opt);
-    });
-    select.appendChild(og);
-  });
-
-  select.addEventListener("change", (e) => {
-    const url = e.target.value;
-    if (!url) return;
-
-    // If same-page hash, smooth-scroll without reload
-    const currentPath = window.location.pathname.replace(/\/+$/, "");
-    const [pathOnly, hash = ""] = url.split("#");
-
-    // Normalize trailing slashes
-    const targetPath = (pathOnly || "").replace(/\/+$/, "");
-
-    if (targetPath && targetPath !== currentPath) {
-      // Different page: navigate; the browser will jump to the hash on load
-      window.location.href = url;
-    } else if (hash) {
-      // Same page: smooth scroll to element with matching id
-      const el = document.getElementById(hash);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        // Optional: update URL hash without page jump
-        history.replaceState(null, "", "#" + hash);
-      } else {
-        // If not found, just set the hash to let browser try default behavior
-        window.location.hash = hash;
-      }
-    } else {
-      // No hash? Just go.
-      window.location.href = url;
-    }
-
-    // Reset the dropdown placeholder after navigation intent
-    e.target.value = "";
-  });
-})();
-</script>
 
 	
 
