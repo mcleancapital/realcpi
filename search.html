@@ -535,7 +535,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 "@context" : "https://schema.org",
 "@type" : "WebSite",
 "name" : "Real CPI",
-"url" : "https://www.realcpi.org/"
+"url" : "https://www.realcpi.com/"
 "description": "Real CPI provides economic, stock market, real estate, financial and industry-specific data.",
   "about": {
     "@type": "Thing",
@@ -546,7 +546,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 </script>
 
 <meta name="description" content="Financial metrics that give you the real data about the market and the economy.">
-<link rel="canonical" href="https://www.realcpi.org/"/>
+<link rel="canonical" href="https://www.realcpi.com/"/>
 
 
 </head>
@@ -720,7 +720,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 <span id="companyName"></span>
 
 <div class="report-link-box" style="margin-top: 8px;">
-  <a href="https://www.realcpi.org/investment_reports.html" class="report-link">
+  <a href="/investment_reports.html" class="report-link">
     📄 View list of reports
   </a>
 </div>
@@ -1051,7 +1051,7 @@ if (!nextEarningsDate) {
 
 
   const fallbackLogo = profile.image && profile.image.trim() ? profile.image : "";
-  const localLogo = `https://www.realcpi.org/static/images/${ticker.toLowerCase()}.png`;
+  const localLogo = `https://www.realcpi.com/static/images/${ticker.toLowerCase()}.png`;
 
   document.getElementById("info").innerHTML = `
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
@@ -1501,7 +1501,7 @@ async function loadTickerBar() {
 
       span.innerHTML = `
 
-        <a href="https://www.realcpi.org/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
+        <a href="/search.html?ticker=${encodeURIComponent(targetTicker)}" style="text-decoration: none; color: inherit;">
           <div class="blue">${display}</div>
           <div>${formatNumber(item.price, item.symbol)}</div>
           <div class="${changeClass}">${item.changesPercentage.toFixed(2)}%</div>
