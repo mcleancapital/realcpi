@@ -1,88 +1,73 @@
-import os
-import pandas as pd
-from openpyxl import load_workbook
-from openpyxl.utils.cell import get_column_letter
 import requests
-from bs4 import BeautifulSoup
+from openpyxl import Workbook, load_workbook
 from datetime import datetime
+import pandas as pd
+import os
 
-# File path to the Excel file
-EXCEL_FILE_PATH = './data/population.xlsx'
+# FRED API Setup
+API_KEY = "dc0a72da11fb0ffc6f4dc8d31e7afbb5"
+FRED_BASE = "https://api.stlouisfed.org/fred/series/observations"
+SERIES_ID = "POPTHM"  # Population
 
-# URL and headers
-URL = "https://ycharts.com/indicators/us_total_population"
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
-    "Accept-Language": "en-US,en;q=0.9",
-}
+# Output Excel file
+EXCEL_FILE = "./data/population.xlsx"
 
-def fetch_recent_population_data(url):
-    """Fetch the most recent US population data from YCharts."""
-    try:
-        response = requests.get(url, headers=HEADERS)
-        if response.status_code != 200:
-            raise Exception(f"Request failed with status code {response.status_code}")
+# Fetch data from FRED
+def get_fred_monthly_data(series_id, api_key):
+    params = {
+        "series_id": series_id,
+        "api_key": api_key,
+        "file_type": "json",
+        "frequency": "m"
+    }
+    response = requests.get(FRED_BASE, params=params)
+    response.raise_for_status()
+    data = response.json()
+    if "observations" in data:
+        return {
+            obs["date"]: float(obs["value"])
+            for obs in data["observations"]
+            if obs["value"] != "."
+        }
+    else:
+        raise Exception(f"No data found for series {series_id}")
 
-        soup = BeautifulSoup(response.content, "html.parser")
-        element = soup.find("div", class_="key-stat-title")
-        if not element:
-            raise Exception("Failed to find population data element.")
+# Main logic
+try:
+    data_dict = get_fred_monthly_data(SERIES_ID, API_KEY)
 
-        text = element.get_text(strip=True)
-        parts = text.split(maxsplit=2)
-        if len(parts) < 2:
-            raise Exception("Unexpected format for population data.")
+    # Convert to DataFrame and sort
+    df = pd.DataFrame(list(data_dict.items()), columns=["Date", "Value"])
+    df["Date"] = pd.to_datetime(df["Date"])
+    df.sort_values("Date", ascending=False, inplace=True)
+    df.reset_index(drop=True, inplace=True)
 
-        value = float(parts[0].replace('M', '').replace(',', ''))  # Value in millions
-        date_str = parts[2].replace("for ", "")
-        date = datetime.strptime(date_str, "%b %Y").strftime("%Y-%m-%d")
+    # Calculate % change vs 12 months ago
+    yoy_changes = []
+    for i in range(len(df)):
+        if i + 12 < len(df):
+            current = df.loc[i, "Value"]
+            past = df.loc[i + 12, "Value"]
+            change = ((current / past) - 1) * 100 if past != 0 else None
+            yoy_changes.append(round(change, 2))
+        else:
+            yoy_changes.append(None)
+    df["% Change vs Last Year"] = yoy_changes
 
-        print(f"Fetched population data - Value: {value}, Date: {date}")
-        return date, value
-    except Exception as e:
-        print(f"Error fetching population data: {e}")
-        return None, None
+    # Save to Excel
+    if not os.path.exists(os.path.dirname(EXCEL_FILE)):
+        os.makedirs(os.path.dirname(EXCEL_FILE))
 
-def update_excel(file_path, recent_date, recent_value):
-    """Update the Excel file with the new population data and a formula in column C."""
-    try:
-        if not os.path.exists(file_path):
-            print(f"File not found: {file_path}")
-            return
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Data"
+    ws.append(["Date", "Value", "% Change vs Last Year"])
 
-        wb = load_workbook(file_path)
-        sheet_name = "Data"
-        if sheet_name not in wb.sheetnames:
-            print(f"'{sheet_name}' sheet not found in the workbook.")
-            return
-        ws = wb[sheet_name]
+    for _, row in df.iterrows():
+        ws.append([row["Date"].date(), row["Value"], row["% Change vs Last Year"]])
 
-        # Check if the date already exists
-        most_recent_date_in_excel = ws.cell(row=2, column=1).value
-        if most_recent_date_in_excel:
-            most_recent_date_in_excel = pd.to_datetime(most_recent_date_in_excel).strftime("%Y-%m-%d")
+    wb.save(EXCEL_FILE)
+    print(f"✔ Population data saved to {EXCEL_FILE}")
 
-        if most_recent_date_in_excel == recent_date:
-            print(f"Recent date {recent_date} already exists. No update.")
-            return
-
-        # Insert new row at row 2
-        ws.insert_rows(2)
-        ws.cell(row=2, column=1, value=recent_date)   # Column A
-        ws.cell(row=2, column=2, value=recent_value)  # Column B
-
-        # Write formula in Column C
-        formula = "=(B2/B14-1)*100"
-        ws.cell(row=2, column=3, value=f"={formula}")  # Column C
-
-        print(f"Added row with formula in C2: {formula}")
-
-        wb.save(file_path)
-        print(f"Excel file updated successfully: {file_path}")
-    except Exception as e:
-        print(f"Error updating Excel file: {e}")
-
-if __name__ == "__main__":
-    date, value = fetch_recent_population_data(URL)
-    if date and value:
-        update_excel(EXCEL_FILE_PATH, date, value)
+except Exception as e:
+    print(f"❌ Error: {e}")
