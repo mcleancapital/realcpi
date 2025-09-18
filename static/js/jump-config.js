@@ -18,25 +18,32 @@ window.RC_JUMP_CONFIG = {
     {
       label: "Stock Market Data",
       items: [
-        { text: "S&P 500 P/E Ratio",               url: "/s-p-500-pe-ratio#chart" },
-        { text: "Magnificent 7 Returns",           url: "/mag7#pie" },
-        { text: "S&P/TSX Historical Prices",       url: "/tsx-historical-prices#chart" }
+        // point at the small cards on /stocks.html
+        { text: "S&P 500 P/E Ratio",         url: "/stocks.html#sp500-pe" },
+        { text: "S&P 500 Prices",            url: "/stocks.html#sp500-prices" },
+        { text: "High-Yield Credit Spread",  url: "/stocks.html#credit-spread" },
+        { text: "S&P/TSX Prices",            url: "/stocks.html#tsx-prices" },
+        { text: "Magnificent 7",             url: "/stocks.html#mag7" }
       ]
     },
     {
       label: "Real Estate",
       items: [
-        { text: "Existing Home Sales",             url: "/home-sales#chart" },
-        { text: "Housing Starts",                   url: "/housing-starts#chart" }
+        { text: "Existing Home Sales",       url: "/realestate.html#home-sales" },
+        { text: "Housing Starts",            url: "/realestate.html#housing-starts" }
       ]
     },
     {
       label: "Economic Dashboard",
       items: [
-        { text: "Inflation (CPI)",                 url: "/economy.html#inflation-cpi" },
-        { text: "Real GDP – QoQ",                  url: "/economy.html#real-gdp-qoq" },
-        { text: "Real GDP – YoY",                  url: "/economy.html#real-gdp-yoy" },
-        { text: "Nonfarm Payrolls",                url: "/economy.html#nonfarm" }
+        { text: "Total Economy – Real GDP",  url: "/economy.html#total-gdp" },
+        { text: "Inflation (CPI)",           url: "/economy.html#inflation-cpi" },
+        { text: "PPI",                       url: "/economy.html#ppi" },
+        { text: "Real GDP – QoQ",            url: "/economy.html#real-gdp-qoq" },
+        { text: "Real GDP – YoY",            url: "/economy.html#real-gdp-yoy" },
+        { text: "Nonfarm Payrolls",          url: "/economy.html#nonfarm" },
+        { text: "Existing Home Sales",       url: "/economy.html#home-sales" },
+        { text: "Housing Starts",            url: "/economy.html#housing-starts" }
       ]
     }
   ],
