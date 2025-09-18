@@ -63,7 +63,7 @@ html_content = re.sub(r"let pi = \[.*?\];", pi_data, html_content, flags=re.DOTA
 # Replace the values and percentage change
 html_content = re.sub(
     r"<b>Current <span class=\"currentTitle\">.*?</span>:</b>.*?\(.*?\)",
-    f"<b>Current <span class=\"currentTitle\">US Population</span>:</b> {latest_volume:,}M {formatted_percentage}",
+    f"<b>Current <span class=\"currentTitle\">US Population</span>:</b> {latest_volume:,}K {formatted_percentage}",
     html_content,
     flags=re.DOTALL
 )
