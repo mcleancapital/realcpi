@@ -251,6 +251,10 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 /* Hide the menu items by default on mobile */
 @media (max-width: 729px) {
+
+  /* Height needed ≈ top offset (70px) + select height (~44px) + a bit of gap */
+  header { min-height: calc(70px + 44px + 12px); }  /* ~126px */
+	
     .menu-bar ul {
         display: none;
         flex-direction: column;
