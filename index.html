@@ -111,6 +111,15 @@ a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,c
 }
 	
 @media(min-width:730px){
+
+  #quick-jump-wrapper {
+    position: absolute;
+    right: 16px;
+    top: 14px;
+    z-index: 1100;
+  }
+  #quick-jump-select { max-width: 260px; }
+	
 	.mobile-menu {
         	display: none;
     	}
@@ -385,7 +394,7 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 /* Quick Jump: always visible top-right in the header */
 #quick-jump-wrapper {
-  position: absolute;
+  position: static !important;   /* sit inline next to the hamburger */
   right: 16px;
   top: 14px;
   z-index: 1100;
