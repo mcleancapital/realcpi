@@ -252,8 +252,28 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 /* Hide the menu items by default on mobile */
 @media (max-width: 729px) {
 
-  /* Height needed ≈ top offset (70px) + select height (~44px) + a bit of gap */
-  header { min-height: calc(70px + 44px + 12px); }  /* ~126px */
+/* Put hamburger + dropdown on one line in the mobile bar */
+.mobile-menu{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;        /* tighter left padding */
+}
+
+/* Move the hamburger a few pixels left */
+.hamburger-menu{
+  margin-left: -6px;       /* tweak to taste: -4px, -8px, etc. */
+}
+
+/* When the Quick Jump lives inside .mobile-menu, let it flow inline */
+#quick-jump-wrapper{
+  position: static;
+  margin: 0 0 0 6px;       /* small gap after the hamburger */
+}
+
+#quick-jump-select{
+  max-width: 60vw;         /* prevent it from sprawling on small screens */
+}
 	
     .menu-bar ul {
         display: none;
@@ -750,6 +770,32 @@ function submitSearch() {
 <script src="/static/js/jump-config.js?v=3" defer></script>
 <script src="/static/js/jump.js?v=3" defer></script>
 
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const mql = window.matchMedia('(max-width: 729px)');
+  const wrapper = document.getElementById('quick-jump-wrapper');
+  const mobileBar = document.querySelector('.mobile-menu');
+
+  if (!wrapper || !mobileBar) return;
+
+  // Placeholder to restore desktop position
+  const placeholder = document.createComment('quick-jump-placeholder');
+  wrapper.parentNode.insertBefore(placeholder, wrapper.nextSibling);
+
+  function relocate(e) {
+    if (e.matches) {
+      // Mobile: put dropdown next to the hamburger
+      mobileBar.appendChild(wrapper);
+    } else {
+      // Desktop: put it back where it was
+      placeholder.parentNode.insertBefore(wrapper, placeholder);
+    }
+  }
+
+  relocate(mql);
+  mql.addEventListener('change', relocate);
+});
+</script>
 
 
 	
