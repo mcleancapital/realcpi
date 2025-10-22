@@ -89,7 +89,7 @@ def update_sp500_html(html_file, excel_file, output_file):
 
         # Step 4: Locate the specific section for S&P 500 Historical Prices
         print("Step 4: Updating the specific section for S&P 500 Historical Prices...")
-        sp500_marker = '<a class=box href="/s-p-500-historical-prices">'
+        sp500_marker = '<a class=box id="sp500-prices" href="/s-p-500-historical-prices">'
         marker_start = html_content.find(sp500_marker)
         if marker_start == -1:
             print("Marker for S&P 500 Historical Prices not found in the HTML.")
