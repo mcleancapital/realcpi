@@ -2,7 +2,7 @@ name: Excel - TOP 10
 
 on:
   schedule:
-    - cron: "55 1 * * *"  # Runs daily at 1:55 AM UTC (8:55 PM ET during Standard Time)
+    - cron: "58 1 * * *"  # Runs daily at 1:58 AM UTC (8:58 PM ET during Standard Time)
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
