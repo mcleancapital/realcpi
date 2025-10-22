@@ -2,7 +2,7 @@ name: Excel - TSX Price
 
 on:
   schedule:
-    - cron: "55 10 * * *"  # Runs daily at 10:55 AM UTC (5:55 AM ET during Standard Time)
+    - cron: "28 9 * * *"  # Runs daily at 9:58 AM UTC (4:58 AM ET during Standard Time)
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
