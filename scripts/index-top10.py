@@ -42,10 +42,10 @@ def update_sp500_html(html_file, excel_file, output_file):
 
         # Step 3: Locate the specific section for TOP 10
         print("Step 4: Updating the specific section for TOP 10...")
-        sp500_marker = '<a class=box href="/top10">'
+        sp500_marker = '<a class=box id="top10" href="/top10">'
         marker_start = html_content.find(sp500_marker)
         if marker_start == -1:
-            print("Marker for MAG7 not found in the HTML.")
+            print("Marker for TOP 10 not found in the HTML.")
             return
 
         # Locate the end of this section
