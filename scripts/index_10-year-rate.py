@@ -88,12 +88,12 @@ def update_sp500_html(html_file, excel_file, output_file):
             print(f"Data section marker '{data_marker}' not found in HTML.")
             return
 
-        # Step 4: Locate the specific section for S&P 500 Historical Prices
-        print("Step 4: Updating the specific section for S&P 500 Historical Prices...")
-        sp500_marker = '<a class=box href="/10-year-treasury-rate">'
+        # Step 4: Locate the specific section for 10-Year-Treasury-Rate
+        print("Step 4: Updating the specific section for 10-Year-Treasury-Rate...")
+        sp500_marker = '<a class=box  id="ten-year" href="/10-year-treasury-rate">'
         marker_start = html_content.find(sp500_marker)
         if marker_start == -1:
-            print("Marker for S&P 500 Historical Prices not found in the HTML.")
+            print("Marker for 10-Year-Treasury-Rate not found in the HTML.")
             return
 
         # Locate the end of this section
