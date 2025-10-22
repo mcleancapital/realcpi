@@ -90,7 +90,7 @@ def update_sp500_html(html_file, excel_file, output_file):
 
         # Step 4: Locate the specific section for 10-Year-Treasury-Rate
         print("Step 4: Updating the specific section for 10-Year-Treasury-Rate...")
-        sp500_marker = '<a class=box  id="ten-year" href="/10-year-treasury-rate">'
+        sp500_marker = '<a class=box id="ten-year" href="/10-year-treasury-rate">'
         marker_start = html_content.find(sp500_marker)
         if marker_start == -1:
             print("Marker for 10-Year-Treasury-Rate not found in the HTML.")
