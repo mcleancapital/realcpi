@@ -42,7 +42,7 @@ def update_sp500_html(html_file, excel_file, output_file):
 
         # Step 3: Locate the specific section for MAG7
         print("Step 4: Updating the specific section for MAG7...")
-        sp500_marker = '<a class=box href="/mag7">'
+        sp500_marker = '<a class=box id="mag7" href="/mag7">'
         marker_start = html_content.find(sp500_marker)
         if marker_start == -1:
             print("Marker for MAG7 not found in the HTML.")
