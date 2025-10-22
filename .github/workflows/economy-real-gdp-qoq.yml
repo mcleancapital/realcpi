@@ -2,7 +2,7 @@ name: Economy.html - Update Real GDP Growth QoQ
 
 on:
   schedule:
-    - cron: '25 1 2 2,5,8,11 *'  # Runs at 01:25 UTC on the 2nd day of Feb, May, Aug, Nov
+    - cron: '25 1 2 * *'  # Runs at 01:25 UTC on the 2nd day of Feb, May, Aug, Nov
   workflow_dispatch:        # Allow manual triggering
 
 permissions:
