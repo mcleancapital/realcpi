@@ -2,42 +2,75 @@ name: Excel - TOP 10
 
 on:
   schedule:
-    - cron: "58 1 * * *"  # Runs daily at 1:58 AM UTC (8:58 PM ET during Standard Time)
-  workflow_dispatch:  # Allows manual triggering if needed
+    - cron: "58 1 * * *"  # Daily at 01:58 UTC
+  workflow_dispatch:      # Manual trigger
 
 permissions:
   contents: write
+
+# Ensure only one workflow that pushes to main runs at a time (use the same group in other workflows that push)
+concurrency:
+  group: push-lock-main
+  cancel-in-progress: false
 
 jobs:
   update_excel:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repository
+      # 1) Checkout with full history so fetch/rebase works
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Set up Python
+      # 2) Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      # Install dependencies
+      # 3) Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install yahoo_fin datetime openpyxl yfinance
+          # datetime is in the stdlib; no need to pip install it
+          pip install yfinance pandas openpyxl yahoo_fin
 
-      # Run the Python script
+      # 4) Run the Python script
       - name: Run update script
         run: python scripts/excel-top10.py
 
-      # Commit and push changes
+      # 5) Commit (only if there are changes), rebase onto latest, and push
       - name: Commit and push changes
+        shell: bash
         run: |
+          # Determine the current branch (works for cron and manual runs)
+          BRANCH="${GITHUB_REF_NAME:-$(git rev-parse --abbrev-ref HEAD)}"
+
+          # Configure git author and mark workspace as safe
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
-          git add .
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+          # Stage changes
+          git add -A
+
+          # Only commit if there are staged changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            # Keep local repo synced anyway to avoid drift
+            git fetch origin "$BRANCH"
+            git rebase "origin/$BRANCH" || { git rebase --abort || true; }
+            exit 0
+          fi
+
+          # Create commit
           git commit -m "Automated update of Excel file"
-          git push
+
+          # Rebase our commit on top of latest remote to avoid non-fast-forward
+          git fetch origin "$BRANCH"
+          git rebase "origin/$BRANCH"
+
+          # Push back to the same branch
+          git push origin "HEAD:$BRANCH"
