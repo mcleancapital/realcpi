@@ -2,7 +2,7 @@ name: Excel - Real GDP Growth QoQ
 
 on:
   schedule:
-    - cron: '15 1 2 2,5,8,11 *'  # Runs at 01:15 UTC on the 2nd day of Feb, May, Aug, Nov
+    - cron: '15 1 2 * *'  # Runs at 01:15 UTC on the 2nd day of Feb, May, Aug, Nov
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
