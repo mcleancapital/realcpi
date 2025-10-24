@@ -240,6 +240,20 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 /* Hide the menu items by default on mobile */
 @media (max-width: 729px) {
+
+/* Put hamburger + dropdown on one line in the mobile bar */
+.mobile-menu{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;        /* tighter left padding */
+}
+
+/* Move the hamburger a few pixels left */
+.hamburger-menu{
+  margin-left: -8px;       /* tweak to taste: -4px, -8px, etc. */
+}	
+	
     .menu-bar ul {
         display: none;
         flex-direction: column;
@@ -344,6 +358,12 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 
 /* Mobile: Full width on small screens */
 @media (max-width: 729px) {
+
+  #quick-jump-wrapper {
+    position: static !important;   /* was absolute */
+    margin: 8px 12px 0;            /* small spacing */
+  }
+	
   #tickerInput2-container {
     width: 100%;
   }
