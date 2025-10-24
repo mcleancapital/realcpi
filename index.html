@@ -413,6 +413,25 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
   #quick-jump-select  { max-width: 80vw; }
 }
 
+/* Keep the collapsed dropdown thin */
+#quick-jump-select {
+  width: 120px;         /* thin when closed */
+  max-width: 160px;
+  font-size: 14px;
+  padding: 4px 6px;
+}
+
+/* Make the dropdown menu open wider */
+#quick-jump-select option {
+  white-space: normal;  /* allow wrapping if needed */
+}
+
+/* For Chrome/Safari (WebKit) browsers */
+#quick-jump-select:focus {
+  width: 300px;         /* expands when clicked or focused */
+  transition: width 0.2s ease;
+  z-index: 2000;
+}
 
 	
 </style>
