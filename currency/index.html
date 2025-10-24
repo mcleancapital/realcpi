@@ -348,6 +348,22 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 </div>
 
 </main>
+
+<script>
+function displayFXRate(rate) {
+  // Format with 4 decimals
+  const formatted = Number(rate).toFixed(4);
+  document.getElementById('fx-rate').textContent = formatted;
+}
+
+// Example usage
+// Suppose you fetch or calculate your FX rate dynamically:
+const currentFXRate = 1.372839; // Replace with live data
+displayFXRate(currentFXRate);
+</script>
+
+</body>
+	
 <footer>
 This information is provided for informational purposes only. This is not for advice.
 <br><br>
