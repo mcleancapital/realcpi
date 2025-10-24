@@ -383,7 +383,12 @@ margin-left: auto;
 }
 @media (max-width: 729px) {
   /* Nudge down a bit on phones so it clears the logo/nav */
-  #quick-jump-wrapper { top: 70px; right: 12px; }
+  #quick-jump-wrapper { 
+	  top: 70px; 
+	  right: 12px;
+      position: static !important;   /* was absolute */
+      margin: 8px 12px 0;            /* small spacing */
+  }
   #quick-jump-select  { 
 	  max-width: 80vw; 
       margin-left: 8px;   /* ✅ small space from the left edge */
