@@ -522,11 +522,19 @@ function toggleMenu() {
 
 <script>
 function formatNumber(value, symbol) {
-  if (symbol === 'CADUSD') {
-    return value.toFixed(4);
+  // Normalize symbol so that both CADUSD or USDCAD trigger 4 decimals
+  const upperSymbol = symbol.toUpperCase();
+
+  if (upperSymbol.includes('CADUSD') || upperSymbol.includes('USDCAD')) {
+    return Number(value).toFixed(4);
   }
-  return value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  return Number(value).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
+
 
 
 async function loadTickerBar() {
