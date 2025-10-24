@@ -490,10 +490,16 @@ async function convertCurrency() {
 
     if (data && data.rates && data.rates[to]) {
       const rate = data.rates[to];
+      // Force 4 decimals on the displayed converted amount
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: to
+        currency: to,
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4
       }).format(rate);
+
+resultBox.innerText = `${amount} ${from} = ${formatted}`;
+
 
       resultBox.innerText = `${amount} ${from} = ${formatted}`;
     } else {
