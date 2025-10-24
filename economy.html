@@ -367,8 +367,33 @@ a,a:visited{color:#222;text-decoration:none}a:hover{text-decoration:underline}a.
 @media (max-width: 729px) {
   /* Nudge down a bit on phones so it clears the logo/nav */
   #quick-jump-wrapper { top: 70px; right: 12px; }
-  #quick-jump-select  { max-width: 80vw; }
+  #quick-jump-select  { 
+	  max-width: 80vw; 
+	  margin-left: 8px;   /* ✅ small space from the left edge */
+      padding-left: 6px;  /* ✅ extra inner padding */
+  }
 }
+/* Keep the collapsed dropdown thin */
+
+#quick-jump-select {
+  width: 120px;         /* thin when closed */
+  max-width: 160px;
+  font-size: 14px;
+  padding: 4px 6px;
+}
+
+/* Make the dropdown menu open wider */
+#quick-jump-select option {
+  white-space: normal;  /* allow wrapping if needed */
+}
+
+/* For Chrome/Safari (WebKit) browsers */
+#quick-jump-select:focus {
+  width: 300px;         /* expands when clicked or focused */
+  transition: width 0.2s ease;
+  z-index: 2000;
+}
+
 	
 </style>
 
