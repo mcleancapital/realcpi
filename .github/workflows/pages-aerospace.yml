@@ -2,7 +2,7 @@ name: Pages - Aerospace
 
 on:
   schedule:
-    - cron: "15 8 11 4 *"  # Runs at 08:15 UTC on April 11 every year
+    - cron: "33 8 11 * *"  # Every month on the 11th at 08:33 UTC
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
