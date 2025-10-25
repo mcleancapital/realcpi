@@ -2,7 +2,7 @@ name: Excel - Aerospace
 
 on:
   schedule:
-    - cron: "25 8 11 4 *"  # Runs at 08:25 UTC on April 11 every year
+    - cron: "25 8 11 * *"  # Every month on the 11th at 08:25 UTC
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
