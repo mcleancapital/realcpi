@@ -6,8 +6,8 @@ import os
 
 # Paths for the files
 excel_file = './data/goods.xlsx'
-html_template = './rail/index.html'
-output_html = './rail/index.html'
+html_template = './goods/index.html'
+output_html = './goods/index.html'
 
 # Read Excel data
 data = pd.read_excel(excel_file, sheet_name="Data", engine="openpyxl")
