@@ -2,7 +2,7 @@ name: Pages - Rail
 
 on:
   schedule:
-    - cron: "55 8 11 4 *"  # Runs at 08:55 UTC on April 11 every year
+    - cron: "55 8 11 * *"  # Every month on the 11th at 08:55 UTC
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
