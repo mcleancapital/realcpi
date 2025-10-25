@@ -2,7 +2,7 @@ name: Excel - Rail
 
 on:
   schedule:
-    - cron: "15 8 11 * *"  # Every month on the 11th at 08:15 UTC
+    - cron: "10 8 11 * *"  # Every month on the 11th at 08:10 UTC
   workflow_dispatch:  # Allows manual triggering if needed
 
 permissions:
